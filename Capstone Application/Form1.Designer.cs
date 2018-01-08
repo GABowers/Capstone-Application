@@ -170,9 +170,12 @@
             // 
             // saveAllImagesToolStripMenuItem
             // 
+            this.saveAllImagesToolStripMenuItem.AutoToolTip = true;
+            this.saveAllImagesToolStripMenuItem.CheckOnClick = true;
             this.saveAllImagesToolStripMenuItem.Name = "saveAllImagesToolStripMenuItem";
             this.saveAllImagesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.saveAllImagesToolStripMenuItem.Text = "Save All Images";
+            this.saveAllImagesToolStripMenuItem.ToolTipText = "Images will be saved in a \"Y-M-D H-M-S Run # Iteration #\" format.";
             this.saveAllImagesToolStripMenuItem.Click += new System.EventHandler(this.saveAllImagesToolStripMenuItem_Click);
             // 
             // analysisToolStripMenuItem
@@ -202,13 +205,13 @@
             // mainWindowToolStripMenuItem
             // 
             this.mainWindowToolStripMenuItem.Name = "mainWindowToolStripMenuItem";
-            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.mainWindowToolStripMenuItem.Text = "Main Window";
             // 
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
-            this.modelToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
             // toolStripMenuItem4

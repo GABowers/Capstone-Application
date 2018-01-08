@@ -16,6 +16,8 @@ namespace Capstone_Application
     public partial class Form1 : Form
     {
         bool running = false;
+        bool saveImages = false;
+        string imageSaveFolder;
         public static ControllerScript controllerScript = new ControllerScript();
         public Form1()
         {
@@ -81,9 +83,21 @@ namespace Capstone_Application
             UpdateIterationBox();
         }
 
+        private void CheckSettings()
+        {
+            if(saveImages == true)
+            {
+                string filename = imageSaveFolder + "/" + DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
+                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations + ".bmp";
+                innerPictureBox.Image.Save(filename);
+            }
+        }
+
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             RunCA();
+            CheckSettings();
             UpdateImage();
         }
 
@@ -133,6 +147,9 @@ namespace Capstone_Application
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "(*.bmp)|*.bmp|(*.jpeg)|*.jpeg|(*.png)|*.png|(*.tiff)|*.tiff";
+            sfd.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
+                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations;
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 innerPictureBox.Image.Save(sfd.FileName);
@@ -141,7 +158,19 @@ namespace Capstone_Application
 
         private void saveAllImagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            saveImages = !saveImages;
+            if(saveImages == true)
+            {
+                using (var fbd = new FolderBrowserDialog())
+                {
+                    DialogResult result = fbd.ShowDialog();
 
+                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        imageSaveFolder = fbd.SelectedPath;
+                    }
+                }
+            }
         }
 
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)

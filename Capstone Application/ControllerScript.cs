@@ -149,10 +149,6 @@ namespace Capstone_Application
             List<int> currentCellCount = new List<int>();
             currentCellCount.AddRange(CA.stateCount);
             fullCount.Add(currentCellCount);
-            //if (storeImages.isOn)
-            //{
-            //    StoreImage();
-            //}
         }
 
         public void CreateCA()
@@ -218,8 +214,6 @@ namespace Capstone_Application
             }
             currentForm.innerPictureBox.Image = bmp;
         }
-
-        // Save stuff
         
     }
 }
