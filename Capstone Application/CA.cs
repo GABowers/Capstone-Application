@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using SysRand = System.Random;
 //using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ public class CA
     private Neighborhood neighborhood;
     private GridType gridType;
     public BlankGrid[,] grid;
+    NType neighborType;
     BlankGrid[,] backup;
     public int gridWidth;
     public int gridHeight;
@@ -30,11 +32,14 @@ public class CA
 
     private StatePageInfo statePageInfo;
 
+    
+
     public CA(int width, int height, int numStates, NType type, GridType gType = GridType.Box)
     {
         gridWidth = width;
         gridHeight = height;
         this.numStates = numStates;
+        neighborType = type;
         gridType = gType;
         grid = new BlankGrid[width, height];
         backup = new BlankGrid[width, height];
@@ -88,25 +93,14 @@ public class CA
         int gridSize = (gridWidth * gridHeight);
         int currentMin = gridSize;
         int state = 0;
-        while (agentCount.Any())
+        
+        var list = new List<int>(Enumerable.Range(1, gridSize));
+        list.Shuffle();
+        for (int i = 0; i < list.Count; i++)
         {
-            int randX = myRand.Next(gridSize);
-            int xValue = (randX / gridWidth);
-            int yValue = (randX % gridWidth);
-            
-            if (randX >= currentMin)
-            {
-                while ((System.Object.ReferenceEquals(grid[xValue, yValue], null) == false))
-                {
-                    randX += 1;
-                    if(randX >= (gridWidth * gridHeight))
-                    {
-                        randX -= (gridWidth * gridHeight);
-                    }
-                    xValue = (randX / gridWidth);
-                    yValue = (randX % gridWidth);
-                }
-            }
+            int increment = list[i] - 1;
+            int xValue = (increment / gridWidth);
+            int yValue = (increment % gridWidth);
             
             grid[xValue, yValue] = new BlankGrid();
             grid[xValue, yValue].AddAgent();
@@ -117,13 +111,9 @@ public class CA
 
             activeAgents.Add(grid[xValue, yValue].agent);
 
-            if (randX < currentMin)
-            {
-                currentMin = randX;
-            }
-
             // Subtract that state from its agentcount
             // And if it goes to zero remove it from both our lists
+
             agentCount[0]--;
 
             if (agentCount[0] == 0)
@@ -152,6 +142,16 @@ public class CA
     {
         states[startState].SetProbability(endState, neighborState, numNeighbors, prob);
 
+    }
+
+    public void SetStateInfo(int startState, int endState, int neighborState, int rows, int columns, double prob)
+    {
+        states[startState].SetProbability(endState, neighborState, rows, columns, prob);
+    }
+
+    public void CreateStateArray(int startState, int endState, int neighborState, int rows, int columns)
+    {
+        states[startState].InitializeArray(endState, neighborState, rows, columns);
     }
 
     public void SetCellState(int x, int y, int state)
@@ -207,9 +207,17 @@ public class CA
                 for (int y = 0; y < gridHeight; ++y)
                 {
                     int currentState = grid[x, y].agent.currentState;
-                    List<int> neighborStateCount = GetNeighborCount(x, y);
-                    float[] probChances = GetProbChances(currentState, neighborStateCount);
-                    grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                    if (neighborType == NType.Advanced)
+                    {
+                        double[] probChances = AdvancedGetProbChances(currentState, x, y);
+                        grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                    }
+                    else
+                    {
+                        List<int> neighborStateCount = GetNeighborCount(x, y);
+                        double[] probChances = StandardGetProbChances(currentState, neighborStateCount);
+                        grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                    }
                     stateCount[currentState] += 1;
                 }
             }
@@ -293,14 +301,67 @@ public class CA
         return neighborCount;
     }
 
-    private float[] GetProbChances(int currentState, List<int> neighborStateCount)
+    private double[] AdvancedGetProbChances(int currentState, int x, int y)
     {
-        float[] probChances = new float[numStates];
-        float totalProb = 0;
+        double[] probChances = new double[numStates];
+        double totalProb = 0;
+
+        //int minRows = 0;
+
+        //int distance = ((minRows - 1) / 2);
 
         for (int p = 0; p < numStates; ++p)
         {
-            float prob = 0;
+            double prob = 0;
+            //skip if we are on the state of the current cell
+            //we'll figure it out after we find out all the other probs
+            if (p == currentState)
+                continue;
+            //the neighbor probabilities of different states are considered ADDITIVE
+            //They will combine to form one probability to that other state
+
+            for (int nP = 0; nP < numStates; ++nP)
+            {
+                int tempRows = states[currentState].advProbs[p, nP].GetLength(0);
+                int distance = ((tempRows - 1) / 2);
+                double tempProb = 0;
+                for(int temp2Rows = 0; temp2Rows < tempRows; temp2Rows++)
+                {
+                    for(int temp2Cols = 0; temp2Cols < tempRows; temp2Cols++)
+                    {
+                        int newRow = (x - distance + temp2Rows);
+                        int newCol = (y - distance + temp2Cols);
+
+                        if (newRow < 0 || newRow >= gridWidth || newCol < 0 || newCol >= gridHeight)
+                            continue;
+
+                        // Add check for if new location is within bounds
+                        if(grid[newRow,newCol].agent.currentState == nP)
+                        {
+                            tempProb = states[currentState].GetProbability(p, nP, temp2Rows, temp2Cols);
+                            prob += tempProb;
+                        }
+                    }
+                }
+            }
+            probChances[p] = prob;
+            totalProb += prob;
+        }
+
+        // the chance of us not changing is the product of all the other states not happening
+        double noChange = 1 - totalProb;
+        probChances[currentState] = noChange > 0 ? noChange : 0;
+        return probChances;
+    }
+
+    private double[] StandardGetProbChances(int currentState, List<int> neighborStateCount)
+    {
+        double[] probChances = new double[numStates];
+        double totalProb = 0;
+
+        for (int p = 0; p < numStates; ++p)
+        {
+            double prob = 0;
             //skip if we are on the state of the current cell
             //we'll figure it out after we find out all the other probs
             if (p == currentState)
@@ -311,7 +372,7 @@ public class CA
 
             for (int nP = 0; nP < numStates; ++nP)
             {
-                float tempProb = 0;
+                double tempProb = 0;
                 if (nP == currentState)
                     continue;
                 tempProb = states[currentState].GetProbability((p), nP, neighborStateCount[nP]);
@@ -321,29 +382,29 @@ public class CA
             totalProb += prob;
         }
         // the chance of us not changing is the product of all the other states not happening
-        float noChange = 1 - totalProb;
+        double noChange = 1 - totalProb;
         probChances[currentState] = noChange > 0 ? noChange : 0;
         return probChances;
     }
 
-    private int GetStateFromProbability(float[] probChances)
+    private int GetStateFromProbability(double[] probChances)
     {
-        //Should this be float or int?
-        float[] agentAmountPerState = GetAgentAmountPerState(probChances.ToList());
+        //Should this be float or double?
+        double[] agentAmountPerState = GetAgentAmountPerState(probChances.ToList());
         return GetIndexFromRange(agentAmountPerState);
     }
 
-    private int GetIndexFromRange(float[] agentAmountPerState)
+    private int GetIndexFromRange(double[] agentAmountPerState)
     {
-        float range = agentAmountPerState[agentAmountPerState.Length - 1];
-        float pick = (float)myRand.NextDouble() * range;
+        double range = agentAmountPerState[agentAmountPerState.Length - 1];
+        double pick = myRand.NextDouble() * range;
         return Array.IndexOf(agentAmountPerState, agentAmountPerState.Where(x => x >= pick).First());
     }
 
-    private float[] GetAgentAmountPerState(List<float> ratios)
+    private double[] GetAgentAmountPerState(List<double> ratios)
     {
-        float[] agentAmountPerState = new float[ratios.Count];
-        float total = 0;
+        double[] agentAmountPerState = new double[ratios.Count];
+        double total = 0;
         for (int i = 0; i < ratios.Count; ++i)
         {
             total += ratios[i];
@@ -468,6 +529,34 @@ public class CA
                     agentCleanup++;
                 }
             }
+        }
+    }
+
+    
+}
+
+public static class ThreadSafeRandom
+{
+    [ThreadStatic] private static Random Local;
+
+    public static Random ThisThreadsRandom
+    {
+        get { return Local ?? (Local = new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId))); }
+    }
+}
+
+static class MyExtensions
+{
+    public static void Shuffle<T>(this IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = ThreadSafeRandom.ThisThreadsRandom.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
         }
     }
 }

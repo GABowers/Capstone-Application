@@ -70,5 +70,17 @@ namespace Capstone_Application
                 dataGridView2.RowHeadersVisible = false;
             }
         }
+
+        public void AddInitialCell()
+        {
+            DataGridViewTextBoxColumn newColumn = new DataGridViewTextBoxColumn();
+            DataGridViewTextBoxColumn newColumn2 = new DataGridViewTextBoxColumn();
+            newColumn.MinimumWidth = 20;
+            newColumn2.MinimumWidth = 20;
+            dataGridView1.Columns.Add(newColumn);
+            dataGridView1.Rows.Add(new DataGridViewRow());
+            dataGridView2.Columns.Add(newColumn2);
+            dataGridView2.Rows.Add(new DataGridViewRow());
+        }
     }
 }

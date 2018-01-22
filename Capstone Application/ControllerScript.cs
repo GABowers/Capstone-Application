@@ -24,6 +24,7 @@ namespace Capstone_Application
         public List<List<int>> fullCount = new List<List<int>>();
 
         bool editModeOn = false;
+        bool createdCA = false;
         bool alreadyCA = false;
         bool running = false;
         public int iterations = 0;
@@ -75,10 +76,10 @@ namespace Capstone_Application
             uc.UpdateValues(statePageInfo[(currentState - 1)], currentState);
         }
 
-        public void AdvancedUpdateProbFields(UserControl2 uc, int currentState, int amountOfStates)
-        {
-            uc.UpdateValues(statePageInfo[(currentState - 1)], currentState, amountOfStates);
-        }
+        //public void AdvancedUpdateProbFields(UserControl2 uc, int currentState, int amountOfStates)
+        //{
+        //    uc.UpdateValues(statePageInfo[(currentState - 1)], currentState, amountOfStates);
+        //}
 
         private bool CheckMainPageInfo()
         {
@@ -111,13 +112,18 @@ namespace Capstone_Application
                 case NType.Hybrid:
                     neighbors = 12;
                     break;
+                case NType.Advanced:
+                    neighbors = 0;
+                    break;
                 default:
                     neighbors = 0;
                     break;
             }
             for (int i = 0; i < mainPageInfo.numStates; ++i)
             {
-                StatePageInfo current = new StatePageInfo(mainPageInfo.numStates, neighbors, i + 1);
+                // Needs to be different based on which type of neighborhood we're using.
+
+                StatePageInfo current = new StatePageInfo(mainPageInfo.numStates, neighbors, i + 1, mainPageInfo.nType);
                 //StatePageInfo current = new StatePageInfo(mainPageInfo.numStates);
                 statePageInfo.Add(current);
                 //Console.WriteLine("New statePage added");
@@ -138,11 +144,15 @@ namespace Capstone_Application
             newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
 
+        public void AdvancedUpdateProbValues(UserControl2 newUC, int currentState)
+        {
+            newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
+        }
+
         // Stuff from other controller here
 
         public void OneIteration(Form1 currentForm)
         {
-            //Console.WriteLine("ControllerScript OneIteration starting");
             running = true;
             myCA.OneIteration();
             iterations++;
@@ -153,32 +163,56 @@ namespace Capstone_Application
 
         public void CreateCA()
         {
-            editModeOn = false;
-            int amountOfCellTypes = mainPageInfo.numStates;
-            nType = mainPageInfo.nType;
-            localGridWidth = mainPageInfo.gridWidth;
-            localGridHeight = mainPageInfo.gridHeight;
-            gType = mainPageInfo.gridType;
-            myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, gType);
-
-            for (int h = 0; h < statePageInfo.Count; ++h)
+            if (createdCA == false)
             {
-                ratios.Add(statePageInfo[h].startingAmount.Value);
-                cellAmounts.Add(statePageInfo[h].startingAmount.Value);
-                colors.Add(statePageInfo[h].color);
-                for (int i = 0; i < statePageInfo[h].probs.GetLength(0); ++i)
+                iterations = 0;
+                editModeOn = false;
+                int amountOfCellTypes = mainPageInfo.numStates;
+                nType = mainPageInfo.nType;
+                localGridWidth = mainPageInfo.gridWidth;
+                localGridHeight = mainPageInfo.gridHeight;
+                gType = mainPageInfo.gridType;
+                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, gType);
+                for (int h = 0; h < statePageInfo.Count; ++h)
                 {
-                    for (int j = 0; j < (statePageInfo[h].probs.GetLength(1)); ++j)
+                    ratios.Add(statePageInfo[h].startingAmount.Value);
+                    cellAmounts.Add(statePageInfo[h].startingAmount.Value);
+                    colors.Add(statePageInfo[h].color);
+                    if (statePageInfo[h].nType == NType.Advanced)
                     {
-                        for (int k = 0; k < statePageInfo[h].probs.GetLength(2); ++k)
+                        for (int i = 0; i < statePageInfo[h].advProbs.GetLength(0); i++)
                         {
-                            myCA.SetStateInfo(h, i, j, k, statePageInfo[h].probs[i, j, k]);
+                            for (int j = 0; j < (statePageInfo[h].advProbs.GetLength(1)); j++)
+                            {
+                                myCA.CreateStateArray(h, i, j, statePageInfo[h].advProbs[i, j].GetLength(0), statePageInfo[h].advProbs[i, j].GetLength(1));
+                                for (int k = 0; k < statePageInfo[h].advProbs[i, j].GetLength(0); k++)
+                                {
+                                    for (int l = 0; l < statePageInfo[h].advProbs[i, j].GetLength(1); l++)
+                                    {
+                                        myCA.SetStateInfo(h, i, j, k, l, statePageInfo[h].advProbs[i, j][k, l]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        for (int i = 0; i < statePageInfo[h].probs.GetLength(0); ++i)
+                        {
+                            for (int j = 0; j < (statePageInfo[h].probs.GetLength(1)); ++j)
+                            {
+                                for (int k = 0; k < statePageInfo[h].probs.GetLength(2); ++k)
+                                {
+                                    myCA.SetStateInfo(h, i, j, k, statePageInfo[h].probs[i, j, k]);
+                                }
+                            }
                         }
                     }
                 }
+                myCA.InitializeGrid(cellAmounts);
+                createdCA = true;
             }
-
-            myCA.InitializeGrid(cellAmounts);
         }
 
         public void StartCA(Form1 currentForm)
@@ -214,6 +248,33 @@ namespace Capstone_Application
             }
             currentForm.innerPictureBox.Image = bmp;
         }
-        
+
+        public void ClearGrid()
+        {
+            //Destroy(tex);
+            //Destroy(board);
+            //Destroy(sr);
+            iterations = 0;
+            //ratios.Clear();
+            //colors.Clear();
+            fullCount.Clear();
+            //imageList.Clear();
+            //probabilities.Clear();
+            myCA = null;
+            alreadyCA = false;
+        }
+
+        public void ResetGrid()
+        {
+            createdCA = false;
+            editModeOn = false;
+            if (running == false)
+            {
+                runs++;
+                ClearGrid();
+                //CreateCA(mainPageInfo);
+            }
+        }
+
     }
 }

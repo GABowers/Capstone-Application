@@ -1,0 +1,9 @@
+﻿Things to add:
+
+Documentation
+Second order
+Advanced neighbor type
+Re-add grid types - cylinder, torus
+
+talked to Dan - consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
+to allow for addition of StatePageInfos without knowing the exact number of rows and columns.

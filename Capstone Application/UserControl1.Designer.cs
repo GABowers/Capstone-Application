@@ -67,7 +67,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(450, 21);
             this.label2.TabIndex = 14;
-            this.label2.Text = "Number of agents of current state (integer)";
+            this.label2.Text = "Starting number of agents of current state (integer)";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label1

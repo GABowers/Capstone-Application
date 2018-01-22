@@ -48,6 +48,7 @@ namespace Capstone_Application
             controllerScript.StartCA(this);
             UpdateRunBox();
             UpdateIterationBox();
+            UpdateImage();
         }
 
         private void UpdateRunBox()
@@ -203,6 +204,11 @@ namespace Capstone_Application
             Form2 newModelDialog = new Form2 (name);
             newModelDialog.mainForm = this;
             newModelDialog.ShowDialog();
+        }
+
+        private void toolStripLabel3_Click(object sender, EventArgs e)
+        {
+            controllerScript.ResetGrid();
         }
     }
 }

@@ -1,0 +1,5 @@
+﻿Benefits vs. Drawbacks for each neighbor type
+
+Advanced can do some really unique stuff.
+However, if all you want is simply based on a group of neighbors and for the prob to increment non-systematically, it can't do that.
+Can see about adding a way to try to find an equation to use based on what the user inputs. Far off in the future.

@@ -78,6 +78,8 @@ namespace Capstone_Application
                     return GetMooreNeighbors(cell);
                 case NType.Hybrid:
                     return GetHybridNeighbors(cell);
+                case NType.Advanced:
+                    return GetNoNeighbors(cell);
                 default:
                     throw new ArgumentException("Unknown Neighborhood type in GetNeighbors");
             }
@@ -127,6 +129,8 @@ namespace Capstone_Application
                     return 8;
                 case NType.Hybrid:
                     return 12;
+                case NType.Advanced:
+                    return 0;
                 default:
                     throw new ArgumentException("Unknown Neighborhood type in GetNeighborSize");
             }
@@ -140,5 +144,6 @@ namespace Capstone_Application
         VonNeumann,
         Moore,
         Hybrid,
+        Advanced,
     }
 }

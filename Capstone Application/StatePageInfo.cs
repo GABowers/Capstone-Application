@@ -9,21 +9,34 @@ namespace Capstone_Application
 {
     public class StatePageInfo
     {
+        public NType nType;
         public int stateNum;
         public Color color;
         public int? startingAmount;
         int neighborState;
+        public double[,][,] advProbs;
         public float[,,] probs; // [x,y] prob to go to state x with y neighbors
         public List<string> locationCode;
         public List<double> probValue;
 
-        public StatePageInfo(int totalStates, int neighbors, int currentState)
+        public StatePageInfo(int totalStates, int neighbors, int currentState, NType neighborType)
         {
+            nType = neighborType;
             stateNum = currentState;
             color = Color.White;
             startingAmount = 0;
+            advProbs = new double[totalStates, totalStates][,];
             probs = new float[totalStates, totalStates, neighbors + 1];
         }
+
+        //public StatePageInfo(int totalStates, int neighbors, int currentState, int rows, int columns)
+        //{
+        //    stateNum = currentState;
+        //    color = Color.White;
+        //    startingAmount = 0;
+        //    advProbs = new double[totalStates, totalStates][,];
+        //    probs = new float[totalStates, totalStates, neighbors + 1];
+        //}
 
         //public StatePageInfo(int currentState)
         //{

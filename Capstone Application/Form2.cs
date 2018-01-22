@@ -134,6 +134,11 @@ namespace Capstone_Application
                     controllerScript.neighborhoodType = 3;
                     neighborType = NType.Hybrid;
                     break;
+                case 4:
+                    neighborCount = 0;
+                    controllerScript.neighborhoodType = 4;
+                    neighborType = NType.Advanced;
+                    break;
             }
         }
 
@@ -165,10 +170,11 @@ namespace Capstone_Application
             //for loop for each tab
             if (this.neighborTypeBox.SelectedIndex == 4)
             {
+                // add check for each tab to see rows and columns
                 for (int i = 1; i < tabControl1.TabPages.Count; ++i)
                 {
                     UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                    controllerScript.AdvancedUpdateProbFields(newUC, i, amountOfStates);
+                    controllerScript.AdvancedUpdateProbValues(newUC, i);
                 }
             }
             else
@@ -192,6 +198,8 @@ namespace Capstone_Application
 
         private void nextTab_Click(object sender, EventArgs e)
         {
+            // Consider modifying so StatePageInfo class is added/edited when moving between pages with next/previous
+
             if (this.caType.SelectedIndex == 0) //0 = first order
             {
                 //WHERE SHOULD THIS BEEEEEE

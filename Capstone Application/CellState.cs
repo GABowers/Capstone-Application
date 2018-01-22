@@ -4,10 +4,12 @@ using System.Collections.Generic;
 public class CellState
 {
     //prob of becoming state X, with Y neighbors of X
+    public double[,][,] advProbs;
     float[,,] prob;
 
     public CellState(int totalStates, int neighborState, int neighborSize)
     {
+        advProbs = new double[totalStates, totalStates][,];
         prob = new float[totalStates, neighborState, neighborSize + 1];
     }
 
@@ -19,5 +21,21 @@ public class CellState
     public float GetProbability(int state, int neighborState, int numNeighbors)
     {
         return prob[state, neighborState, numNeighbors];
+    }
+
+    public void SetProbability(int state, int neighborState, int rows, int columns, double val)
+    {
+        // advProbs[state, neighborState] = new double[rows, columns];
+        advProbs[state, neighborState][rows, columns] = val;
+    }
+
+    public void InitializeArray(int state, int neighborState, int rows, int columns)
+    {
+        advProbs[state, neighborState] = new double[rows, columns];
+    }
+
+    public double GetProbability(int state, int neighborState, int rows, int columns)
+    {
+        return advProbs[state, neighborState][rows, columns];
     }
 }

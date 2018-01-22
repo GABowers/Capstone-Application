@@ -177,5 +177,9 @@
   <ItemGroup>
     <None Include="Resources\TestImage3.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Documentation.txt" />
+    <Content Include="TextFile1.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
