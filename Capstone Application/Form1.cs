@@ -22,6 +22,7 @@ namespace Capstone_Application
         public Form1()
         {
             InitializeComponent();
+            innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
         private void newModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -209,6 +210,31 @@ namespace Capstone_Application
         private void toolStripLabel3_Click(object sender, EventArgs e)
         {
             controllerScript.ResetGrid();
+        }
+
+        private void editGridButton_Click(object sender, EventArgs e)
+        {
+            if (controllerScript.editModeOn == false)
+            {
+                this.editGridButton.Text = "Editing";
+                controllerScript.editModeOn = true;
+            }
+            else if(controllerScript.editModeOn == true)
+            {
+                this.editGridButton.Text = "Edit Grid";
+                controllerScript.editModeOn = false;
+            }
+        }
+
+        private void innerPictureBox_Click(object sender, EventArgs e)
+        {
+            if(controllerScript.editModeOn == true)
+            {
+                //Console.WriteLine("Starting process");
+                System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
+                controllerScript.EditGrid(point.X, point.Y, innerPictureBox);
+                UpdateImage();
+            }
         }
     }
 }

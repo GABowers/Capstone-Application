@@ -2,8 +2,9 @@
 
 Documentation
 Second order
-Advanced neighbor type
+Advanced neighbor type - Pretty much complete
 Re-add grid types - cylinder, torus
+Add place in UI to check/display number of each cell type in the program rather than requiring an outside document
 
-talked to Dan - consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
+talked to Dan (did not) - consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
 to allow for addition of StatePageInfos without knowing the exact number of rows and columns.

@@ -55,7 +55,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.editGridButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.runCountMaxRuns = new System.Windows.Forms.ToolStripMenuItem();
@@ -205,13 +205,13 @@
             // mainWindowToolStripMenuItem
             // 
             this.mainWindowToolStripMenuItem.Name = "mainWindowToolStripMenuItem";
-            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.mainWindowToolStripMenuItem.Text = "Main Window";
             // 
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
-            this.modelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
             // toolStripMenuItem4
@@ -245,7 +245,7 @@
             this.toolStripSeparator2,
             this.toolStripLabel3,
             this.toolStripSeparator5,
-            this.toolStripButton2,
+            this.editGridButton,
             this.toolStripSeparator3,
             this.toolStripDropDownButton2,
             this.runCountBox,
@@ -304,15 +304,16 @@
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton2
+            // editGridButton
             // 
-            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
-            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(56, 22);
-            this.toolStripButton2.Text = "Edit Grid";
-            this.toolStripButton2.ToolTipText = "Edit Grid";
+            this.editGridButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.editGridButton.Image = ((System.Drawing.Image)(resources.GetObject("editGridButton.Image")));
+            this.editGridButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.editGridButton.Name = "editGridButton";
+            this.editGridButton.Size = new System.Drawing.Size(56, 22);
+            this.editGridButton.Text = "Edit Grid";
+            this.editGridButton.ToolTipText = "Edit Grid";
+            this.editGridButton.Click += new System.EventHandler(this.editGridButton_Click);
             // 
             // toolStripSeparator3
             // 
@@ -436,11 +437,13 @@
             this.innerPictureBox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             this.innerPictureBox.Location = new System.Drawing.Point(0, 0);
             this.innerPictureBox.Margin = new System.Windows.Forms.Padding(0);
+            this.innerPictureBox.MaximumSize = new System.Drawing.Size(1000, 1000);
             this.innerPictureBox.Name = "innerPictureBox";
             this.innerPictureBox.Size = new System.Drawing.Size(505, 505);
             this.innerPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.innerPictureBox.TabIndex = 3;
             this.innerPictureBox.TabStop = false;
+            this.innerPictureBox.Click += new System.EventHandler(this.innerPictureBox_Click);
             // 
             // panel1
             // 
@@ -533,7 +536,7 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton editGridButton;
     }
 }
 
