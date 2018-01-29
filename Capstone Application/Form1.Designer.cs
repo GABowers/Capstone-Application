@@ -94,6 +94,7 @@
             this.menuStrip1.Size = new System.Drawing.Size(505, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // toolStripMenuItem1
             // 
@@ -444,6 +445,8 @@
             this.innerPictureBox.TabIndex = 3;
             this.innerPictureBox.TabStop = false;
             this.innerPictureBox.Click += new System.EventHandler(this.innerPictureBox_Click);
+            this.innerPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseDown);
+            this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
             // 
             // panel1
             // 

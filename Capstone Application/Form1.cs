@@ -15,9 +15,12 @@ namespace Capstone_Application
 {
     public partial class Form1 : Form
     {
+        bool mousePressed;
         bool running = false;
         bool saveImages = false;
         string imageSaveFolder;
+        int mouseDownX = 0;
+        int mouseDownY = 0;
         public static ControllerScript controllerScript = new ControllerScript();
         public Form1()
         {
@@ -230,11 +233,60 @@ namespace Capstone_Application
         {
             if(controllerScript.editModeOn == true)
             {
-                //Console.WriteLine("Starting process");
+                //System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
+                //controllerScript.EditGrid(point.X, point.Y, innerPictureBox);
+                //UpdateImage();
+            }
+        }
+
+        private void innerPictureBox_MouseDown(object sender, EventArgs e)
+        {
+            if (controllerScript.editModeOn == true)
+            {
                 System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
-                controllerScript.EditGrid(point.X, point.Y, innerPictureBox);
+                mouseDownX = point.X;
+                mouseDownY = point.Y;
+            }
+        }
+
+        private void innerPictureBox_MouseUp(object sender, EventArgs e)
+        {
+            if (controllerScript.editModeOn == true)
+            {
+                System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
+                int mouseUpX = point.X;
+                int mouseUpY = point.Y;
+                if(mouseDownX == mouseUpX && mouseDownY == mouseUpY)
+                {
+                    controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox);
+                }
+                else
+                {
+                    int maxX = Math.Max(mouseDownX, mouseUpX);
+                    int minX = Math.Min(mouseDownX, mouseUpX);
+                    int maxY = Math.Max(mouseDownY, mouseUpY);
+                    int minY = Math.Min(mouseDownY, mouseUpY);
+                    int distanceX = (maxX - minX);
+                    int distanceY = (maxY - minY);
+                    int[] rangeX = new int[distanceX + 1];
+                    int[] rangeY = new int[distanceY + 1];
+                    for (int i = 0; i < (distanceX + 1); i++)
+                    {
+                        rangeX[i] = (minX + i);
+                    }
+                    for (int i = 0; i < (distanceY + 1); i++)
+                    {
+                        rangeY[i] = (minY + i);
+                    }
+                    controllerScript.EditGrid(rangeX, rangeY, innerPictureBox);
+                }
                 UpdateImage();
             }
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }

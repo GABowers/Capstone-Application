@@ -280,13 +280,10 @@ namespace Capstone_Application
         {
             if(editModeOn == true)
             {
-                //Console.WriteLine("Starting method");
                 Double tempX = Convert.ToDouble(xValue);
                 Double tempY = Convert.ToDouble(yValue);
-
                 int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
                 int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-                Console.WriteLine("Panel location: " + xValue + "," + yValue + " grid location: " + xProper + "," + yProper);
                 if (myCA.grid[xProper, yProper].containsAgent == true)
                 {
                     myCA.grid[xProper, yProper].agent.currentState += 1;
@@ -298,5 +295,29 @@ namespace Capstone_Application
             }
         }
 
+        public void EditGrid(int[] rangeX, int[] rangeY, PictureBoxWithInterpolationMode container)
+        {
+            if (editModeOn == true)
+            {
+                for (int i = 0; i < rangeX.Length; i++)
+                {
+                    for (int j = 0; j < rangeY.Length; j++)
+                    {
+                        Double tempX = Convert.ToDouble(rangeX[i]);
+                        Double tempY = Convert.ToDouble(rangeY[j]);
+                        int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
+                        int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
+                        if (myCA.grid[xProper, yProper].containsAgent == true)
+                        {
+                            myCA.grid[xProper, yProper].agent.currentState += 1;
+                            if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
+                            {
+                                myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
