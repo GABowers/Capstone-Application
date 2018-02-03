@@ -21,8 +21,9 @@ namespace Capstone_Application
         TabPage tabPage2;
         int currentGridType = 0;
         int neighborCount = 0;
-        public Form2(string name)
+        public Form2(string name, Form1 main)
         {
+            mainForm = main;
             InitializeComponent();
             this.Text = name;
             mainPageController = new MainPageController();
@@ -235,8 +236,8 @@ namespace Capstone_Application
         {
             //add code to save all tab data to new class
             UpdateAllValues();
+            mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
             this.Close();
-
         }
 
         private void Form2_Load(object sender, EventArgs e)

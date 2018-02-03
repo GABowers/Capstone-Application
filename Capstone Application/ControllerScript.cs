@@ -17,20 +17,21 @@ namespace Capstone_Application
         static  List<StatePageInfo> statePageInfo;
         public GridType gType;
         NType nType;
-        public int neighborhoodType;
         List<Color> colors = new List<Color>();
         List<float> ratios = new List<float>();
         List<int> cellAmounts = new List<int>();
         public List<List<int>> fullCount = new List<List<int>>();
 
         public bool editModeOn = false;
-        bool createdCA = false;
+        public bool createdCA = false;
         bool alreadyCA = false;
         bool running = false;
         public int iterations = 0;
         public int runs = 0;
+        public int neighborhoodType;
         int localGridWidth;
         int localGridHeight;
+        public int amountOfCellTypes;
         string filename;
         Bitmap bmp;
 
@@ -159,6 +160,7 @@ namespace Capstone_Application
             List<int> currentCellCount = new List<int>();
             currentCellCount.AddRange(CA.stateCount);
             fullCount.Add(currentCellCount);
+            CheckSettings(currentForm);
         }
 
         public void CreateCA()
@@ -167,7 +169,7 @@ namespace Capstone_Application
             {
                 iterations = 0;
                 editModeOn = false;
-                int amountOfCellTypes = mainPageInfo.numStates;
+                amountOfCellTypes = mainPageInfo.numStates;
                 nType = mainPageInfo.nType;
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
@@ -317,6 +319,88 @@ namespace Capstone_Application
                         }
                     }
                 }
+            }
+        }
+
+        public void CheckSettings(Form1 form)
+        {
+            // This is for saving the cell counts in text file
+            if(form.toolStripMenuItem5.Checked == true)
+            {
+
+            }
+
+            // For image saving
+            if(form.setImageSaveToolStripMenuItem.Checked == true)
+            {
+
+            }
+
+            // Reset CA options
+            if(form.setAutoResetToolStripMenuItem.Checked == true)
+            {
+                // Iteration-based
+
+                if(form.iterationCountToolStripMenuItem.Checked == true)
+                {
+                    if (string.IsNullOrWhiteSpace(form.resetIterationTextBox.Text))
+                    {
+                    }
+                    else
+                    {
+                        if(int.Parse(form.resetIterationTextBox.Text) == iterations)
+                        {
+                            // Reset procedure
+                            CheckDataSave(form);
+                            form.AutoReset();
+                        }
+                    }
+                }
+
+                // Cell count based
+                if(form.cellCountToolStripMenuItem.Checked == true)
+                {
+                    List<int> cellCounts = new List<int>();
+                    for(int i = 0; i <  amountOfCellTypes; i++)
+                    {
+                        string currentName = "CellBox" + i.ToString();
+                        string boxText = form.GetText(currentName);
+                        if (string.IsNullOrWhiteSpace(boxText))
+                        {
+                            cellCounts.Add(-1);
+                        }
+                        else
+                        {
+                            cellCounts.Add(int.Parse(boxText));
+                        }
+                    }
+
+                    for(int i = 0; i < cellCounts.Count; i++)
+                    {
+                        if(CA.stateCount[i] == cellCounts[i])
+                        {
+                            // Reset procedure
+                            CheckDataSave(form);
+                            form.AutoReset();
+                        }
+                    }
+                }
+            }
+        }
+        
+        // This is for saving the cell count and images upon reseting the grid
+        void CheckDataSave(Form1 form)
+        {
+            // This is for saving the cell counts in text file
+            if (form.toolStripMenuItem5.Checked == true)
+            {
+
+            }
+
+            // For image saving
+            if (form.setImageSaveToolStripMenuItem.Checked == true)
+            {
+
             }
         }
     }

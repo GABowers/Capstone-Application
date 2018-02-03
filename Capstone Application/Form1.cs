@@ -19,6 +19,7 @@ namespace Capstone_Application
         bool running = false;
         bool saveImages = false;
         string imageSaveFolder;
+        string countSaveFolder;
         int mouseDownX = 0;
         int mouseDownY = 0;
         public static ControllerScript controllerScript = new ControllerScript();
@@ -31,7 +32,7 @@ namespace Capstone_Application
         private void newModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string name = "New Model Dialog";
-            Form2 newModelDialog = new Form2(name);
+            Form2 newModelDialog = new Form2(name, this);
             newModelDialog.mainForm = this;
             newModelDialog.ShowDialog();
         }
@@ -73,15 +74,15 @@ namespace Capstone_Application
         private void toolStripLabel2_Click(object sender, EventArgs e)
         {
             running = !running;
-            if(running == true)
-            backgroundWorker1.RunWorkerAsync();
+            if (running == true)
+                backgroundWorker1.RunWorkerAsync();
         }
 
         private void RunCA()
         {
             controllerScript.OneIteration(this);
         }
-        
+
         private void UpdateImage()
         {
             controllerScript.UpdateBoard(this);
@@ -90,7 +91,7 @@ namespace Capstone_Application
 
         private void CheckSettings()
         {
-            if(saveImages == true)
+            if (saveImages == true)
             {
                 string filename = imageSaveFolder + "/" + DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
                 DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
@@ -117,7 +118,7 @@ namespace Capstone_Application
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+
         }
 
         private void saveCellCountToolStripMenuItem_Click(object sender, EventArgs e)
@@ -163,8 +164,9 @@ namespace Capstone_Application
 
         private void saveAllImagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Get rid of this control. We don't need it.
             saveImages = !saveImages;
-            if(saveImages == true)
+            if (saveImages == true)
             {
                 using (var fbd = new FolderBrowserDialog())
                 {
@@ -205,7 +207,7 @@ namespace Capstone_Application
         private void editModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string name = "Edit Model Dialog";
-            Form2 newModelDialog = new Form2 (name);
+            Form2 newModelDialog = new Form2(name, this);
             newModelDialog.mainForm = this;
             newModelDialog.ShowDialog();
         }
@@ -213,6 +215,18 @@ namespace Capstone_Application
         private void toolStripLabel3_Click(object sender, EventArgs e)
         {
             controllerScript.ResetGrid();
+            UpdateRunBox();
+            UpdateIterationBox();
+        }
+
+        public void AutoReset()
+        {
+            controllerScript.ResetGrid();
+            controllerScript.CreateCA();
+            controllerScript.StartCA(this);
+            UpdateRunBox();
+            UpdateIterationBox();
+            UpdateImage();
         }
 
         private void editGridButton_Click(object sender, EventArgs e)
@@ -222,7 +236,7 @@ namespace Capstone_Application
                 this.editGridButton.Text = "Editing";
                 controllerScript.editModeOn = true;
             }
-            else if(controllerScript.editModeOn == true)
+            else if (controllerScript.editModeOn == true)
             {
                 this.editGridButton.Text = "Edit Grid";
                 controllerScript.editModeOn = false;
@@ -231,12 +245,6 @@ namespace Capstone_Application
 
         private void innerPictureBox_Click(object sender, EventArgs e)
         {
-            if(controllerScript.editModeOn == true)
-            {
-                //System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
-                //controllerScript.EditGrid(point.X, point.Y, innerPictureBox);
-                //UpdateImage();
-            }
         }
 
         private void innerPictureBox_MouseDown(object sender, EventArgs e)
@@ -256,7 +264,7 @@ namespace Capstone_Application
                 System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
                 int mouseUpX = point.X;
                 int mouseUpY = point.Y;
-                if(mouseDownX == mouseUpX && mouseDownY == mouseUpY)
+                if (mouseDownX == mouseUpX && mouseDownY == mouseUpY)
                 {
                     controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox);
                 }
@@ -287,6 +295,97 @@ namespace Capstone_Application
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
+        }
+
+        private void setAutoResetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cellCountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Move this stuff to be performed when a user creates their setup in the separate dialog box
+            // We don't want this done every time we click on the menu item.
+
+        }
+
+        public void UpdateIterationResetCell(int states)
+        {
+            for (int i = 0; i < states; i++)
+            {
+                string newname = "CellBox" + i.ToString();
+                this.cellCountToolStripMenuItem.DropDownItems.Add(new ToolStripTextBox(newname));
+            }
+        }
+
+        public string GetText(string controlName)
+        {
+            return this.cellCountToolStripMenuItem.DropDownItems[controlName].Text;
+        }
+
+        private void setImageSaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(setImageSaveToolStripMenuItem.Checked == true)
+            {
+                using (var fbd = new FolderBrowserDialog())
+                {
+                    DialogResult result = fbd.ShowDialog();
+
+                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        imageSaveFolder = fbd.SelectedPath;
+                    }
+                }
+            }
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            if(toolStripMenuItem5.Checked == true)
+            {
+                using (var fbd = new FolderBrowserDialog())
+                {
+                    DialogResult result = fbd.ShowDialog();
+
+                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        countSaveFolder = fbd.SelectedPath;
+                    }
+                }
+            }
+        }
+
+        public void SaveImages()
+        {
+            string imageName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
+                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations;
+            string fileName = (imageSaveFolder + "/" + imageName);
+            innerPictureBox.Image.Save(fileName);
+        }
+
+        public void SaveCount()
+        {
+            string countName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
+                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations;
+            string fileName = (countSaveFolder + "/" + countName);
+
+            using (StreamWriter wt = new StreamWriter(fileName))
+            {
+
+                for (int i = 0; i < controllerScript.fullCount.Count; ++i)
+                {
+                    wt.Write("Iteration: " + i);
+                    for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
+                    {
+                        string cellTypeString = (j + 1).ToString();
+                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.fullCount[i][j]);
+                    }
+                    wt.WriteLine();
+                }
+                wt.Close();
+            }
         }
     }
 }
