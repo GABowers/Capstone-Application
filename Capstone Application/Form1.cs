@@ -16,6 +16,7 @@ namespace Capstone_Application
     public partial class Form1 : Form
     {
         bool mousePressed;
+        bool counterFormOpen = false;
         bool running = false;
         bool saveImages = false;
         string imageSaveFolder;
@@ -23,6 +24,7 @@ namespace Capstone_Application
         int mouseDownX = 0;
         int mouseDownY = 0;
         public static ControllerScript controllerScript = new ControllerScript();
+        Counter counterWindow;
         public Form1()
         {
             InitializeComponent();
@@ -87,6 +89,10 @@ namespace Capstone_Application
         {
             controllerScript.UpdateBoard(this);
             UpdateIterationBox();
+            if (counterFormOpen == true)
+            {
+                counterWindow.UpdateCounts();
+            }
         }
 
         private void CheckSettings()
@@ -386,6 +392,15 @@ namespace Capstone_Application
                 }
                 wt.Close();
             }
+        }
+
+        private void cellCounterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Check if the CA has been created yet. If not, obviously don't make this form
+            // Form2 newModelDialog = new Form2(name, this);
+            counterWindow = new Counter(this);
+            counterWindow.Show();
+            counterFormOpen = true;
         }
     }
 }

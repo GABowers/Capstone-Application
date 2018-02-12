@@ -21,6 +21,7 @@ namespace Capstone_Application
         List<float> ratios = new List<float>();
         List<int> cellAmounts = new List<int>();
         public List<List<int>> fullCount = new List<List<int>>();
+        public List<int> currentCellCount = new List<int>();
 
         public bool editModeOn = false;
         public bool createdCA = false;
@@ -157,7 +158,8 @@ namespace Capstone_Application
             running = true;
             myCA.OneIteration();
             iterations++;
-            List<int> currentCellCount = new List<int>();
+            //List<int> currentCellCount = new List<int>();
+            currentCellCount.Clear();
             currentCellCount.AddRange(CA.stateCount);
             fullCount.Add(currentCellCount);
             CheckSettings(currentForm);
@@ -333,7 +335,27 @@ namespace Capstone_Application
             // For image saving
             if(form.setImageSaveToolStripMenuItem.Checked == true)
             {
+                if(string.IsNullOrWhiteSpace(form.iterationCountImageSave.Text))
+                {
 
+                }
+                else
+                {
+                    List<string> imageValueStrings = new List<string>();
+                    if (form.iterationCountImageSave.Text.Contains(","))
+                    {
+                        string[] imageValues = form.iterationCountImageSave.Text.Split(',');
+                        for (int i = 0; i < imageValues.Length; i++)
+                        {
+                            imageValueStrings.Add(imageValues[i]);
+                        }
+                    }
+                    else
+                    {
+                        imageValueStrings.Add(form.iterationCountImageSave.Text);
+                    }
+                    // Check if iteration is the same as any in the lest. If so, do the image save
+                }
             }
 
             // Reset CA options

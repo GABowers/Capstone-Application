@@ -77,6 +77,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.cellCounterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
@@ -200,7 +201,8 @@
             // 
             this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mainWindowToolStripMenuItem,
-            this.modelToolStripMenuItem});
+            this.modelToolStripMenuItem,
+            this.cellCounterToolStripMenuItem});
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.Size = new System.Drawing.Size(63, 20);
             this.toolStripMenuItem3.Text = "Window";
@@ -208,13 +210,13 @@
             // mainWindowToolStripMenuItem
             // 
             this.mainWindowToolStripMenuItem.Name = "mainWindowToolStripMenuItem";
-            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.mainWindowToolStripMenuItem.Text = "Main Window";
             // 
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
-            this.modelToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
             // toolStripMenuItem4
@@ -382,8 +384,7 @@
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
             this.toolStripMenuItem5.Size = new System.Drawing.Size(153, 22);
             this.toolStripMenuItem5.Text = "Set Count Save";
-            this.toolStripMenuItem5.ToolTipText = "Save a text file of counts of each cell type for all iterations up to the present" +
-    ". Set to \"-1\" to save whenever the simulation resets.";
+            this.toolStripMenuItem5.ToolTipText = resources.GetString("toolStripMenuItem5.ToolTipText");
             this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
             // iterationCountCountSave
@@ -451,7 +452,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(25, 19);
+            this.toolStripButton1.Size = new System.Drawing.Size(25, 22);
             this.toolStripButton1.Text = "+1";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -494,6 +495,13 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
+            // cellCounterToolStripMenuItem
+            // 
+            this.cellCounterToolStripMenuItem.Name = "cellCounterToolStripMenuItem";
+            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cellCounterToolStripMenuItem.Text = "Cell Counter";
+            this.cellCounterToolStripMenuItem.Click += new System.EventHandler(this.cellCounterToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -550,9 +558,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
         public System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
-        private System.Windows.Forms.ToolStripTextBox iterationCountCountSave;
         public System.Windows.Forms.ToolStripMenuItem setImageSaveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripTextBox iterationCountImageSave;
         public System.Windows.Forms.ToolStripMenuItem setAutoResetToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel iterationCountBox;
         private System.Windows.Forms.ToolStripButton toolStripLabel1;
@@ -568,6 +574,9 @@
         public System.Windows.Forms.ToolStripMenuItem iterationCountToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem cellCountToolStripMenuItem;
         public System.Windows.Forms.ToolStripTextBox resetIterationTextBox;
+        public System.Windows.Forms.ToolStripTextBox iterationCountCountSave;
+        public System.Windows.Forms.ToolStripTextBox iterationCountImageSave;
+        private System.Windows.Forms.ToolStripMenuItem cellCounterToolStripMenuItem;
     }
 }
 
