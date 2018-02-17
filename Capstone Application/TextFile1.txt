@@ -10,6 +10,7 @@ Possible add in plots or tables of cell counts?
 Add recording transitions--how many of type A transitioned to type B and so on
 Adjust tooltip lengths or simply put all that info in the documentation
 Change how the CA is started, so auxilary services like the cell counter window can function properly without starting the CA
+Consider allowing user to change filetypes
 
 Add way to have multiple types of image/count saves. Like an incrementing one and also a "save before reseting" one.
 

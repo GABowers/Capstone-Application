@@ -23,6 +23,7 @@ namespace Capstone_Application
         string countSaveFolder;
         int mouseDownX = 0;
         int mouseDownY = 0;
+        public Settings settingsScript = new Settings();
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
         public Form1()
@@ -60,7 +61,7 @@ namespace Capstone_Application
 
         private void UpdateRunBox()
         {
-            runCountBox.Text = controllerScript.runs.ToString();
+            runCountBox.Text = controllerScript.caRuns.ToString();
         }
 
         private void UpdateIterationBox()
@@ -95,21 +96,9 @@ namespace Capstone_Application
             }
         }
 
-        private void CheckSettings()
-        {
-            if (saveImages == true)
-            {
-                string filename = imageSaveFolder + "/" + DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations + ".bmp";
-                innerPictureBox.Image.Save(filename);
-            }
-        }
-
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             RunCA();
-            CheckSettings();
             UpdateImage();
         }
 
@@ -118,6 +107,7 @@ namespace Capstone_Application
             while (running == true)
             {
                 RunCA();
+                // Why aren't I using Check Settings here?
                 Invoke(new Action(() => UpdateImage()));
             }
         }
@@ -161,7 +151,7 @@ namespace Capstone_Application
             sfd.Filter = "(*.bmp)|*.bmp|(*.jpeg)|*.jpeg|(*.png)|*.png|(*.tiff)|*.tiff";
             sfd.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
                 DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations;
+                controllerScript.caRuns + " Iteration " + controllerScript.iterations;
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 innerPictureBox.Image.Save(sfd.FileName);
@@ -320,7 +310,9 @@ namespace Capstone_Application
             for (int i = 0; i < states; i++)
             {
                 string newname = "CellBox" + i.ToString();
-                this.cellCountToolStripMenuItem.DropDownItems.Add(new ToolStripTextBox(newname));
+                ToolStripTextBox textBox = new ToolStripTextBox(newname);
+                textBox.TextChanged += new System.EventHandler(textBox_TextChanged);
+                this.cellCountToolStripMenuItem.DropDownItems.Add(textBox);
             }
         }
 
@@ -361,20 +353,39 @@ namespace Capstone_Application
             }
         }
 
-        public void SaveImages()
+        public void SaveImages(string time)
         {
-            string imageName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations;
+            string imageName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + ".bmp";
             string fileName = (imageSaveFolder + "/" + imageName);
             innerPictureBox.Image.Save(fileName);
+        }
+
+        public void SaveCounts(string time)
+        {
+            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + ".txt";
+            string fileName = (countSaveFolder + "/" + countName);
+            using (StreamWriter wt = new StreamWriter(fileName))
+            {
+
+                for (int i = 0; i < controllerScript.fullCount.Count; ++i)
+                {
+                    wt.Write("Iteration: " + i);
+                    for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
+                    {
+                        string cellTypeString = (j + 1).ToString();
+                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.fullCount[i][j]);
+                    }
+                    wt.WriteLine();
+                }
+                wt.Close();
+            }
         }
 
         public void SaveCount()
         {
             string countName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
                 DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                (controllerScript.runs + 1) + " Iteration " + controllerScript.iterations;
+                controllerScript.caRuns + " Iteration " + controllerScript.iterations;
             string fileName = (countSaveFolder + "/" + countName);
 
             using (StreamWriter wt = new StreamWriter(fileName))
@@ -401,6 +412,177 @@ namespace Capstone_Application
             counterWindow = new Counter(this);
             counterWindow.Show();
             counterFormOpen = true;
+        }
+
+        private void toolStripMenuItem5_CheckedChanged(object sender, EventArgs e)
+        {
+            if(toolStripMenuItem5.Checked)
+            {
+                settingsScript.CountSave = true;
+            }
+            else
+            {
+                settingsScript.CountSave = false;
+            }
+        }
+
+        private void setImageSaveToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (setImageSaveToolStripMenuItem.Checked)
+            {
+                settingsScript.ImageSave = true;
+            }
+            else
+            {
+                settingsScript.ImageSave = false;
+            }
+        }
+
+        private void setAutoResetToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (setAutoResetToolStripMenuItem.Checked)
+            {
+                settingsScript.AutoReset = true;
+            }
+            else
+            {
+                settingsScript.AutoReset = false;
+            }
+        }
+
+        private void iterationCountToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (iterationCountToolStripMenuItem.Checked)
+            {
+                settingsScript.IterationReset = true;
+            }
+            else
+            {
+                settingsScript.IterationReset = false;
+            }
+        }
+
+        private void cellCountToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cellCountToolStripMenuItem.Checked)
+            {
+                settingsScript.CountReset = true;
+            }
+            else
+            {
+                settingsScript.CountReset = false;
+            }
+        }
+
+        private void resetIterationTextBox_Leave(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void textBox_TextChanged(object sender, EventArgs e)
+        {
+            settingsScript.CountResetValues.Clear();
+            List<int> cellCounts = new List<int>();
+            for (int i = 0; i < controllerScript.amountOfCellTypes; i++)
+            {
+                string currentName = "CellBox" + i.ToString();
+                string boxText = GetText(currentName);
+                if (string.IsNullOrWhiteSpace(boxText))
+                {
+                    cellCounts.Add(-1);
+                }
+                else
+                {
+                    cellCounts.Add(int.Parse(boxText));
+                }
+            }
+            settingsScript.CountResetValues = cellCounts;
+        }
+
+        private void iterationCountCountSave_Leave(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void iterationCountImageSave_Leave(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void iterationCountCountSave_TextChanged(object sender, EventArgs e)
+        {
+            settingsScript.CountSaveValues.Clear();
+            if (string.IsNullOrWhiteSpace(iterationCountCountSave.Text))
+            {
+
+            }
+            else
+            {
+                List<int> countValueList = new List<int>();
+                if (iterationCountCountSave.Text.Contains(","))
+                {
+                    string[] countValues = iterationCountCountSave.Text.Split(',');
+                    for (int i = 0; i < countValues.Length; i++)
+                    {
+                        if (int.TryParse(countValues[i], out int result))
+                        {
+                            countValueList.Add(int.Parse(countValues[i]));
+                        }
+                    }
+                }
+                else
+                {
+                    if (int.TryParse(iterationCountCountSave.Text, out int result))
+                    {
+                        countValueList.Add(int.Parse(iterationCountCountSave.Text));
+                    }
+                }
+                settingsScript.CountSaveValues = countValueList;
+            }
+        }
+
+        private void iterationCountImageSave_TextChanged(object sender, EventArgs e)
+        {
+            settingsScript.ImageSaveValues.Clear();
+            if (string.IsNullOrWhiteSpace(iterationCountImageSave.Text))
+            {
+
+            }
+            else
+            {
+                List<int> imageValueList = new List<int>();
+                if (iterationCountImageSave.Text.Contains(","))
+                {
+                    string[] imageValues = iterationCountImageSave.Text.Split(',');
+                    for (int i = 0; i < imageValues.Length; i++)
+                    {
+                        if (int.TryParse(imageValues[i], out int result))
+                        {
+                            imageValueList.Add(int.Parse(imageValues[i]));
+                        }
+                    }
+                }
+                else
+                {
+                    if (int.TryParse(iterationCountImageSave.Text, out int result))
+                    {
+                        imageValueList.Add(int.Parse(iterationCountImageSave.Text));
+                    }
+                }
+                settingsScript.ImageSaveValues = imageValueList;
+            }
+        }
+
+        private void resetIterationTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(resetIterationTextBox.Text, out int result))
+            {
+                settingsScript.IterationResetValue = int.Parse(resetIterationTextBox.Text);
+            }
+            else
+            {
+                settingsScript.IterationResetValue = -1;
+            }
         }
     }
 }

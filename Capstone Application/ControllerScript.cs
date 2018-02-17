@@ -28,12 +28,12 @@ namespace Capstone_Application
         bool alreadyCA = false;
         bool running = false;
         public int iterations = 0;
-        public int runs = 0;
+        public int caRuns = 1;
         public int neighborhoodType;
         int localGridWidth;
         int localGridHeight;
         public int amountOfCellTypes;
-        string filename;
+        //string filename;
         Bitmap bmp;
 
         public MainPageInfo MainPageInfo
@@ -270,11 +270,11 @@ namespace Capstone_Application
 
         public void ResetGrid()
         {
+            caRuns++;
             createdCA = false;
             editModeOn = false;
             if (running == false)
             {
-                runs++;
                 ClearGrid();
                 //CreateCA(mainPageInfo);
             }
@@ -326,83 +326,34 @@ namespace Capstone_Application
 
         public void CheckSettings(Form1 form)
         {
-            // This is for saving the cell counts in text file
-            if(form.toolStripMenuItem5.Checked == true)
-            {
+            //Get system time here
+            string timeString = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + DateTime.Now.Millisecond;
 
-            }
+            string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
 
-            // For image saving
-            if(form.setImageSaveToolStripMenuItem.Checked == true)
-            {
-                if(string.IsNullOrWhiteSpace(form.iterationCountImageSave.Text))
-                {
-
-                }
-                else
-                {
-                    List<string> imageValueStrings = new List<string>();
-                    if (form.iterationCountImageSave.Text.Contains(","))
-                    {
-                        string[] imageValues = form.iterationCountImageSave.Text.Split(',');
-                        for (int i = 0; i < imageValues.Length; i++)
-                        {
-                            imageValueStrings.Add(imageValues[i]);
-                        }
-                    }
-                    else
-                    {
-                        imageValueStrings.Add(form.iterationCountImageSave.Text);
-                    }
-                    // Check if iteration is the same as any in the lest. If so, do the image save
-                }
-            }
+            CheckDataSave(form, time);
 
             // Reset CA options
-            if(form.setAutoResetToolStripMenuItem.Checked == true)
+            if (form.settingsScript.AutoReset)
             {
                 // Iteration-based
-
-                if(form.iterationCountToolStripMenuItem.Checked == true)
+                if(form.settingsScript.IterationReset)
                 {
-                    if (string.IsNullOrWhiteSpace(form.resetIterationTextBox.Text))
-                    {
-                    }
-                    else
-                    {
-                        if(int.Parse(form.resetIterationTextBox.Text) == iterations)
+                    if(form.settingsScript.IterationResetValue == iterations)
                         {
-                            // Reset procedure
-                            CheckDataSave(form);
+                            CheckDataSave(form, time);
                             form.AutoReset();
                         }
-                    }
                 }
-
                 // Cell count based
-                if(form.cellCountToolStripMenuItem.Checked == true)
+                if(form.settingsScript.CountReset)
                 {
-                    List<int> cellCounts = new List<int>();
-                    for(int i = 0; i <  amountOfCellTypes; i++)
+                    for(int i = 0; i < form.settingsScript.CountResetValues.Count; i++)
                     {
-                        string currentName = "CellBox" + i.ToString();
-                        string boxText = form.GetText(currentName);
-                        if (string.IsNullOrWhiteSpace(boxText))
+                        if(CA.stateCount[i] == form.settingsScript.CountResetValues[i])
                         {
-                            cellCounts.Add(-1);
-                        }
-                        else
-                        {
-                            cellCounts.Add(int.Parse(boxText));
-                        }
-                    }
-
-                    for(int i = 0; i < cellCounts.Count; i++)
-                    {
-                        if(CA.stateCount[i] == cellCounts[i])
-                        {
-                            // Reset procedure
-                            CheckDataSave(form);
+                            CheckDataSave(form, time);
                             form.AutoReset();
                         }
                     }
@@ -411,18 +362,52 @@ namespace Capstone_Application
         }
         
         // This is for saving the cell count and images upon reseting the grid
-        void CheckDataSave(Form1 form)
+        void CheckDataSave(Form1 form, string time)
         {
             // This is for saving the cell counts in text file
-            if (form.toolStripMenuItem5.Checked == true)
+            if (form.settingsScript.CountSave)
             {
-
+                // Check if iteration is the same as any in the list. If so, do the image save
+                for (int i = 0; i < form.settingsScript.CountSaveValues.Count; i++)
+                {
+                    if (form.settingsScript.CountSaveValues[i] == -1)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        int tempInt = form.settingsScript.CountSaveValues[i];
+                        int remainder = iterations % tempInt;
+                        if (remainder == 0)
+                        {
+                            // Auto count save
+                            form.SaveCounts(time);
+                        }
+                    }
+                }
             }
 
             // For image saving
-            if (form.setImageSaveToolStripMenuItem.Checked == true)
+            if (form.settingsScript.ImageSave)
             {
-
+                // Check if iteration is the same as any in the list. If so, do the image save
+                for (int i = 0; i < form.settingsScript.ImageSaveValues.Count; i++)
+                {
+                    if (form.settingsScript.ImageSaveValues[i] == -1)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        int tempInt = form.settingsScript.ImageSaveValues[i];
+                        int remainder = iterations % tempInt;
+                        if (remainder == 0)
+                        {
+                            // Auto image save
+                            form.SaveImages(time);
+                        }
+                    }
+                }
             }
         }
     }
