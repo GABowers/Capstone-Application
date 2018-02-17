@@ -25,9 +25,10 @@ public class CA
     private int numStates;
     public int agentLocation;
     SysRand myRand;
-    public static List<int> stateCount = new List<int>();
+    public  List<int> stateCount = new List<int>();
     public List<int> stateCountReplacement = new List<int>();
     public List<int> neighborCount = new List<int>();
+    public  List<int> transitions = new List<int>();
     public List<float> neighborAnalysis = new List<float>();
 
     private StatePageInfo statePageInfo;
@@ -47,6 +48,7 @@ public class CA
         states = new CellState[numStates];
         for (int i = 0; i < numStates; ++i)
         {
+            transitions.Add(0);
             stateCount.Add(0);
             states[i] = new CellState(numStates, numStates, neighborhood.GetNeighborSize());
         }
@@ -188,7 +190,11 @@ public class CA
         //Console.WriteLine("CA OneIteration starting");
         Array.Copy(grid, backup, gridWidth * gridHeight);
         for (int i = 0; i < numStates; ++i)
+        {
             stateCount[i] = 0;
+            transitions[i] = 0;
+        }
+            
         if (caType == 1) //1 = second order
         {
             for (int x = 0; x < activeAgents.Count; ++x)
@@ -206,21 +212,31 @@ public class CA
             {
                 for (int y = 0; y < gridHeight; ++y)
                 {
-                    int currentState = grid[x, y].agent.currentState;
+                    int oldState = grid[x, y].agent.currentState;
                     if (neighborType == NType.Advanced)
                     {
-                        double[] probChances = AdvancedGetProbChances(currentState, x, y);
+                        double[] probChances = AdvancedGetProbChances(oldState, x, y);
                         grid[x, y].agent.currentState = GetStateFromProbability(probChances);
                     }
                     else
                     {
                         List<int> neighborStateCount = GetNeighborCount(x, y);
-                        double[] probChances = StandardGetProbChances(currentState, neighborStateCount);
+                        double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
                         grid[x, y].agent.currentState = GetStateFromProbability(probChances);
                     }
-                    stateCount[currentState] += 1;
+                    int newState = grid[x, y].agent.currentState;
+                    CheckTransitions(oldState, newState);
+                    stateCount[newState] += 1;
                 }
             }
+        }
+    }
+
+    public void CheckTransitions(int oldState, int newState)
+    {
+        if(oldState != newState)
+        {
+            transitions[newState] += 1;
         }
     }
 

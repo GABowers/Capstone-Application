@@ -160,18 +160,28 @@ namespace Capstone_Application
 
         private void saveAllImagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Get rid of this control. We don't need it.
-            saveImages = !saveImages;
-            if (saveImages == true)
-            {
-                using (var fbd = new FolderBrowserDialog())
-                {
-                    DialogResult result = fbd.ShowDialog();
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.InitialDirectory = Application.StartupPath;
+            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
 
-                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
+                {
+
+                    for (int i = 0; i < controllerScript.fullTransitions.Count; ++i)
                     {
-                        imageSaveFolder = fbd.SelectedPath;
+                        wt.Write("Iteration: " + i);
+                        for (int j = 0; j < controllerScript.fullTransitions[i].Count; ++j)
+                        {
+                            string cellTypeString = (j + 1).ToString();
+                            wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.fullTransitions[i][j]);
+                        }
+                        wt.WriteLine();
                     }
+                    wt.Close();
                 }
             }
         }

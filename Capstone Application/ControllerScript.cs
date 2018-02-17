@@ -21,7 +21,7 @@ namespace Capstone_Application
         List<float> ratios = new List<float>();
         List<int> cellAmounts = new List<int>();
         public List<List<int>> fullCount = new List<List<int>>();
-        public List<int> currentCellCount = new List<int>();
+        public List<List<int>> fullTransitions = new List<List<int>>();
 
         public bool editModeOn = false;
         public bool createdCA = false;
@@ -158,10 +158,12 @@ namespace Capstone_Application
             running = true;
             myCA.OneIteration();
             iterations++;
-            //List<int> currentCellCount = new List<int>();
-            currentCellCount.Clear();
-            currentCellCount.AddRange(CA.stateCount);
+            List<int> currentCellCount = new List<int>();
+            List<int> currentTransitions = new List<int>();
+            currentCellCount.AddRange(myCA.stateCount);
+            currentTransitions.AddRange(myCA.transitions);
             fullCount.Add(currentCellCount);
+            fullTransitions.Add(currentTransitions);
             CheckSettings(currentForm);
         }
 
@@ -262,6 +264,7 @@ namespace Capstone_Application
             //ratios.Clear();
             //colors.Clear();
             fullCount.Clear();
+            fullTransitions.Clear();
             //imageList.Clear();
             //probabilities.Clear();
             myCA = null;
@@ -351,7 +354,7 @@ namespace Capstone_Application
                 {
                     for(int i = 0; i < form.settingsScript.CountResetValues.Count; i++)
                     {
-                        if(CA.stateCount[i] == form.settingsScript.CountResetValues[i])
+                        if(myCA.stateCount[i] == form.settingsScript.CountResetValues[i])
                         {
                             CheckDataSave(form, time);
                             form.AutoReset();

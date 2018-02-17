@@ -7,12 +7,10 @@ Advanced neighbor type - Pretty much complete
 Re-add grid types - cylinder, torus
 Add place in UI (new form) to check/display number of each cell type in the program in real time rather than requiring an outside document Mostly Done
 Possible add in plots or tables of cell counts?
-Add recording transitions--how many of type A transitioned to type B and so on
+--Add recording transitions--how many of type A transitioned to type B and so on
 Adjust tooltip lengths or simply put all that info in the documentation
 Change how the CA is started, so auxilary services like the cell counter window can function properly without starting the CA
-Consider allowing user to change filetypes
-
-Add way to have multiple types of image/count saves. Like an incrementing one and also a "save before reseting" one.
+Consider allowing user to change filetypes (of auto-saved images)
 
 talked to Dan (did not) - consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
 to allow for addition of StatePageInfos without knowing the exact number of rows and columns.

@@ -39,7 +39,7 @@
             this.editModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCellCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAllImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveTransitionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dansNeighborAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
@@ -136,8 +136,8 @@
             this.newModelToolStripMenuItem,
             this.editModelToolStripMenuItem,
             this.saveCellCountToolStripMenuItem,
-            this.saveImageToolStripMenuItem,
-            this.saveAllImagesToolStripMenuItem});
+            this.saveTransitionsToolStripMenuItem,
+            this.saveImageToolStripMenuItem});
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(35, 20);
             this.toolStripMenuItem2.Text = "CA";
@@ -172,15 +172,15 @@
             this.saveImageToolStripMenuItem.Text = "Save Image";
             this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
-            // saveAllImagesToolStripMenuItem
+            // saveTransitionsToolStripMenuItem
             // 
-            this.saveAllImagesToolStripMenuItem.AutoToolTip = true;
-            this.saveAllImagesToolStripMenuItem.CheckOnClick = true;
-            this.saveAllImagesToolStripMenuItem.Name = "saveAllImagesToolStripMenuItem";
-            this.saveAllImagesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.saveAllImagesToolStripMenuItem.Text = "Save All Images";
-            this.saveAllImagesToolStripMenuItem.ToolTipText = "Images will be saved in a \"Y-M-D H-M-S Run # Iteration #\" format.";
-            this.saveAllImagesToolStripMenuItem.Click += new System.EventHandler(this.saveAllImagesToolStripMenuItem_Click);
+            this.saveTransitionsToolStripMenuItem.AutoToolTip = true;
+            this.saveTransitionsToolStripMenuItem.CheckOnClick = true;
+            this.saveTransitionsToolStripMenuItem.Name = "saveTransitionsToolStripMenuItem";
+            this.saveTransitionsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.saveTransitionsToolStripMenuItem.Text = "Save Transitions";
+            this.saveTransitionsToolStripMenuItem.ToolTipText = "Images will be saved in a \"Y-M-D H-M-S Run # Iteration #\" format.";
+            this.saveTransitionsToolStripMenuItem.Click += new System.EventHandler(this.saveAllImagesToolStripMenuItem_Click);
             // 
             // analysisToolStripMenuItem
             // 
@@ -470,7 +470,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(25, 19);
+            this.toolStripButton1.Size = new System.Drawing.Size(25, 22);
             this.toolStripButton1.Text = "+1";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -549,7 +549,7 @@
         private System.Windows.Forms.ToolStripMenuItem editModelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveCellCountToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveAllImagesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveTransitionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem userGuideToolStripMenuItem;
