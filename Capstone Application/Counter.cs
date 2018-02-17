@@ -45,6 +45,7 @@ namespace Capstone_Application
                 {
                     dataGridView1[0, i].Value = (i + 1).ToString();
                     dataGridView1[1, i].Value = controllerScript.myCA.stateCount[i];
+                    dataGridView1[2, i].Value = controllerScript.myCA.transitions[i];
                 }
                 dataGridView1.AllowUserToResizeColumns = false;
                 dataGridView1.AllowUserToResizeRows = false;
@@ -56,12 +57,13 @@ namespace Capstone_Application
             for (int i = 0; i < states; i++)
             {
                 dataGridView1[1, i].Value = controllerScript.myCA.stateCount[i];
+                dataGridView1[2, i].Value = controllerScript.myCA.transitions[i];
             }
         }
 
         private void Counter_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // sets "counteropened" in main form to false
+            form.counterFormOpen = false;
         }
     }
 }

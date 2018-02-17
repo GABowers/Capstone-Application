@@ -38,8 +38,8 @@
             this.newModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCellCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveTransitionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dansNeighborAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
@@ -146,7 +146,7 @@
             // 
             this.newModelToolStripMenuItem.AutoToolTip = true;
             this.newModelToolStripMenuItem.Name = "newModelToolStripMenuItem";
-            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.newModelToolStripMenuItem.Text = "New Model";
             this.newModelToolStripMenuItem.ToolTipText = "Define CA type, grid boundaries, agent types and properties.";
             this.newModelToolStripMenuItem.Click += new System.EventHandler(this.newModelToolStripMenuItem_Click);
@@ -154,23 +154,16 @@
             // editModelToolStripMenuItem
             // 
             this.editModelToolStripMenuItem.Name = "editModelToolStripMenuItem";
-            this.editModelToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.editModelToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.editModelToolStripMenuItem.Text = "Edit Model";
             this.editModelToolStripMenuItem.Click += new System.EventHandler(this.editModelToolStripMenuItem_Click);
             // 
             // saveCellCountToolStripMenuItem
             // 
             this.saveCellCountToolStripMenuItem.Name = "saveCellCountToolStripMenuItem";
-            this.saveCellCountToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.saveCellCountToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.saveCellCountToolStripMenuItem.Text = "Save Cell Count";
             this.saveCellCountToolStripMenuItem.Click += new System.EventHandler(this.saveCellCountToolStripMenuItem_Click);
-            // 
-            // saveImageToolStripMenuItem
-            // 
-            this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.saveImageToolStripMenuItem.Text = "Save Image";
-            this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // saveTransitionsToolStripMenuItem
             // 
@@ -181,6 +174,13 @@
             this.saveTransitionsToolStripMenuItem.Text = "Save Transitions";
             this.saveTransitionsToolStripMenuItem.ToolTipText = "Images will be saved in a \"Y-M-D H-M-S Run # Iteration #\" format.";
             this.saveTransitionsToolStripMenuItem.Click += new System.EventHandler(this.saveAllImagesToolStripMenuItem_Click);
+            // 
+            // saveImageToolStripMenuItem
+            // 
+            this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.saveImageToolStripMenuItem.Text = "Save Image";
+            this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
             // analysisToolStripMenuItem
             // 
@@ -210,20 +210,20 @@
             // mainWindowToolStripMenuItem
             // 
             this.mainWindowToolStripMenuItem.Name = "mainWindowToolStripMenuItem";
-            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.mainWindowToolStripMenuItem.Text = "Main Window";
             // 
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
-            this.modelToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
             // cellCounterToolStripMenuItem
             // 
             this.cellCounterToolStripMenuItem.Name = "cellCounterToolStripMenuItem";
-            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.cellCounterToolStripMenuItem.Text = "Cell Counter";
+            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cellCounterToolStripMenuItem.Text = "Run Data";
             this.cellCounterToolStripMenuItem.Click += new System.EventHandler(this.cellCounterToolStripMenuItem_Click);
             // 
             // toolStripMenuItem4

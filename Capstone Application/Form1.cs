@@ -16,7 +16,7 @@ namespace Capstone_Application
     public partial class Form1 : Form
     {
         bool mousePressed;
-        bool counterFormOpen = false;
+        public bool counterFormOpen = false;
         bool running = false;
         bool saveImages = false;
         string imageSaveFolder;
