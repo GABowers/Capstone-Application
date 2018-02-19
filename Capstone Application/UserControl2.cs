@@ -175,5 +175,10 @@ namespace Capstone_Application
         {
 
         }
+
+        private void agentCount_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

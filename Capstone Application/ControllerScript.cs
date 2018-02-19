@@ -60,9 +60,9 @@ namespace Capstone_Application
             gridSizeVert.Text = mainPageInfo.gridHeight.ToString();
         }
 
-        public void MainPageNext(GridType gridType, NType nType, int numStates, int gridWidth, int gridHeight)
+        public void MainPageNext(GridType gridType, NType nType, int numStates, int gridWidth, int gridHeight, int caType)
         {
-            UpdateMainValues(gridType, nType, numStates, gridWidth, gridHeight);
+            UpdateMainValues(gridType, nType, numStates, gridWidth, gridHeight, caType);
             if (CheckMainPageInfo() == false)
             {
                 return;
@@ -125,28 +125,35 @@ namespace Capstone_Application
             {
                 // Needs to be different based on which type of neighborhood we're using.
 
-                StatePageInfo current = new StatePageInfo(mainPageInfo.numStates, neighbors, i + 1, mainPageInfo.nType);
+                StatePageInfo current = new StatePageInfo(mainPageInfo.numStates, neighbors, i + 1, mainPageInfo.nType, mainPageInfo.caType);
                 //StatePageInfo current = new StatePageInfo(mainPageInfo.numStates);
                 statePageInfo.Add(current);
                 //Console.WriteLine("New statePage added");
             }
         }
 
-        public void UpdateMainValues(GridType newgridType, NType newnType, int newnumStates, int newgridWidth, int newgridHeight)
+        public void UpdateMainValues(GridType newgridType, NType newnType, int newnumStates, int newgridWidth, int newgridHeight, int caType)
         {
             mainPageInfo.gridType = newgridType;
             mainPageInfo.nType = newnType;
             mainPageInfo.numStates = newnumStates;
             mainPageInfo.gridWidth = newgridWidth;
             mainPageInfo.gridHeight = newgridHeight;
+            mainPageInfo.caType = caType;
         }
 
         public void UpdateProbValues(UserControl1 newUC, int currentState)
         {
+            // Do these need to be here? Seems a little like excessive OOP.
             newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
 
         public void AdvancedUpdateProbValues(UserControl2 newUC, int currentState)
+        {
+            newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
+        }
+
+        public void Update2ndOrder(_2ndOrderTabs newUC, int currentState)
         {
             newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
@@ -178,42 +185,49 @@ namespace Capstone_Application
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
                 gType = mainPageInfo.gridType;
-                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, gType);
+                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, mainPageInfo.caType, gType);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
                     ratios.Add(statePageInfo[h].startingAmount.Value);
                     cellAmounts.Add(statePageInfo[h].startingAmount.Value);
                     colors.Add(statePageInfo[h].color);
-                    if (statePageInfo[h].nType == NType.Advanced)
+                    if (statePageInfo[h].caType == 0)
                     {
-                        for (int i = 0; i < statePageInfo[h].advProbs.GetLength(0); i++)
+                        if (statePageInfo[h].nType == NType.Advanced)
                         {
-                            for (int j = 0; j < (statePageInfo[h].advProbs.GetLength(1)); j++)
+                            for (int i = 0; i < statePageInfo[h].advProbs.GetLength(0); i++)
                             {
-                                myCA.CreateStateArray(h, i, j, statePageInfo[h].advProbs[i, j].GetLength(0), statePageInfo[h].advProbs[i, j].GetLength(1));
-                                for (int k = 0; k < statePageInfo[h].advProbs[i, j].GetLength(0); k++)
+                                for (int j = 0; j < (statePageInfo[h].advProbs.GetLength(1)); j++)
                                 {
-                                    for (int l = 0; l < statePageInfo[h].advProbs[i, j].GetLength(1); l++)
+                                    myCA.CreateStateArray(h, i, j, statePageInfo[h].advProbs[i, j].GetLength(0), statePageInfo[h].advProbs[i, j].GetLength(1));
+                                    for (int k = 0; k < statePageInfo[h].advProbs[i, j].GetLength(0); k++)
                                     {
-                                        myCA.SetStateInfo(h, i, j, k, l, statePageInfo[h].advProbs[i, j][k, l]);
+                                        for (int l = 0; l < statePageInfo[h].advProbs[i, j].GetLength(1); l++)
+                                        {
+                                            myCA.SetStateInfo(h, i, j, k, l, statePageInfo[h].advProbs[i, j][k, l]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        else
+                        {
+                            for (int i = 0; i < statePageInfo[h].probs.GetLength(0); ++i)
+                            {
+                                for (int j = 0; j < (statePageInfo[h].probs.GetLength(1)); ++j)
+                                {
+                                    for (int k = 0; k < statePageInfo[h].probs.GetLength(2); ++k)
+                                    {
+                                        myCA.SetStateInfo(h, i, j, k, statePageInfo[h].probs[i, j, k]);
                                     }
                                 }
                             }
                         }
                     }
-
-                    else
+                    else if(statePageInfo[h].caType == 1)
                     {
-                        for (int i = 0; i < statePageInfo[h].probs.GetLength(0); ++i)
-                        {
-                            for (int j = 0; j < (statePageInfo[h].probs.GetLength(1)); ++j)
-                            {
-                                for (int k = 0; k < statePageInfo[h].probs.GetLength(2); ++k)
-                                {
-                                    myCA.SetStateInfo(h, i, j, k, statePageInfo[h].probs[i, j, k]);
-                                }
-                            }
-                        }
+                        myCA.Set2ndOrder(h, statePageInfo[h].walkProbs);
                     }
                 }
                 myCA.InitializeGrid(cellAmounts);

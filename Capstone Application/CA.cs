@@ -33,9 +33,7 @@ public class CA
 
     private StatePageInfo statePageInfo;
 
-    
-
-    public CA(int width, int height, int numStates, NType type, GridType gType = GridType.Box)
+    public CA(int width, int height, int numStates, NType type, int incomingCAType, GridType gType = GridType.Box)
     {
         gridWidth = width;
         gridHeight = height;
@@ -46,6 +44,7 @@ public class CA
         backup = new BlankGrid[width, height];
         neighborhood = new Neighborhood(type);
         states = new CellState[numStates];
+        caType = incomingCAType;
         for (int i = 0; i < numStates; ++i)
         {
             transitions.Add(0);
@@ -53,8 +52,6 @@ public class CA
             states[i] = new CellState(numStates, numStates, neighborhood.GetNeighborSize());
         }
         myRand = new SysRand();
-
-
     }
 
     //public void ChangeCell(int i, int j)
@@ -93,12 +90,13 @@ public class CA
         // this is a list of which states still needed to be added
         
         int gridSize = (gridWidth * gridHeight);
-        int currentMin = gridSize;
+        //int currentMin = gridSize;
         int state = 0;
         
         var list = new List<int>(Enumerable.Range(1, gridSize));
         list.Shuffle();
-        for (int i = 0; i < list.Count; i++)
+        // This uses totalCells, not list size, because the "second order" CA will almost always have less cells than the full grid size.
+        for (int i = 0; i < totalCells; i++)
         {
             int increment = list[i] - 1;
             int xValue = (increment / gridWidth);
@@ -146,6 +144,11 @@ public class CA
 
     }
 
+    public void Set2ndOrder(int startState, double[] walkProbs)
+    {
+        states[startState].Set2ndOrderInfo(walkProbs);
+    }
+
     public void SetStateInfo(int startState, int endState, int neighborState, int rows, int columns, double prob)
     {
         states[startState].SetProbability(endState, neighborState, rows, columns, prob);
@@ -187,7 +190,6 @@ public class CA
 
     public void OneIteration()
     {
-        //Console.WriteLine("CA OneIteration starting");
         Array.Copy(grid, backup, gridWidth * gridHeight);
         for (int i = 0; i < numStates; ++i)
         {
@@ -202,9 +204,6 @@ public class CA
                 agentLocation = x;
                 AgentMove(activeAgents[x]);
             }
-            //HUGE HUGE HUGE PROBLEM. Agents appearing from nowhere. This needs to be fixed!
-            RemoveBadAgents();
-            //This ^^^ function is ONLY a temp stop-gap measure!
         }
         if (caType == 0) // 0 = first order
         {
@@ -437,14 +436,15 @@ public class CA
         int newY = currentAgent.yLocation;
         int oldX = currentAgent.xLocation;
         int oldY = currentAgent.yLocation;
-        double upProb = 0.24;
-        double rightProb = 0.24;
-        double downProb = 0.28;
-        double leftProb = 0.24;
         double randomWalk = myRand.NextDouble();
+        double upProb = states[currentAgent.currentState].walkProbs[0];
+        double rightProb = states[currentAgent.currentState].walkProbs[1];
+        double downProb = states[currentAgent.currentState].walkProbs[2];
+        double leftProb = states[currentAgent.currentState].walkProbs[3];
+
         if (randomWalk < upProb)
         {
-            newY = currentAgent.yLocation + 1;
+            newY = currentAgent.yLocation - 1;
         }
         else if (randomWalk < (rightProb + upProb) && randomWalk > upProb)
         {
@@ -452,7 +452,7 @@ public class CA
         }
         else if (randomWalk < (downProb + rightProb + upProb) && randomWalk > (rightProb + upProb))
         {
-            newY = currentAgent.yLocation - 1;
+            newY = currentAgent.yLocation + 1;
         }
         else
         {

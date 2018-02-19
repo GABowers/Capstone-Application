@@ -56,38 +56,55 @@ namespace Capstone_Application
             //MAJOR BUG HERE: When deleting pages, it somehow keeps the last one! And leaves one extra page with things messed up. THIS MUST BE FIXED.
             for (int i = 1; i < tabControl1.TabPages.Count; ++i)
             {
-                //Console.WriteLine(tabControl1.TabPages[i].Text);
                 tabControl1.TabPages.Remove(tabControl1.TabPages[i]);
             }
             //Use this to add tabs
             for (int i = 0; i < amountOfStates; ++i)
             {
-                if (this.neighborTypeBox.SelectedIndex == 4)
+                if (this.caType.SelectedIndex == 0)
                 {
-                    UserControl2 uc2 = new UserControl2();
+                    if (this.neighborTypeBox.SelectedIndex == 4)
+                    {
+                        UserControl2 uc2 = new UserControl2();
+                        tabPage2 = new TabPage();
+                        int j = i + 1;
+                        tabPage2.Text = "State " + j;
+                        uc2.UpdateProbFields(j, amountOfStates);
+                        //controllerScript.UpdateProbFields(uc, j);
+                        //uc.UpdateValues(j, amountOfStates, neighborCount);
+                        tabControl1.TabPages.Add(tabPage2);
+                        tabControl1.TabPages[j].Controls.Add(uc2);
+                        uc2.Name = "uc." + j;
+                    }
+                    else
+                    {
+                        UserControl1 uc = new UserControl1();
+                        tabPage2 = new TabPage();
+                        int j = i + 1;
+                        tabPage2.Text = "State " + j;
+                        uc.UpdateProbFields(j, amountOfStates, neighborCount);
+                        //controllerScript.UpdateProbFields(uc, j);
+                        //uc.UpdateValues(j, amountOfStates, neighborCount);
+                        tabControl1.TabPages.Add(tabPage2);
+                        tabControl1.TabPages[j].Controls.Add(uc);
+                        uc.Name = "uc." + j;
+                    }
+                }
+
+                else if(this.caType.SelectedIndex == 1)
+                {
+                    _2ndOrderTabs uc3 = new _2ndOrderTabs();
                     tabPage2 = new TabPage();
                     int j = i + 1;
                     tabPage2.Text = "State " + j;
-                    uc2.UpdateProbFields(j, amountOfStates);
-                    //controllerScript.UpdateProbFields(uc, j);
-                    //uc.UpdateValues(j, amountOfStates, neighborCount);
+                    // uc3.UpdateProbFields(j, amountOfStates);
+                    // controllerScript.UpdateProbFields(uc, j);
+                    // uc.UpdateValues(j, amountOfStates, neighborCount);
                     tabControl1.TabPages.Add(tabPage2);
-                    tabControl1.TabPages[j].Controls.Add(uc2);
-                    uc2.Name = "uc." + j;
+                    tabControl1.TabPages[j].Controls.Add(uc3);
+                    uc3.Name = "uc." + j;
                 }
-                else
-                {
-                    UserControl1 uc = new UserControl1();
-                    tabPage2 = new TabPage();
-                    int j = i + 1;
-                    tabPage2.Text = "State " + j;
-                    uc.UpdateProbFields(j, amountOfStates, neighborCount);
-                    //controllerScript.UpdateProbFields(uc, j);
-                    //uc.UpdateValues(j, amountOfStates, neighborCount);
-                    tabControl1.TabPages.Add(tabPage2);
-                    tabControl1.TabPages[j].Controls.Add(uc);
-                    uc.Name = "uc." + j;
-                }
+                
                 this.Show();
             }
         }
@@ -169,21 +186,34 @@ namespace Capstone_Application
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
             //for loop for each tab
-            if (this.neighborTypeBox.SelectedIndex == 4)
+            if (this.caType.SelectedIndex == 0)
             {
-                // add check for each tab to see rows and columns
-                for (int i = 1; i < tabControl1.TabPages.Count; ++i)
+                if (this.neighborTypeBox.SelectedIndex == 4)
                 {
-                    UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                    controllerScript.AdvancedUpdateProbValues(newUC, i);
+                    // add check for each tab to see rows and columns
+                    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
+                    {
+                        UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
+                        controllerScript.AdvancedUpdateProbValues(newUC, i);
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
+                    {
+                        UserControl1 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl1>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
+                        controllerScript.UpdateProbValues(newUC, i);
+                    }
                 }
             }
-            else
+            else if(this.caType.SelectedIndex == 1)
             {
+                // add neighbor-specific stuff later
+
                 for (int i = 1; i < tabControl1.TabPages.Count; ++i)
                 {
-                    UserControl1 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl1>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                    controllerScript.UpdateProbValues(newUC, i);
+                    _2ndOrderTabs newUC = tabControl1.TabPages[i].Controls.Cast<_2ndOrderTabs>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
+                    controllerScript.Update2ndOrder(newUC, i);
                 }
             }
         }
@@ -200,13 +230,11 @@ namespace Capstone_Application
         private void nextTab_Click(object sender, EventArgs e)
         {
             // Consider modifying so StatePageInfo class is added/edited when moving between pages with next/previous
-
-            if (this.caType.SelectedIndex == 0) //0 = first order
-            {
+            
                 //WHERE SHOULD THIS BEEEEEE
                 if (tabControl1.SelectedIndex == 0)
                 {
-                    controllerScript.MainPageNext(gridType, neighborType, int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text));
+                    controllerScript.MainPageNext(gridType, neighborType, int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text), caType.SelectedIndex);
                     InstantiateNewTabs();
                 }
                 else
@@ -217,12 +245,6 @@ namespace Capstone_Application
                 if (nextTab > (tabControl1.TabCount - 1))
                     nextTab = tabControl1.SelectedIndex;
                 tabControl1.SelectTab(nextTab);
-            }
-
-            else if (this.caType.SelectedIndex == 1) //1 = second order
-            {
-
-            }
         }
 
         private void cancelTab_Click(object sender, EventArgs e)

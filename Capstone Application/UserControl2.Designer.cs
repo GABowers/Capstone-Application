@@ -34,6 +34,7 @@
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.colorBox = new System.Windows.Forms.Label();
             this.fullPanel = new System.Windows.Forms.Panel();
+            this.colorDialog2 = new System.Windows.Forms.ColorDialog();
             this.SuspendLayout();
             // 
             // agentCount
@@ -42,6 +43,7 @@
             this.agentCount.Name = "agentCount";
             this.agentCount.Size = new System.Drawing.Size(121, 20);
             this.agentCount.TabIndex = 21;
+            this.agentCount.TextChanged += new System.EventHandler(this.agentCount_TextChanged);
             // 
             // label2
             // 
@@ -110,5 +112,6 @@
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Label colorBox;
         private System.Windows.Forms.Panel fullPanel;
+        private System.Windows.Forms.ColorDialog colorDialog2;
     }
 }

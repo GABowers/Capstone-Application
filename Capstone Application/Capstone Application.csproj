@@ -73,6 +73,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="2ndOrderTabs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="2ndOrderTabs.Designer.cs">
+      <DependentUpon>2ndOrderTabs.cs</DependentUpon>
+    </Compile>
     <Compile Include="AgentController.cs" />
     <Compile Include="BlankGrid.cs" />
     <Compile Include="CA.cs" />
@@ -135,6 +141,9 @@
     <Compile Include="UserControl2.Designer.cs">
       <DependentUpon>UserControl2.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="2ndOrderTabs.resx">
+      <DependentUpon>2ndOrderTabs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Counter.resx">
       <DependentUpon>Counter.cs</DependentUpon>
     </EmbeddedResource>

@@ -288,6 +288,7 @@
             // 
             // toolStripLabel2
             // 
+            this.toolStripLabel2.AutoToolTip = false;
             this.toolStripLabel2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripLabel2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripLabel2.Image")));
             this.toolStripLabel2.ImageTransparentColor = System.Drawing.Color.Magenta;

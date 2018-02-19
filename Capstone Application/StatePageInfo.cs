@@ -10,16 +10,18 @@ namespace Capstone_Application
     public class StatePageInfo
     {
         public NType nType;
+        public int caType;
         public int stateNum;
         public Color color;
         public int? startingAmount;
-        int neighborState;
+        //int neighborState;
         public double[,][,] advProbs;
         public float[,,] probs; // [x,y] prob to go to state x with y neighbors
         public List<string> locationCode;
         public List<double> probValue;
+        public double[] walkProbs = new double[4];
 
-        public StatePageInfo(int totalStates, int neighbors, int currentState, NType neighborType)
+        public StatePageInfo(int totalStates, int neighbors, int currentState, NType neighborType, int caType)
         {
             nType = neighborType;
             stateNum = currentState;
