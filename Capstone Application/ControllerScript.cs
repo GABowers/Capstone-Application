@@ -297,7 +297,7 @@ namespace Capstone_Application
             }
         }
 
-        public void EditGrid(int xValue, int yValue, PictureBoxWithInterpolationMode container)
+        public void EditGrid(int xValue, int yValue, PictureBoxWithInterpolationMode container, int buttonPressed)
         {
             if(editModeOn == true)
             {
@@ -305,18 +305,39 @@ namespace Capstone_Application
                 Double tempY = Convert.ToDouble(yValue);
                 int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
                 int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-                if (myCA.grid[xProper, yProper].ContainsAgent == true)
+                if(buttonPressed == 0)
                 {
-                    myCA.grid[xProper, yProper].agent.currentState += 1;
-                    if(myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
+                    if (myCA.grid[xProper, yProper].ContainsAgent == true)
                     {
-                        myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
+                        myCA.grid[xProper, yProper].agent.currentState += 1;
+                        if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
+                        {
+                            myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
+                        }
+                    }
+                }
+                if (buttonPressed == 1)
+                {
+                    if (myCA.grid[xProper, yProper].ContainsAgent == true)
+                    {
+                        myCA.grid[xProper, yProper].ContainsAgent = false;
+                        myCA.grid[xProper, yProper].agent = null;
+                        myCA.RemoveAgent(xProper, yProper);
+                    }
+                    else if(myCA.grid[xProper, yProper].ContainsAgent == false)
+                    {
+                        myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper));
+                        myCA.grid[xProper, yProper].ContainsAgent = true;
+                        myCA.grid[xProper, yProper].agent.currentState = 0;
+                        myCA.grid[xProper, yProper].agent.xLocation = xProper;
+                        myCA.grid[xProper, yProper].agent.yLocation = yProper;
+                        myCA.AddAgent(myCA.grid[xProper, yProper].agent);
                     }
                 }
             }
         }
 
-        public void EditGrid(int[] rangeX, int[] rangeY, PictureBoxWithInterpolationMode container)
+        public void EditGrid(int[] rangeX, int[] rangeY, PictureBoxWithInterpolationMode container, int buttonPressed)
         {
             if (editModeOn == true)
             {
@@ -328,12 +349,33 @@ namespace Capstone_Application
                         Double tempY = Convert.ToDouble(rangeY[j]);
                         int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
                         int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-                        if (myCA.grid[xProper, yProper].ContainsAgent == true)
+                        if (buttonPressed == 0)
                         {
-                            myCA.grid[xProper, yProper].agent.currentState += 1;
-                            if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
+                            if (myCA.grid[xProper, yProper].ContainsAgent == true)
                             {
-                                myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
+                                myCA.grid[xProper, yProper].agent.currentState += 1;
+                                if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
+                                {
+                                    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
+                                }
+                            }
+                        }
+                        if (buttonPressed == 1)
+                        {
+                            if (myCA.grid[xProper, yProper].ContainsAgent == true)
+                            {
+                                myCA.grid[xProper, yProper].ContainsAgent = false;
+                                myCA.grid[xProper, yProper].agent = null;
+                                myCA.RemoveAgent(xProper, yProper);
+                            }
+                            else if (myCA.grid[xProper, yProper].ContainsAgent == false)
+                            {
+                                myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper));
+                                myCA.grid[xProper, yProper].ContainsAgent = true;
+                                myCA.grid[xProper, yProper].agent.currentState = 0;
+                                myCA.grid[xProper, yProper].agent.xLocation = xProper;
+                                myCA.grid[xProper, yProper].agent.yLocation = yProper;
+                                myCA.AddAgent(myCA.grid[xProper, yProper].agent);
                             }
                         }
                     }

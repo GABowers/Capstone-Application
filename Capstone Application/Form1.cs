@@ -252,7 +252,7 @@ namespace Capstone_Application
         {
         }
 
-        private void innerPictureBox_MouseDown(object sender, EventArgs e)
+        private void innerPictureBox_MouseDown(object sender, MouseEventArgs e)
         {
             if (controllerScript.editModeOn == true)
             {
@@ -262,16 +262,24 @@ namespace Capstone_Application
             }
         }
 
-        private void innerPictureBox_MouseUp(object sender, EventArgs e)
+        private void innerPictureBox_MouseUp(object sender, MouseEventArgs e)
         {
             if (controllerScript.editModeOn == true)
             {
                 System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
                 int mouseUpX = point.X;
                 int mouseUpY = point.Y;
+
                 if (mouseDownX == mouseUpX && mouseDownY == mouseUpY)
                 {
-                    controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox);
+                    if(e.Button == MouseButtons.Left)
+                    {
+                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 0);
+                    }
+                    else if (e.Button == MouseButtons.Right)
+                    {
+                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 1);
+                    }
                 }
                 else
                 {
@@ -291,7 +299,14 @@ namespace Capstone_Application
                     {
                         rangeY[i] = (minY + i);
                     }
-                    controllerScript.EditGrid(rangeX, rangeY, innerPictureBox);
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 0);
+                    }
+                    else if (e.Button == MouseButtons.Right)
+                    {
+                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 1);
+                    }
                 }
                 UpdateImage();
             }

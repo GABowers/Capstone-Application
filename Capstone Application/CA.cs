@@ -141,6 +141,25 @@ public class CA
         }
     }
 
+    public void AddAgent(AgentController agent)
+    {
+        ActiveAgents.Add(agent);
+    }
+
+    public void RemoveAgent(int xLoc, int yLoc)
+    {
+        foreach(AgentController agent in ActiveAgents)
+        {
+            if(agent.xLocation == xLoc)
+            {
+                if(agent.yLocation == yLoc)
+                {
+                    ActiveAgents.Remove(agent);
+                }
+            }
+        }
+    }
+
     public void SetStateInfo(int startState, int endState, int neighborState, int numNeighbors, float prob)
     {
         states[startState].SetProbability(endState, neighborState, numNeighbors, prob);
