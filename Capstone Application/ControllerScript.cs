@@ -227,7 +227,7 @@ namespace Capstone_Application
                     }
                     else if(statePageInfo[h].caType == 1)
                     {
-                        myCA.Set2ndOrder(h, statePageInfo[h].walkProbs);
+                        myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProb, statePageInfo[h].sticking);
                     }
                 }
                 myCA.InitializeGrid(cellAmounts);
@@ -254,7 +254,7 @@ namespace Capstone_Application
             {
                 for (int j = 0; j < localGridHeight; ++j)
                 {
-                    if (myCA.grid[i, j].containsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                    if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
                     {
                         tileColor = colors[myCA.GetCellState(i, j)];
                         bmp.SetPixel(i, j, tileColor);
@@ -305,7 +305,7 @@ namespace Capstone_Application
                 Double tempY = Convert.ToDouble(yValue);
                 int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
                 int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-                if (myCA.grid[xProper, yProper].containsAgent == true)
+                if (myCA.grid[xProper, yProper].ContainsAgent == true)
                 {
                     myCA.grid[xProper, yProper].agent.currentState += 1;
                     if(myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
@@ -328,7 +328,7 @@ namespace Capstone_Application
                         Double tempY = Convert.ToDouble(rangeY[j]);
                         int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
                         int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-                        if (myCA.grid[xProper, yProper].containsAgent == true)
+                        if (myCA.grid[xProper, yProper].ContainsAgent == true)
                         {
                             myCA.grid[xProper, yProper].agent.currentState += 1;
                             if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
@@ -421,7 +421,7 @@ namespace Capstone_Application
                         if (remainder == 0)
                         {
                             // Auto image save
-                            form.SaveImages(time);
+                            form.InvokeImageSave(time);
                         }
                     }
                 }

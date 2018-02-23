@@ -13,6 +13,19 @@ namespace Capstone_Application
         public int currentState;
         public int xLocation;
         public int yLocation;
+        List<Tuple<int, int>> history = new List<Tuple<int, int>>();
+
+        public List<Tuple<int, int>> History { get => history; set => history = value; }
+
+        public AgentController(int agentX, int agentY)
+        {
+            History.Add(Tuple.Create(agentX, agentY));
+        }
+
+        public void AddHistory()
+        {
+            History.Add(Tuple.Create(xLocation, yLocation));
+        }
 
         public void TransitionCheck()
         {

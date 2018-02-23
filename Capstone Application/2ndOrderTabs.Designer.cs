@@ -42,6 +42,8 @@
             this.walkDownBox = new System.Windows.Forms.TextBox();
             this.walkLeftBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.stickingBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -156,11 +158,29 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(3, 165);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(125, 21);
+            this.label4.TabIndex = 38;
+            this.label4.Text = "Sticking probability";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // stickingBox
+            // 
+            this.stickingBox.Location = new System.Drawing.Point(459, 165);
+            this.stickingBox.Name = "stickingBox";
+            this.stickingBox.Size = new System.Drawing.Size(121, 20);
+            this.stickingBox.TabIndex = 39;
+            // 
             // _2ndOrderTabs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.stickingBox);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.walkLeftBox);
             this.Controls.Add(this.walkDownBox);
@@ -197,5 +217,7 @@
         private System.Windows.Forms.TextBox walkDownBox;
         private System.Windows.Forms.TextBox walkLeftBox;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox stickingBox;
     }
 }

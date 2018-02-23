@@ -20,6 +20,8 @@ namespace Capstone_Application
         public List<string> locationCode;
         public List<double> probValue;
         public double[] walkProbs = new double[4];
+        public double stickingProb;
+        public bool sticking;
 
         public StatePageInfo(int totalStates, int neighbors, int currentState, NType neighborType, int caType)
         {

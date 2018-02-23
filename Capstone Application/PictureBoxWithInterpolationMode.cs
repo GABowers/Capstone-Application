@@ -17,6 +17,20 @@ namespace Capstone_Application
 
         protected override void OnPaint(PaintEventArgs paintEventArgs)
         {
+            //if(this.InvokeRequired)
+            //{
+            //    Invoke(new Action(() => InvokePaint(paintEventArgs)));
+            //}
+            //else
+            //{
+                paintEventArgs.Graphics.InterpolationMode = InterpolationMode;
+                paintEventArgs.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
+                base.OnPaint(paintEventArgs);
+            //}
+        }
+
+        void InvokePaint(PaintEventArgs paintEventArgs)
+        {
             paintEventArgs.Graphics.InterpolationMode = InterpolationMode;
             paintEventArgs.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
             base.OnPaint(paintEventArgs);

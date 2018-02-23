@@ -33,6 +33,9 @@ public class CA
 
     private StatePageInfo statePageInfo;
 
+    public int CaType { get => caType; set => caType = value; }
+    public List<AgentController> ActiveAgents { get => activeAgents; set => activeAgents = value; }
+
     public CA(int width, int height, int numStates, NType type, int incomingCAType, GridType gType = GridType.Box)
     {
         gridWidth = width;
@@ -44,7 +47,7 @@ public class CA
         backup = new BlankGrid[width, height];
         neighborhood = new Neighborhood(type);
         states = new CellState[numStates];
-        caType = incomingCAType;
+        CaType = incomingCAType;
         for (int i = 0; i < numStates; ++i)
         {
             transitions.Add(0);
@@ -103,13 +106,13 @@ public class CA
             int yValue = (increment % gridWidth);
             
             grid[xValue, yValue] = new BlankGrid();
-            grid[xValue, yValue].AddAgent();
-            grid[xValue, yValue].containsAgent = true;
+            grid[xValue, yValue].AddAgent(xValue, yValue, new AgentController(xValue, yValue));
+            grid[xValue, yValue].ContainsAgent = true;
             grid[xValue, yValue].agent.currentState = state;
             grid[xValue, yValue].agent.xLocation = xValue;
             grid[xValue, yValue].agent.yLocation = yValue;
 
-            activeAgents.Add(grid[xValue, yValue].agent);
+            ActiveAgents.Add(grid[xValue, yValue].agent);
 
             // Subtract that state from its agentcount
             // And if it goes to zero remove it from both our lists
@@ -131,7 +134,7 @@ public class CA
                     if (System.Object.ReferenceEquals(grid[i, j], null))
                     {
                         grid[i, j] = new BlankGrid();
-                        grid[i, j].containsAgent = false;
+                        grid[i, j].ContainsAgent = false;
                     }
                 }
             }
@@ -144,9 +147,9 @@ public class CA
 
     }
 
-    public void Set2ndOrder(int startState, double[] walkProbs)
+    public void Set2ndOrder(int startState, double[] walkProbs, double stickingProb, bool sticking)
     {
-        states[startState].Set2ndOrderInfo(walkProbs);
+        states[startState].Set2ndOrderInfo(walkProbs, stickingProb, sticking);
     }
 
     public void SetStateInfo(int startState, int endState, int neighborState, int rows, int columns, double prob)
@@ -197,15 +200,19 @@ public class CA
             transitions[i] = 0;
         }
             
-        if (caType == 1) //1 = second order
+        if (CaType == 1) //1 = second order
         {
-            for (int x = 0; x < activeAgents.Count; ++x)
+            for (int x = 0; x < ActiveAgents.Count; ++x)
             {
                 agentLocation = x;
-                AgentMove(activeAgents[x]);
+                if(CheckForMovement(ActiveAgents[x]))
+                {
+                    AgentMove(ActiveAgents[x]);
+                }
+                ActiveAgents[x].AddHistory();
             }
         }
-        if (caType == 0) // 0 = first order
+        if (CaType == 0) // 0 = first order
         {
             for (int x = 0; x < gridWidth; ++x)
             {
@@ -516,39 +523,172 @@ public class CA
         }
         if (newX != oldX || newY != oldY)
         {
-            if (grid[newX, newY].containsAgent == false && System.Object.ReferenceEquals(grid[newX, newY].agent, null) == true)
+            if (grid[newX, newY].ContainsAgent == false && System.Object.ReferenceEquals(grid[newX, newY].agent, null) == true)
             {
-                grid[newX, newY].AddAgent();
-                grid[newX, newY].containsAgent = true;
+                grid[newX, newY].AddAgent(newX, newY, currentAgent);
+                grid[newX, newY].ContainsAgent = true;
                 grid[newX, newY].agent.currentState = currentAgent.currentState;
                 grid[newX, newY].agent.xLocation = newX;
                 grid[newX, newY].agent.yLocation = newY;
-                activeAgents[agentLocation] = grid[newX, newY].agent;
+                ActiveAgents[agentLocation] = grid[newX, newY].agent;
                 //Debug.Log("New: " + grid[newX, newY].agent.xLocation + ", " + grid[newX, newY].agent.yLocation);
-                grid[oldX, oldY].containsAgent = false;
+                grid[oldX, oldY].ContainsAgent = false;
                 grid[oldX, oldY].agent = null;
             }
         }
     }
 
-    private void RemoveBadAgents()
+    //private int NewXValue (int newX)
+    //{ Put this after the previous step. Have previous step only return true/false
+    //    if (newX > (gridWidth - 1) || newY > (gridHeight - 1) || newX < 0 || newY < 0)
+    //{
+    //    switch (gridType)
+    //    {
+    //        case GridType.Box:
+    //            return false;
+    //        case GridType.CylinderW:
+    //            if (newY > (gridHeight - 1) || newY < 0)
+    //                return false;
+    //            else
+    //            {
+    //                return true;
+    //                // THIS IS NOT CORRECT: THIS NEEDS TO BE CHANGED TO RETURN THESE MODIFIED VALUES
+    //                //if (newX >= gridWidth)
+    //                //{
+    //                //    newX -= gridWidth;
+    //                //    return true;
+    //                //}
+    //                //else
+    //                //{
+    //                //    newX += gridWidth;
+    //                //    return true;
+    //                //}
+    //            }
+    //        case GridType.CylinderH:
+    //            if (newX > (gridHeight - 1) || newX < 0)
+    //                return false;
+    //            else
+    //            {
+    //                return true;
+    //                // SEE ABOVE
+    //                //if (newY >= gridHeight)
+    //                //{
+    //                //    newY -= gridHeight;
+    //                //}
+    //                //else
+    //                //{
+    //                //    newY += gridHeight;
+    //                //}
+    //            }
+    //        case GridType.Torus:
+    //            {
+    //                return true;
+    //                //    if (newX >= gridWidth)
+    //                //    {
+    //                //        newX -= gridWidth;
+    //                //    }
+    //                //    else
+    //                //    {
+    //                //        newX += gridWidth;
+    //                //    }
+    //                //}
+    //                //{
+    //                //    if (newY >= gridHeight)
+    //                //    {
+    //                //        newY -= gridHeight;
+    //                //    }
+    //                //    else
+    //                //    {
+    //                //        newY += gridHeight;
+    //                //    }
+    //            }
+    //    }
+    //}
+    //else
+    //    return true;
+    //}
+
+    private bool IsReal(int newX, int newY)
     {
-        int agentCleanup = 0;
-        for (int i = 0; i < gridWidth; i++)
+        switch (gridType)
         {
-            for (int j = 0; j < gridHeight; j++)
-            {
-                if (activeAgents.Contains(grid[i, j].agent) == false && grid[i, j].containsAgent == true)
+            case GridType.Box:
+                if (newX > (gridWidth - 1) || newY > (gridHeight - 1) || newX < 0 || newY < 0)
+                    return false;
+                else
+                    return true;
+            case GridType.CylinderW:
+                if (newY > (gridHeight - 1) || newY < 0)
+                    return false;
+                else
                 {
-                    grid[i, j].agent = null;
-                    grid[i, j].containsAgent = false;
-                    agentCleanup++;
+                    return true;
                 }
-            }
+            case GridType.CylinderH:
+                if (newX > (gridHeight - 1) || newX < 0)
+                    return false;
+                else
+                {
+                    return true;
+                }
+            case GridType.Torus:
+                return true;
+            default:
+                return false;
         }
     }
 
-    
+    private bool CheckForMovement(AgentController currentAgent)
+    {
+        // Make method to check for agent in surrounding area. the "surrounding area" will of course need
+        // to be extensible to the 4 or 8. Can use for this method and for agentmove.
+        if (states[currentAgent.currentState].sticking)
+        {
+            // Add check for type
+            int agentX = currentAgent.xLocation;
+            int agentY = currentAgent.yLocation;
+            int subX = agentX - 1;
+            int plusX = agentX + 1;
+            int subY = agentY - 1;
+            int plusY = agentY + 1;
+            // THIS IS NOT RIGHT. IN SITUATIONS WHERE A LOCATION IS NOT REAL, THAT LOCATION SHOULD BE SKIPPED
+            if (IsReal(subX, agentY) && IsReal(plusX, agentY) && IsReal(agentX, subY) && IsReal(agentX, plusY))
+            {
+                if (grid[subX, agentY].ContainsAgent || grid[plusX, agentY].ContainsAgent || grid[agentX, subY].ContainsAgent || grid[agentX, plusY].ContainsAgent)
+                {
+                    double rand = myRand.NextDouble();
+                    double moveProb = states[currentAgent.currentState].stickingProb;
+                    if (rand < moveProb)
+                        return false;
+                    else
+                        return true;
+                }
+                else
+                    return true;
+            }
+            else
+                return true;
+        }
+        else
+            return true;
+    }
+
+    //private void RemoveBadAgents()
+    //{
+    //    int agentCleanup = 0;
+    //    for (int i = 0; i < gridWidth; i++)
+    //    {
+    //        for (int j = 0; j < gridHeight; j++)
+    //        {
+    //            if (activeAgents.Contains(grid[i, j].agent) == false && grid[i, j].containsAgent == true)
+    //            {
+    //                grid[i, j].agent = null;
+    //                grid[i, j].containsAgent = false;
+    //                agentCleanup++;
+    //            }
+    //        }
+    //    }
+    //}
 }
 
 public static class ThreadSafeRandom

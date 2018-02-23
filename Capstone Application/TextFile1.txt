@@ -15,6 +15,7 @@ Think about making setup more extensible - changing where the grid size is made 
 IMPORTANT: How many directions should agents be able to move? Just 4 regular, or the diagonals too?
 Add way to slow down simulation--to have it run X times per second or something.
     Start a timer at the beginning of the iteration, then check if it's been that amount of time before beginning next one.
+Vector-based graphics for 
 
 consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
 to allow for addition of StatePageInfos without knowing the exact number of rows and columns.

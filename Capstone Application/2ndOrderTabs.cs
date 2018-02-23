@@ -81,6 +81,19 @@ namespace Capstone_Application
             {
                 info.walkProbs[3] = double.Parse(this.walkLeftBox.Text);
             }
+
+            if(string.IsNullOrWhiteSpace(this.stickingBox.Text))
+            {
+                info.sticking = false;
+            }
+            else
+            {
+                info.sticking = true;
+                if (double.TryParse(this.stickingBox.Text, out double result5))
+                {
+                    info.stickingProb = double.Parse(this.stickingBox.Text);
+                }
+            }
         }
     }
 }

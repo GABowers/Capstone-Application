@@ -7,6 +7,8 @@ public class CellState
     public double[,][,] advProbs;
     float[,,] prob;
     public double[] walkProbs = new double[4];
+    public double stickingProb;
+    public bool sticking;
 
     public CellState(int totalStates, int neighborState, int neighborSize)
     {
@@ -24,9 +26,11 @@ public class CellState
         return prob[state, neighborState, numNeighbors];
     }
 
-    public void Set2ndOrderInfo(double[] incomingWalkProbs)
+    public void Set2ndOrderInfo(double[] incomingWalkProbs, double incomingStickingProb, bool incomingSticking)
     {
         walkProbs = incomingWalkProbs;
+        stickingProb = incomingStickingProb;
+        sticking = incomingSticking;
     }
 
     public void SetProbability(int state, int neighborState, int rows, int columns, double val)

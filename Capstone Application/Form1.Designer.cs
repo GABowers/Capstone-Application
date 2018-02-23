@@ -78,6 +78,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.saveMovementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
@@ -137,7 +138,8 @@
             this.editModelToolStripMenuItem,
             this.saveCellCountToolStripMenuItem,
             this.saveTransitionsToolStripMenuItem,
-            this.saveImageToolStripMenuItem});
+            this.saveImageToolStripMenuItem,
+            this.saveMovementToolStripMenuItem});
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(35, 20);
             this.toolStripMenuItem2.Text = "CA";
@@ -146,7 +148,7 @@
             // 
             this.newModelToolStripMenuItem.AutoToolTip = true;
             this.newModelToolStripMenuItem.Name = "newModelToolStripMenuItem";
-            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.newModelToolStripMenuItem.Text = "New Model";
             this.newModelToolStripMenuItem.ToolTipText = "Define CA type, grid boundaries, agent types and properties.";
             this.newModelToolStripMenuItem.Click += new System.EventHandler(this.newModelToolStripMenuItem_Click);
@@ -154,14 +156,14 @@
             // editModelToolStripMenuItem
             // 
             this.editModelToolStripMenuItem.Name = "editModelToolStripMenuItem";
-            this.editModelToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.editModelToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.editModelToolStripMenuItem.Text = "Edit Model";
             this.editModelToolStripMenuItem.Click += new System.EventHandler(this.editModelToolStripMenuItem_Click);
             // 
             // saveCellCountToolStripMenuItem
             // 
             this.saveCellCountToolStripMenuItem.Name = "saveCellCountToolStripMenuItem";
-            this.saveCellCountToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.saveCellCountToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.saveCellCountToolStripMenuItem.Text = "Save Cell Count";
             this.saveCellCountToolStripMenuItem.Click += new System.EventHandler(this.saveCellCountToolStripMenuItem_Click);
             // 
@@ -170,7 +172,7 @@
             this.saveTransitionsToolStripMenuItem.AutoToolTip = true;
             this.saveTransitionsToolStripMenuItem.CheckOnClick = true;
             this.saveTransitionsToolStripMenuItem.Name = "saveTransitionsToolStripMenuItem";
-            this.saveTransitionsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.saveTransitionsToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.saveTransitionsToolStripMenuItem.Text = "Save Transitions";
             this.saveTransitionsToolStripMenuItem.ToolTipText = "Images will be saved in a \"Y-M-D H-M-S Run # Iteration #\" format.";
             this.saveTransitionsToolStripMenuItem.Click += new System.EventHandler(this.saveAllImagesToolStripMenuItem_Click);
@@ -178,7 +180,7 @@
             // saveImageToolStripMenuItem
             // 
             this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
             this.saveImageToolStripMenuItem.Text = "Save Image";
             this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
             // 
@@ -210,19 +212,19 @@
             // mainWindowToolStripMenuItem
             // 
             this.mainWindowToolStripMenuItem.Name = "mainWindowToolStripMenuItem";
-            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.mainWindowToolStripMenuItem.Text = "Main Window";
             // 
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
-            this.modelToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
             // cellCounterToolStripMenuItem
             // 
             this.cellCounterToolStripMenuItem.Name = "cellCounterToolStripMenuItem";
-            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.cellCounterToolStripMenuItem.Text = "Run Data";
             this.cellCounterToolStripMenuItem.Click += new System.EventHandler(this.cellCounterToolStripMenuItem_Click);
             // 
@@ -515,6 +517,13 @@
             // 
             this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
+            // saveMovementToolStripMenuItem
+            // 
+            this.saveMovementToolStripMenuItem.Name = "saveMovementToolStripMenuItem";
+            this.saveMovementToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.saveMovementToolStripMenuItem.Text = "Save Movement";
+            this.saveMovementToolStripMenuItem.Click += new System.EventHandler(this.saveMovementToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -589,6 +598,7 @@
         public System.Windows.Forms.ToolStripTextBox iterationCountCountSave;
         public System.Windows.Forms.ToolStripTextBox iterationCountImageSave;
         private System.Windows.Forms.ToolStripMenuItem cellCounterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveMovementToolStripMenuItem;
     }
 }
 

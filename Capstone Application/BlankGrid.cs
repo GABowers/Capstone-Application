@@ -8,7 +8,7 @@ namespace Capstone_Application
 {
     public class BlankGrid
     {
-        public bool containsAgent = false;
+        bool containsAgent = false;
         public AgentController agent;
 
         // Use this for initialization
@@ -29,9 +29,9 @@ namespace Capstone_Application
         //    set { agent = value; }
         //}
 
-        public void AddAgent()
+        public void AddAgent(int xLocation, int yLocation, AgentController prevAgent)
         {
-            agent = new AgentController();
+            agent = prevAgent;
         }
     }
 }
