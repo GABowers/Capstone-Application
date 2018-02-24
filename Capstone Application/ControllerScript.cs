@@ -33,7 +33,7 @@ namespace Capstone_Application
         int localGridWidth;
         int localGridHeight;
         public int amountOfCellTypes;
-        //string filename;
+        double iterationSpeed = 0;
         Bitmap bmp;
 
         public MainPageInfo MainPageInfo
@@ -249,23 +249,59 @@ namespace Capstone_Application
 
         public void UpdateBoard(Form1 currentForm)
         {
-            Color tileColor;
-            for (int i = 0; i < localGridWidth; ++i)
+            if (myCA.CaType == 1 && iterations > 0)
             {
-                for (int j = 0; j < localGridHeight; ++j)
+                Color tileColor;
+                for (int i = 0; i < myCA.ActiveAgents.Count; i++)
                 {
-                    if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                    int oldX = myCA.ActiveAgents[i].History[myCA.ActiveAgents[i].History.Count - 2].Item1;
+                    int oldY = myCA.ActiveAgents[i].History[myCA.ActiveAgents[i].History.Count - 2].Item2;
+                    int newX = myCA.ActiveAgents[i].History[myCA.ActiveAgents[i].History.Count - 1].Item1;
+                    int newY = myCA.ActiveAgents[i].History[myCA.ActiveAgents[i].History.Count - 1].Item2;
+
+                    if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
                     {
-                        tileColor = colors[myCA.GetCellState(i, j)];
-                        bmp.SetPixel(i, j, tileColor);
+                        tileColor = colors[myCA.GetCellState(oldX, oldY)];
+                        bmp.SetPixel(oldX, oldY, tileColor);
                     }
                     else
                     {
                         tileColor = Color.Black;
-                        bmp.SetPixel(i, j, tileColor);
+                        bmp.SetPixel(oldX, oldY, tileColor);
+                    }
+                    if (myCA.grid[newX, newY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[newX, newY].agent, null) == false))
+                    {
+                        tileColor = colors[myCA.GetCellState(newX, newY)];
+                        bmp.SetPixel(newX, newY, tileColor);
+                    }
+                    else
+                    {
+                        tileColor = Color.Black;
+                        bmp.SetPixel(newX, newY, tileColor);
                     }
                 }
             }
+            else
+            {
+                Color tileColor;
+                for (int i = 0; i < localGridWidth; ++i)
+                {
+                    for (int j = 0; j < localGridHeight; ++j)
+                    {
+                        if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                        {
+                            tileColor = colors[myCA.GetCellState(i, j)];
+                            bmp.SetPixel(i, j, tileColor);
+                        }
+                        else
+                        {
+                            tileColor = Color.Black;
+                            bmp.SetPixel(i, j, tileColor);
+                        }
+                    }
+                }
+            }
+            
             currentForm.innerPictureBox.Image = bmp;
         }
 

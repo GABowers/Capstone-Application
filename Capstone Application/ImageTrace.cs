@@ -15,6 +15,8 @@ namespace Capstone_Application
         ControllerScript controllerScript = Form1.controllerScript;
         int startX = 4;
         int startY = 7;
+        string loading = "Loading...";
+        string done = "Done";
         List<CheckBox> checklist = new List<CheckBox>();
         Bitmap bmp;
 
@@ -30,6 +32,7 @@ namespace Capstone_Application
         {
             if(this.pathTraceRadio.Checked)
             {
+                this.statusLabel.Text = loading;
                 DoTrace();
             }
         }
@@ -38,6 +41,7 @@ namespace Capstone_Application
         {
             if(this.freqTraceRadio.Checked)
             {
+                this.statusLabel.Text = loading;
                 DoHeatMap();
             }
         }
@@ -60,7 +64,8 @@ namespace Capstone_Application
 
         void checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            if(this.freqTraceRadio.Checked)
+            this.statusLabel.Text = loading;
+            if (this.freqTraceRadio.Checked)
             {
                 DoHeatMap();
             }
@@ -72,6 +77,8 @@ namespace Capstone_Application
 
         void DoHeatMap()
         {
+            DateTime time = DateTime.Now;
+            
             List<int> duplicates = new List<int>();
             for (int i = 0; i < controllerScript.myCA.gridWidth; i++)
             {
@@ -80,15 +87,23 @@ namespace Capstone_Application
                     bmp.SetPixel(i, j, Color.Black);
                 }
             }
-
+            
             for (int i = 0; i < checklist.Count; i++)
             {
                 if(checklist[i].Checked)
                 {
                     int pathLength = controllerScript.myCA.ActiveAgents[i].History.Count;
                     int maxDupes = 0;
-                    for(int j = 0; j < pathLength; j++)
+                    List<int> dupeLocations = new List<int>();
+                    List<int> dupeTempLocations = new List<int>();
+                    for (int j = 0; j < pathLength; j++)
                     {
+                        if (dupeLocations.Contains(j))
+                        {
+                            int location = dupeLocations.IndexOf(j);
+                            duplicates.Add(duplicates[dupeTempLocations[location]]);
+                            continue;
+                        }
                         int tempDupe = 0;
                         int x = controllerScript.myCA.ActiveAgents[i].History[j].Item1;
                         int y = controllerScript.myCA.ActiveAgents[i].History[j].Item2;
@@ -98,6 +113,8 @@ namespace Capstone_Application
                         {
                             if(controllerScript.myCA.ActiveAgents[i].History[k].Equals(tempTuple))
                             {
+                                dupeLocations.Add(k);
+                                dupeTempLocations.Add(j);
                                 tempDupe++;
                             }
                         }
@@ -118,6 +135,8 @@ namespace Capstone_Application
                     }
                 }
             }
+            TimeSpan full = time - DateTime.Now;
+            Console.WriteLine(full);
             UpdateImage();
         }
 
@@ -150,6 +169,7 @@ namespace Capstone_Application
         void UpdateImage()
         {
             this.tracePictureBox.Image = bmp;
+            this.statusLabel.Text = done;
         }
 
         private void button1_Click(object sender, EventArgs e)

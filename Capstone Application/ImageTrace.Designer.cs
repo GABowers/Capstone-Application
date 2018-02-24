@@ -34,6 +34,7 @@
             this.pathTraceRadio = new System.Windows.Forms.RadioButton();
             this.freqTraceRadio = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.statusLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.tracePictureBox)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -50,6 +51,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.statusLabel);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.pathTraceRadio);
             this.groupBox1.Controls.Add(this.freqTraceRadio);
@@ -87,10 +89,10 @@
             this.freqTraceRadio.AutoSize = true;
             this.freqTraceRadio.Location = new System.Drawing.Point(7, 8);
             this.freqTraceRadio.Name = "freqTraceRadio";
-            this.freqTraceRadio.Size = new System.Drawing.Size(106, 17);
+            this.freqTraceRadio.Size = new System.Drawing.Size(68, 17);
             this.freqTraceRadio.TabIndex = 0;
             this.freqTraceRadio.TabStop = true;
-            this.freqTraceRadio.Text = "Frequency Trace";
+            this.freqTraceRadio.Text = "Heatmap";
             this.freqTraceRadio.UseVisualStyleBackColor = true;
             this.freqTraceRadio.CheckedChanged += new System.EventHandler(this.freqTraceRadio_CheckedChanged);
             // 
@@ -102,6 +104,15 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(69, 500);
             this.panel1.TabIndex = 2;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(274, 11);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(33, 13);
+            this.statusLabel.TabIndex = 3;
+            this.statusLabel.Text = "Done";
             // 
             // ImageTrace
             // 
@@ -128,5 +139,6 @@
         private System.Windows.Forms.RadioButton freqTraceRadio;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label statusLabel;
     }
 }
