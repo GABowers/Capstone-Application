@@ -120,15 +120,13 @@ namespace Capstone_Application
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.InitialDirectory = Application.StartupPath;
-            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.Filter = "(*.txt)|*.txt|(*.*)|*.*";
             saveFileDialog1.RestoreDirectory = true;
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
                 {
-
                     for (int i = 0; i < controllerScript.fullCount.Count; ++i)
                     {
                         wt.Write("Iteration: " + i);
@@ -653,6 +651,12 @@ namespace Capstone_Application
                     }
                 }
             }
+        }
+
+        private void saveImageTraceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImageTrace showImageTrace = new ImageTrace();
+            showImageTrace.ShowDialog();
         }
     }
 }
