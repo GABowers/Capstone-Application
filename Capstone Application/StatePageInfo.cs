@@ -22,6 +22,7 @@ namespace Capstone_Application
         public double[] walkProbs = new double[4];
         public double stickingProb;
         public bool sticking;
+        public int mobileNeighborhood;
 
         public StatePageInfo(int totalStates, int neighbors, int currentState, NType neighborType, int caType)
         {

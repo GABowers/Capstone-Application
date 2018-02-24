@@ -14,6 +14,7 @@ namespace Capstone_Application
         public int xLocation;
         public int yLocation;
         List<Tuple<int, int>> history = new List<Tuple<int, int>>();
+        List<Tuple<int, int>> neighborhood = new List<Tuple<int, int>>();
 
         public List<Tuple<int, int>> History { get => history; set => history = value; }
 
@@ -40,84 +41,66 @@ namespace Capstone_Application
         //This could be optimized further. For immobile CA, we could set the neighborhood at the start of a CA run, so each agent knows
         //its neighbors in advance, rather than calculation each iteration. However, this method will work for both immobile and mobile
         //CA. May change things if too slow.
-        public void NeighborCheck()
+        public bool NeighborCheck(BlankGrid[,] grid, CellState states)
         {
-            List<int> xLocations = new List<int>();
-            List<int> yLocations = new List<int>();
-            if(controllerScript.neighborhoodType >= 0)
+            int highX = xLocation + 1;
+            int lowX = xLocation - 1;
+            int highY = yLocation + 1;
+            int lowY = yLocation - 1;
+            List<Tuple<int, int>> grids = new List<Tuple<int, int>>();
+            if (states.mobileNeighborhood == 0)
             {
-
-                //this will need to change if we move to a system which allows for non-overlapping neighborhoods
-                if (controllerScript.neighborhoodType >= 1)
+                if (highX > 0 && highX < caScript.gridWidth && grid[highX, yLocation] != null)
                 {
-                    xLocations.Add(xLocation);
-                    yLocations.Add(yLocation + 1);
-                    xLocations.Add(xLocation + 1);
-                    yLocations.Add(yLocation);
-                    xLocations.Add(xLocation);
-                    yLocations.Add(yLocation - 1);
-                    xLocations.Add(xLocation - 1);
-                    yLocations.Add(yLocation);
-                    if (controllerScript.neighborhoodType >= 2)
-                    {
-                        xLocations.Add(xLocation + 1);
-                        yLocations.Add(yLocation + 1);
-                        xLocations.Add(xLocation + 1);
-                        yLocations.Add(yLocation - 1);
-                        xLocations.Add(xLocation - 1);
-                        yLocations.Add(yLocation - 1);
-                        xLocations.Add(xLocation - 1);
-                        yLocations.Add(yLocation + 1);
-                        if (controllerScript.neighborhoodType >= 3)
-                        {
-                            xLocations.Add(xLocation);
-                            yLocations.Add(yLocation + 2);
-                            xLocations.Add(xLocation + 2);
-                            yLocations.Add(yLocation);
-                            xLocations.Add(xLocation);
-                            yLocations.Add(yLocation - 2);
-                            xLocations.Add(xLocation - 2);
-                            yLocations.Add(yLocation);
-                        }
-                    }
+                    grids.Add(Tuple.Create(highX, yLocation));
                 }
+                if (lowX > 0 && lowX < caScript.gridWidth && grid[lowX, yLocation] != null)
+                {
+                    grids.Add(Tuple.Create(lowX, yLocation));
+                }
+                if (highY > 0 && highY < caScript.gridHeight && grid[xLocation, highY] != null)
+                {
+                    grids.Add(Tuple.Create(xLocation, highY));
+                }
+                if (lowY > 0 && lowY < caScript.gridHeight && grid[xLocation, lowY] != null)
+                {
+                    grids.Add(Tuple.Create(xLocation, lowY));
+                }
+
+                switch(grids.Count)
+                {
+                    case 1:
+                        if (grid[grids[0].Item1, grids[0].Item2].ContainsAgent)
+                            return true;
+                        break;
+                    case 2:
+                        if (grid[grids[0].Item1, grids[0].Item2].ContainsAgent || grid[grids[1].Item1, grids[1].Item2].ContainsAgent)
+                            return true;
+                        break;
+                    case 3:
+                        if (grid[grids[0].Item1, grids[0].Item2].ContainsAgent || grid[grids[1].Item1, grids[1].Item2].ContainsAgent || grid[grids[2].Item1, grids[2].Item2].ContainsAgent)
+                            return true;
+                        break;
+                    case 4:
+                        if (grid[grids[0].Item1, grids[0].Item2].ContainsAgent || grid[grids[1].Item1, grids[1].Item2].ContainsAgent || grid[grids[2].Item1, grids[2].Item2].ContainsAgent || grid[grids[3].Item1, grids[3].Item2].ContainsAgent)
+                            return true;
+                        break;
+                    default:
+                        return false;
+                }
+                return false;
             }
-            if (controllerScript.neighborhoodType >= 1)
+            else if (states.mobileNeighborhood == 1)
             {
-                for (int i = 0; i < xLocations.Count; i++)
+                if (grid[highX, yLocation].ContainsAgent || grid[lowX, yLocation].ContainsAgent || grid[xLocation, highY].ContainsAgent || grid[xLocation, lowY].ContainsAgent || grid[highX, highY].ContainsAgent || grid[lowX, lowY].ContainsAgent || grid[highX, lowY].ContainsAgent || grid[lowX, highY].ContainsAgent)
                 {
-                    if (WithinRange(xLocations[i], yLocations[i], caScript.gridWidth, caScript.gridHeight) == false)
-                    {
-                        switch (controllerScript.gType)
-                        {
-                            case GridType.Box:
-                                //modifiedP = null; // make it null to skip it
-                                break;
-                            case GridType.CylinderW:
-                                //modifiedP = Point.AdjustCylinderW(gridWidth, modifiedP);
-                                break;
-                            case GridType.CylinderH:
-                                //modifiedP = Point.AdjustCylinderH(gridHeight, modifiedP);
-                                break;
-                            case GridType.Torus:
-                                //modifiedP = Point.AdjustTorus(gridWidth, gridHeight, modifiedP);
-                                break;
-                        }
-                        xLocations.RemoveAt(i);
-                        yLocations.RemoveAt(i);
-                        i = (i - 1);
-                    }
+                    return true;
                 }
+                else
+                    return false;
             }
-        }
-
-        public bool WithinRange(int locationX, int locationY, int xMax, int yMax, int xMin = 0, int yMin = 0)
-        {
-            if (locationX < xMin || locationY < yMin)
+            else
                 return false;
-            if (locationX >= xMax || locationY >= yMax)
-                return false;
-            return true;
         }
     }
 }

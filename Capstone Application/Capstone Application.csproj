@@ -110,6 +110,7 @@
     </Compile>
     <Compile Include="MainPageController.cs" />
     <Compile Include="MainPageInfo.cs" />
+    <Compile Include="MobileCA.cs" />
     <Compile Include="MyTabControl.cs">
       <SubType>Component</SubType>
     </Compile>

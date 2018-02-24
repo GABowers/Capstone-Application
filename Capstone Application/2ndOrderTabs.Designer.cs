@@ -44,6 +44,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.stickingBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.mobileNeighborHood = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -69,7 +71,7 @@
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(3, 30);
+            this.label2.Location = new System.Drawing.Point(3, 57);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(450, 21);
             this.label2.TabIndex = 25;
@@ -78,14 +80,14 @@
             // 
             // agentCount
             // 
-            this.agentCount.Location = new System.Drawing.Point(459, 30);
+            this.agentCount.Location = new System.Drawing.Point(459, 57);
             this.agentCount.Name = "agentCount";
             this.agentCount.Size = new System.Drawing.Size(121, 20);
             this.agentCount.TabIndex = 26;
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(3, 57);
+            this.label3.Location = new System.Drawing.Point(3, 84);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(125, 21);
             this.label3.TabIndex = 27;
@@ -95,7 +97,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(3, 84);
+            this.label6.Location = new System.Drawing.Point(3, 111);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(125, 21);
             this.label6.TabIndex = 30;
@@ -104,7 +106,7 @@
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(3, 111);
+            this.label7.Location = new System.Drawing.Point(3, 138);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(175, 21);
             this.label7.TabIndex = 31;
@@ -113,7 +115,7 @@
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(3, 138);
+            this.label8.Location = new System.Drawing.Point(3, 165);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(125, 21);
             this.label8.TabIndex = 32;
@@ -122,35 +124,35 @@
             // 
             // walkUpBox
             // 
-            this.walkUpBox.Location = new System.Drawing.Point(459, 57);
+            this.walkUpBox.Location = new System.Drawing.Point(459, 84);
             this.walkUpBox.Name = "walkUpBox";
             this.walkUpBox.Size = new System.Drawing.Size(121, 20);
             this.walkUpBox.TabIndex = 33;
             // 
             // walkRightBox
             // 
-            this.walkRightBox.Location = new System.Drawing.Point(459, 84);
+            this.walkRightBox.Location = new System.Drawing.Point(459, 111);
             this.walkRightBox.Name = "walkRightBox";
             this.walkRightBox.Size = new System.Drawing.Size(121, 20);
             this.walkRightBox.TabIndex = 34;
             // 
             // walkDownBox
             // 
-            this.walkDownBox.Location = new System.Drawing.Point(459, 111);
+            this.walkDownBox.Location = new System.Drawing.Point(459, 138);
             this.walkDownBox.Name = "walkDownBox";
             this.walkDownBox.Size = new System.Drawing.Size(121, 20);
             this.walkDownBox.TabIndex = 35;
             // 
             // walkLeftBox
             // 
-            this.walkLeftBox.Location = new System.Drawing.Point(459, 138);
+            this.walkLeftBox.Location = new System.Drawing.Point(459, 165);
             this.walkLeftBox.Name = "walkLeftBox";
             this.walkLeftBox.Size = new System.Drawing.Size(121, 20);
             this.walkLeftBox.TabIndex = 36;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(358, 111);
+            this.button1.Location = new System.Drawing.Point(358, 138);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(95, 21);
             this.button1.TabIndex = 37;
@@ -160,7 +162,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(3, 165);
+            this.label4.Location = new System.Drawing.Point(3, 192);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(125, 21);
             this.label4.TabIndex = 38;
@@ -169,16 +171,39 @@
             // 
             // stickingBox
             // 
-            this.stickingBox.Location = new System.Drawing.Point(459, 165);
+            this.stickingBox.Location = new System.Drawing.Point(459, 192);
             this.stickingBox.Name = "stickingBox";
             this.stickingBox.Size = new System.Drawing.Size(121, 20);
             this.stickingBox.TabIndex = 39;
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(3, 30);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(450, 21);
+            this.label5.TabIndex = 40;
+            this.label5.Text = "Neighborhood Type";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // mobileNeighborHood
+            // 
+            this.mobileNeighborHood.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mobileNeighborHood.FormattingEnabled = true;
+            this.mobileNeighborHood.Items.AddRange(new object[] {
+            "Von Neumann",
+            "Moore"});
+            this.mobileNeighborHood.Location = new System.Drawing.Point(459, 30);
+            this.mobileNeighborHood.Name = "mobileNeighborHood";
+            this.mobileNeighborHood.Size = new System.Drawing.Size(121, 21);
+            this.mobileNeighborHood.TabIndex = 41;
             // 
             // _2ndOrderTabs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.mobileNeighborHood);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.stickingBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.button1);
@@ -219,5 +244,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox stickingBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox mobileNeighborHood;
     }
 }

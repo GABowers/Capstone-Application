@@ -9,6 +9,7 @@ using SysRand = System.Random;
 
 public class CA
 {
+    public static MobileCA mobileCA = new MobileCA();
     int caType = 0;
     List<AgentController> activeAgents = new List<AgentController>();
     System.Object[,] objects;
@@ -166,9 +167,9 @@ public class CA
 
     }
 
-    public void Set2ndOrder(int startState, double[] walkProbs, double stickingProb, bool sticking)
+    public void Set2ndOrder(int startState, double[] walkProbs, double stickingProb, bool sticking, int mobileNeighborhood)
     {
-        states[startState].Set2ndOrderInfo(walkProbs, stickingProb, sticking);
+        states[startState].Set2ndOrderInfo(walkProbs, stickingProb, sticking, mobileNeighborhood);
     }
 
     public void SetStateInfo(int startState, int endState, int neighborState, int rows, int columns, double prob)
@@ -670,21 +671,30 @@ public class CA
             int plusX = agentX + 1;
             int subY = agentY - 1;
             int plusY = agentY + 1;
-            // THIS IS NOT RIGHT. IN SITUATIONS WHERE A LOCATION IS NOT REAL, THAT LOCATION SHOULD BE SKIPPED
-            if (IsReal(subX, agentY) && IsReal(plusX, agentY) && IsReal(agentX, subY) && IsReal(agentX, plusY))
+            if(currentAgent.NeighborCheck(grid, states[currentAgent.currentState]))
             {
-                if (grid[subX, agentY].ContainsAgent || grid[plusX, agentY].ContainsAgent || grid[agentX, subY].ContainsAgent || grid[agentX, plusY].ContainsAgent)
-                {
-                    double rand = myRand.NextDouble();
-                    double moveProb = states[currentAgent.currentState].stickingProb;
-                    if (rand < moveProb)
-                        return false;
-                    else
-                        return true;
-                }
+                double rand = myRand.NextDouble();
+                double moveProb = states[currentAgent.currentState].stickingProb;
+                if (rand < moveProb)
+                    return false;
                 else
                     return true;
             }
+            // THIS IS NOT RIGHT. IN SITUATIONS WHERE A LOCATION IS NOT REAL, THAT LOCATION SHOULD BE SKIPPED
+            //if (IsReal(subX, agentY) && IsReal(plusX, agentY) && IsReal(agentX, subY) && IsReal(agentX, plusY))
+            //{
+            //    if (grid[subX, agentY].ContainsAgent || grid[plusX, agentY].ContainsAgent || grid[agentX, subY].ContainsAgent || grid[agentX, plusY].ContainsAgent)
+            //    {
+            //        double rand = myRand.NextDouble();
+            //        double moveProb = states[currentAgent.currentState].stickingProb;
+            //        if (rand < moveProb)
+            //            return false;
+            //        else
+            //            return true;
+            //    }
+            //    else
+            //        return true;
+            //}
             else
                 return true;
         }

@@ -227,7 +227,7 @@ namespace Capstone_Application
                     }
                     else if(statePageInfo[h].caType == 1)
                     {
-                        myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProb, statePageInfo[h].sticking);
+                        myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProb, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
                     }
                 }
                 myCA.InitializeGrid(cellAmounts);

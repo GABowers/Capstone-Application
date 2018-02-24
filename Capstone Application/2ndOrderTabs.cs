@@ -16,6 +16,7 @@ namespace Capstone_Application
         {
             InitializeComponent();
             this.Dock = DockStyle.Fill;
+            mobileNeighborHood.SelectedIndex = 0;
         }
 
         private void colorBox_Click(object sender, EventArgs e)
@@ -51,6 +52,7 @@ namespace Capstone_Application
         {
             info.caType = 1;
             info.color = colorBox.BackColor;
+            info.mobileNeighborhood = this.mobileNeighborHood.SelectedIndex;
             if (string.IsNullOrWhiteSpace(agentCount.Text))
             {
                 info.startingAmount = 0;
