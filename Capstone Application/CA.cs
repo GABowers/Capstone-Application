@@ -3,12 +3,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
-using SysRand = System.Random;
 //using System.Threading.Tasks;
 
 public class CA
 {
+
+    RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
     public static MobileCA mobileCA = new MobileCA();
     int caType = 0;
     List<AgentController> activeAgents = new List<AgentController>();
@@ -25,7 +27,6 @@ public class CA
     public int gridHeight;
     private int numStates;
     public int agentLocation;
-    SysRand myRand;
     public  List<int> stateCount = new List<int>();
     public List<int> stateCountReplacement = new List<int>();
     public List<int> neighborCount = new List<int>();
@@ -55,7 +56,6 @@ public class CA
             stateCount.Add(0);
             states[i] = new CellState(numStates, numStates, neighborhood.GetNeighborSize());
         }
-        myRand = new SysRand();
     }
 
     //public void ChangeCell(int i, int j)
@@ -77,7 +77,6 @@ public class CA
 
     public void InitializeGrid(List<int> cellAmounts)
     {
-        myRand = new SysRand();
         // This method creates the grid after the user inputs the necessary initial and transition information
 
         // make sure ratios is as big as our numStates
@@ -439,7 +438,13 @@ public class CA
     private int GetIndexFromRange(double[] agentAmountPerState)
     {
         double range = agentAmountPerState[agentAmountPerState.Length - 1];
-        double pick = myRand.NextDouble() * range;
+        var rng = new RNGCryptoServiceProvider();
+        var bytes = new Byte[8];
+        rng.GetBytes(bytes);
+        var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
+        Double randomDouble = ul / (Double)(1UL << 53);
+
+        double pick = randomDouble * range;
         return Array.IndexOf(agentAmountPerState, agentAmountPerState.Where(x => x >= pick).First());
     }
 
@@ -463,7 +468,11 @@ public class CA
         int newY = currentAgent.yLocation;
         int oldX = currentAgent.xLocation;
         int oldY = currentAgent.yLocation;
-        double randomWalk = myRand.NextDouble();
+        var rng = new RNGCryptoServiceProvider();
+        var bytes = new Byte[8];
+        rng.GetBytes(bytes);
+        var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
+        Double randomWalk = ul / (Double)(1UL << 53);
         double upProb = states[currentAgent.currentState].walkProbs[0];
         double rightProb = states[currentAgent.currentState].walkProbs[1];
         double downProb = states[currentAgent.currentState].walkProbs[2];
@@ -673,7 +682,11 @@ public class CA
             int plusY = agentY + 1;
             if(currentAgent.NeighborCheck(grid, states[currentAgent.currentState]))
             {
-                double rand = myRand.NextDouble();
+                var rng = new RNGCryptoServiceProvider();
+                var bytes = new Byte[8];
+                rng.GetBytes(bytes);
+                var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
+                Double rand = ul / (Double)(1UL << 53);
                 double moveProb = states[currentAgent.currentState].stickingProb;
                 if (rand < moveProb)
                     return false;
