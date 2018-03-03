@@ -333,6 +333,15 @@ namespace Capstone_Application
             }
         }
 
+        public Tuple<int, int> TrueLocation(int xValue, int yValue, PictureBoxWithInterpolationMode container)
+        {
+            Double tempX = Convert.ToDouble(xValue);
+            Double tempY = Convert.ToDouble(yValue);
+            int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
+            int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
+            return new Tuple<int, int>(xProper, yProper);
+        }
+
         public void EditGrid(int xValue, int yValue, PictureBoxWithInterpolationMode container, int buttonPressed)
         {
             if(editModeOn == true)

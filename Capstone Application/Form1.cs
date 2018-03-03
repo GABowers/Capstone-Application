@@ -15,6 +15,7 @@ namespace Capstone_Application
 {
     public partial class Form1 : Form
     {
+        ToolTip locationTT;
         bool unpaused;
         public bool counterFormOpen = false;
         bool running = false;
@@ -31,6 +32,7 @@ namespace Capstone_Application
         {
             InitializeComponent();
             innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            locationTT = new ToolTip();
         }
 
         private void newModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -105,6 +107,7 @@ namespace Capstone_Application
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            // Ask Dan about this
             while (running == true)
             {
                 if(iterationSpeed == 0)
@@ -704,6 +707,45 @@ namespace Capstone_Application
                 double temp = 1 / (double)speed;
                 double temp2 = temp * 1000;
                 iterationSpeed = (int)temp2;
+            }
+        }
+
+        private void innerPictureBox_MouseHover(object sender, EventArgs e)
+        {
+            //base.OnMouseHover(e);
+            if (controllerScript.editModeOn == true)
+            {
+                
+                //if (this.locationTT == null)
+                //    return;
+                //System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
+                //int mouseX = point.X;
+                //int mouseY = point.Y;
+                //string location = "[" + mouseX + ", " + mouseY + "]";
+                //locationTT.SetToolTip(innerPictureBox, location);
+                //point.Y += 20;
+                //this.locationTT.Show(location, this, point);
+            }
+        }
+
+        private void innerPictureBox_MouseLeave(object sender, EventArgs e)
+        {
+            //base.OnMouseLeave(e);
+
+            locationTT.Hide(innerPictureBox);
+        }
+
+        private void innerPictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (controllerScript.editModeOn == true)
+            {
+
+                //if (this.locationTT == null)
+                //    return;
+                System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
+                Tuple<int, int> realLocation = controllerScript.TrueLocation(point.X, point.Y, innerPictureBox);
+                string location = "[" + realLocation.Item1 + ", " + realLocation.Item2 + "]";
+                locationTT.SetToolTip(innerPictureBox, location);
             }
         }
     }

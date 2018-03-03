@@ -30,11 +30,13 @@
         {
             this.tracePictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.RunButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.pathTraceRadio = new System.Windows.Forms.RadioButton();
             this.freqTraceRadio = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.statusLabel = new System.Windows.Forms.Label();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.tracePictureBox)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -51,7 +53,8 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.statusLabel);
+            this.groupBox1.Controls.Add(this.progressBar1);
+            this.groupBox1.Controls.Add(this.RunButton);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.pathTraceRadio);
             this.groupBox1.Controls.Add(this.freqTraceRadio);
@@ -61,6 +64,16 @@
             this.groupBox1.Size = new System.Drawing.Size(570, 30);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // RunButton
+            // 
+            this.RunButton.Location = new System.Drawing.Point(426, 6);
+            this.RunButton.Name = "RunButton";
+            this.RunButton.Size = new System.Drawing.Size(70, 23);
+            this.RunButton.TabIndex = 4;
+            this.RunButton.Text = "Run";
+            this.RunButton.UseVisualStyleBackColor = true;
+            this.RunButton.Click += new System.EventHandler(this.RunButton_Click);
             // 
             // button1
             // 
@@ -105,14 +118,17 @@
             this.panel1.Size = new System.Drawing.Size(69, 500);
             this.panel1.TabIndex = 2;
             // 
-            // statusLabel
+            // backgroundWorker1
             // 
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.Location = new System.Drawing.Point(274, 11);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(33, 13);
-            this.statusLabel.TabIndex = 3;
-            this.statusLabel.Text = "Done";
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged_1);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(218, 6);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(187, 23);
+            this.progressBar1.TabIndex = 5;
             // 
             // ImageTrace
             // 
@@ -124,6 +140,7 @@
             this.Controls.Add(this.tracePictureBox);
             this.Name = "ImageTrace";
             this.Text = "ImageTrace";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ImageTrace_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.tracePictureBox)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -139,6 +156,8 @@
         private System.Windows.Forms.RadioButton freqTraceRadio;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label statusLabel;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button RunButton;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
