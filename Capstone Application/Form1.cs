@@ -16,15 +16,16 @@ namespace Capstone_Application
     public partial class Form1 : Form
     {
         ToolTip locationTT;
-        bool unpaused;
+        //bool unpaused;
         public bool counterFormOpen = false;
         bool running = false;
-        bool saveImages = false;
+        //bool saveImages = false;
         string imageSaveFolder;
         string countSaveFolder;
         int mouseDownX = 0;
         int mouseDownY = 0;
         int iterationSpeed = 0;
+        int editState = 0;
         public Settings settingsScript = new Settings();
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
@@ -218,11 +219,11 @@ namespace Capstone_Application
                 {
                     if(e.Button == MouseButtons.Left)
                     {
-                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 0);
+                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 0, editState);
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
-                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 1);
+                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 1, editState);
                     }
                 }
                 else
@@ -245,11 +246,11 @@ namespace Capstone_Application
                     }
                     if (e.Button == MouseButtons.Left)
                     {
-                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 0);
+                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 0, editState);
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
-                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 1);
+                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 1, editState);
                     }
                 }
                 UpdateImage();
@@ -278,13 +279,44 @@ namespace Capstone_Application
             for (int i = 0; i < states; i++)
             {
                 string newname = "CellBox" + i.ToString();
+                string otherName = "Type " + i.ToString();
                 ToolStripTextBox textBox = new ToolStripTextBox(newname);
-                textBox.TextChanged += new System.EventHandler(textBox_TextChanged);
+                ToolStripMenuItem stateSelect = new ToolStripMenuItem(otherName);
+                stateSelect.Text = otherName;
+                textBox.TextChanged += new System.EventHandler(countResetTextBox_TextChanged);
+                stateSelect.Click += new System.EventHandler(stateSelect_Click);
                 this.cellCountToolStripMenuItem.DropDownItems.Add(textBox);
+                this.editGridButton.DropDownItems.Add(stateSelect);
             }
         }
 
-        public string GetText(string controlName)
+        private void stateSelect_Click(object sender, EventArgs e)
+        {
+            UncheckOtherToolStripMenuItems((ToolStripMenuItem)sender);
+            ToolStripMenuItem item = (ToolStripMenuItem)sender;
+            editState = int.Parse(item.Text.Remove(0, 5));
+        }
+
+        public void UncheckOtherToolStripMenuItems(ToolStripMenuItem selectedMenuItem)
+        {
+            selectedMenuItem.Checked = true;
+
+            // Select the other MenuItens from the ParentMenu(OwnerItens) and unchecked this,
+            // The current Linq Expression verify if the item is a real ToolStripMenuItem
+            // and if the item is a another ToolStripMenuItem to uncheck this.
+            foreach (var ltoolStripMenuItem in (from object
+                                                    item in selectedMenuItem.Owner.Items
+                                                let ltoolStripMenuItem = item as ToolStripMenuItem
+                                                where ltoolStripMenuItem != null
+                                                where !item.Equals(selectedMenuItem)
+                                                select ltoolStripMenuItem))
+                (ltoolStripMenuItem).Checked = false;
+
+            // This line is optional, for show the mainMenu after click
+            // selectedMenuItem.Owner.Show();
+        }
+
+        public string GetCountResetText(string controlName)
         {
             return this.cellCountToolStripMenuItem.DropDownItems[controlName].Text;
         }
@@ -452,14 +484,14 @@ namespace Capstone_Application
             
         }
 
-        private void textBox_TextChanged(object sender, EventArgs e)
+        private void countResetTextBox_TextChanged(object sender, EventArgs e)
         {
             settingsScript.CountResetValues.Clear();
             List<int> cellCounts = new List<int>();
             for (int i = 0; i < controllerScript.amountOfCellTypes; i++)
             {
                 string currentName = "CellBox" + i.ToString();
-                string boxText = GetText(currentName);
+                string boxText = GetCountResetText(currentName);
                 if (string.IsNullOrWhiteSpace(boxText))
                 {
                     cellCounts.Add(-1);
@@ -712,20 +744,7 @@ namespace Capstone_Application
 
         private void innerPictureBox_MouseHover(object sender, EventArgs e)
         {
-            //base.OnMouseHover(e);
-            if (controllerScript.editModeOn == true)
-            {
-                
-                //if (this.locationTT == null)
-                //    return;
-                //System.Drawing.Point point = innerPictureBox.PointToClient(Cursor.Position);
-                //int mouseX = point.X;
-                //int mouseY = point.Y;
-                //string location = "[" + mouseX + ", " + mouseY + "]";
-                //locationTT.SetToolTip(innerPictureBox, location);
-                //point.Y += 20;
-                //this.locationTT.Show(location, this, point);
-            }
+
         }
 
         private void innerPictureBox_MouseLeave(object sender, EventArgs e)

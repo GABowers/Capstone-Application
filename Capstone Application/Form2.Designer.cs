@@ -215,7 +215,7 @@
             this.cancelTab.Location = new System.Drawing.Point(465, 532);
             this.cancelTab.Name = "cancelTab";
             this.cancelTab.Size = new System.Drawing.Size(60, 28);
-            this.cancelTab.TabIndex = 1;
+            this.cancelTab.TabIndex = 4;
             this.cancelTab.Text = "Cancel";
             this.cancelTab.UseVisualStyleBackColor = true;
             this.cancelTab.Click += new System.EventHandler(this.cancelTab_Click);
@@ -235,7 +235,7 @@
             this.label6.Location = new System.Drawing.Point(0, 533);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(287, 27);
-            this.label6.TabIndex = 3;
+            this.label6.TabIndex = 5;
             this.label6.Text = "Tooltip and event notification";
             // 
             // previousTab
@@ -243,7 +243,7 @@
             this.previousTab.Location = new System.Drawing.Point(293, 532);
             this.previousTab.Name = "previousTab";
             this.previousTab.Size = new System.Drawing.Size(80, 28);
-            this.previousTab.TabIndex = 4;
+            this.previousTab.TabIndex = 3;
             this.previousTab.Text = "Previous Tab";
             this.previousTab.UseVisualStyleBackColor = true;
             this.previousTab.Click += new System.EventHandler(this.previousTab_Click);
@@ -253,7 +253,7 @@
             this.nextTab.Location = new System.Drawing.Point(379, 532);
             this.nextTab.Name = "nextTab";
             this.nextTab.Size = new System.Drawing.Size(80, 28);
-            this.nextTab.TabIndex = 5;
+            this.nextTab.TabIndex = 1;
             this.nextTab.Text = "Next Tab";
             this.nextTab.UseVisualStyleBackColor = true;
             this.nextTab.Click += new System.EventHandler(this.nextTab_Click);

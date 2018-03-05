@@ -15,8 +15,6 @@ namespace Capstone_Application
         ControllerScript controllerScript = Form1.controllerScript;
         int startX = 4;
         int startY = 7;
-        double proportion = 100;
-        string done = "Done";
         List<CheckBox> checklist = new List<CheckBox>();
         Bitmap bmp;
 
@@ -31,18 +29,10 @@ namespace Capstone_Application
 
         private void pathTraceRadio_CheckedChanged(object sender, EventArgs e)
         {
-            //if (this.pathTraceRadio.Checked)
-            //{
-            //    DoTrace();
-            //}
         }
 
         private void freqTraceRadio_CheckedChanged(object sender, EventArgs e)
         {
-            //if (this.freqTraceRadio.Checked)
-            //{
-            //    DoHeatMap();
-            //}
         }
 
         void AddAgents()
@@ -63,14 +53,6 @@ namespace Capstone_Application
 
         void checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            //if (this.freqTraceRadio.Checked)
-            //{
-            //    DoHeatMap();
-            //}
-            //else if (this.pathTraceRadio.Checked)
-            //{
-            //    DoTrace();
-            //}
         }
 
         void LookForWork()
@@ -89,13 +71,6 @@ namespace Capstone_Application
         {
             LookForWork();
         }
-
-        //private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        //{
-        //    Console.WriteLine("progress: " + e.ProgressPercentage);
-        //    this.progressBar1.Value = e.ProgressPercentage;
-        //    //Invoke(new Action(() => UpdateText(e.ProgressPercentage)));
-        //}
 
         void DoHeatMap()
         {

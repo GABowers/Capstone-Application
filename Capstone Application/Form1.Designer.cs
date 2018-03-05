@@ -59,7 +59,6 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.editGridButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
             this.runCountMaxRuns = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,6 +84,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.editGridButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
@@ -349,17 +349,6 @@
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
-            // editGridButton
-            // 
-            this.editGridButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.editGridButton.Image = ((System.Drawing.Image)(resources.GetObject("editGridButton.Image")));
-            this.editGridButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.editGridButton.Name = "editGridButton";
-            this.editGridButton.Size = new System.Drawing.Size(56, 22);
-            this.editGridButton.Text = "Edit Grid";
-            this.editGridButton.ToolTipText = "Edit Grid";
-            this.editGridButton.Click += new System.EventHandler(this.editGridButton_Click);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -535,7 +524,7 @@
             this.increase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.increase.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.increase.Name = "increase";
-            this.increase.Size = new System.Drawing.Size(23, 22);
+            this.increase.Size = new System.Drawing.Size(23, 19);
             this.increase.Text = "+";
             this.increase.Click += new System.EventHandler(this.increase_Click);
             // 
@@ -581,6 +570,14 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
+            // editGridButton
+            // 
+            this.editGridButton.Name = "editGridButton";
+            this.editGridButton.Size = new System.Drawing.Size(65, 22);
+            this.editGridButton.Text = "Edit Grid";
+            this.editGridButton.ToolTipText = "Edit Grid";
+            this.editGridButton.Click += new System.EventHandler(this.editGridButton_Click);
             // 
             // Form1
             // 
@@ -646,7 +643,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripButton editGridButton;
         public System.Windows.Forms.ToolStripMenuItem iterationCountToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem cellCountToolStripMenuItem;
         public System.Windows.Forms.ToolStripTextBox resetIterationTextBox;
@@ -663,6 +659,7 @@
         private System.Windows.Forms.ToolStripTextBox speedInput;
         private System.Windows.Forms.ToolStripButton decrease;
         private System.Windows.Forms.ToolStripButton increase;
+        private System.Windows.Forms.ToolStripDropDownButton editGridButton;
     }
 }
 

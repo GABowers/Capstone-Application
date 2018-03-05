@@ -342,7 +342,7 @@ namespace Capstone_Application
             return new Tuple<int, int>(xProper, yProper);
         }
 
-        public void EditGrid(int xValue, int yValue, PictureBoxWithInterpolationMode container, int buttonPressed)
+        public void EditGrid(int xValue, int yValue, PictureBoxWithInterpolationMode container, int buttonPressed, int state)
         {
             if(editModeOn == true)
             {
@@ -354,11 +354,11 @@ namespace Capstone_Application
                 {
                     if (myCA.grid[xProper, yProper].ContainsAgent == true)
                     {
-                        myCA.grid[xProper, yProper].agent.currentState += 1;
-                        if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
-                        {
-                            myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
-                        }
+                        myCA.grid[xProper, yProper].agent.currentState = state;
+                        //if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
+                        //{
+                        //    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
+                        //}
                     }
                 }
                 if (buttonPressed == 1)
@@ -373,7 +373,7 @@ namespace Capstone_Application
                     {
                         myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper));
                         myCA.grid[xProper, yProper].ContainsAgent = true;
-                        myCA.grid[xProper, yProper].agent.currentState = 0;
+                        myCA.grid[xProper, yProper].agent.currentState = state;
                         myCA.grid[xProper, yProper].agent.xLocation = xProper;
                         myCA.grid[xProper, yProper].agent.yLocation = yProper;
                         myCA.AddAgent(myCA.grid[xProper, yProper].agent);
@@ -382,7 +382,7 @@ namespace Capstone_Application
             }
         }
 
-        public void EditGrid(int[] rangeX, int[] rangeY, PictureBoxWithInterpolationMode container, int buttonPressed)
+        public void EditGrid(int[] rangeX, int[] rangeY, PictureBoxWithInterpolationMode container, int buttonPressed, int state)
         {
             if (editModeOn == true)
             {
@@ -398,11 +398,11 @@ namespace Capstone_Application
                         {
                             if (myCA.grid[xProper, yProper].ContainsAgent == true)
                             {
-                                myCA.grid[xProper, yProper].agent.currentState += 1;
-                                if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
-                                {
-                                    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
-                                }
+                                myCA.grid[xProper, yProper].agent.currentState = state;
+                                //if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
+                                //{
+                                //    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
+                                //}
                             }
                         }
                         if (buttonPressed == 1)
@@ -417,7 +417,7 @@ namespace Capstone_Application
                             {
                                 myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper));
                                 myCA.grid[xProper, yProper].ContainsAgent = true;
-                                myCA.grid[xProper, yProper].agent.currentState = 0;
+                                myCA.grid[xProper, yProper].agent.currentState = state;
                                 myCA.grid[xProper, yProper].agent.xLocation = xProper;
                                 myCA.grid[xProper, yProper].agent.yLocation = yProper;
                                 myCA.AddAgent(myCA.grid[xProper, yProper].agent);
