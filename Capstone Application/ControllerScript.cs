@@ -446,7 +446,7 @@ namespace Capstone_Application
                 {
                     if(form.settingsScript.IterationResetValue == iterations)
                         {
-                            CheckDataSave(form, time);
+                            CheckFinalDataSave(form, time);
                             form.AutoReset();
                         }
                 }
@@ -457,7 +457,7 @@ namespace Capstone_Application
                     {
                         if(myCA.stateCount[i] == form.settingsScript.CountResetValues[i])
                         {
-                            CheckDataSave(form, time);
+                            CheckFinalDataSave(form, time);
                             form.AutoReset();
                         }
                     }
@@ -510,6 +510,35 @@ namespace Capstone_Application
                             // Auto image save
                             form.InvokeImageSave(time);
                         }
+                    }
+                }
+            }
+        }
+
+        void CheckFinalDataSave(Form1 form, string time)
+        {
+            // This is for saving the cell counts in text file
+            if (form.settingsScript.CountSave)
+            {
+                // Check for code denoting save at reset. If so, do the image save
+                for (int i = 0; i < form.settingsScript.CountSaveValues.Count; i++)
+                {
+                    if (form.settingsScript.CountSaveValues[i] == -1)
+                    {
+                        form.SaveCounts(time);
+                    }
+                }
+            }
+
+            // For image saving
+            if (form.settingsScript.ImageSave)
+            {
+                // Check for code denoting save at reset. If so, do the image save
+                for (int i = 0; i < form.settingsScript.ImageSaveValues.Count; i++)
+                {
+                    if (form.settingsScript.ImageSaveValues[i] == -1)
+                    {
+                        form.InvokeImageSave(time);
                     }
                 }
             }

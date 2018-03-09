@@ -2,7 +2,7 @@
 
 Documentation
 Second order
--gravity, random walks, cell faces, agent attraction, joined agent transitions ("reactions")
+- cell faces, agent attraction, joined agent transitions ("reactions")
 1D? 3D?
 Re-add grid types - cylinder, torus
 Possible add in plots or tables of cell counts? Real time.
@@ -15,3 +15,9 @@ Vector-based graphics for multi-faced agents
 
 consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
 to allow for addition of StatePageInfos without knowing the exact number of rows and columns.
+
+Fix "CheckNeighbor" method. Have it check each neighbor to be real, then add them to a list. THen move through that list checking each
+    individual spot in a new method or something, perhaps which returns a list of True/false
+
+Add "template" system. Select template when adding grid, which changes settings. For ants, CA=second order, grid=box,
+    neighborhood = something, agents = variable (3 or more, with 1 = colony, 2 = food, 3 = ants, 4 = obstacle), grid size editable

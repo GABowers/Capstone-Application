@@ -174,9 +174,9 @@ namespace Capstone_Application
             controllerScript.ResetGrid();
             controllerScript.CreateCA();
             controllerScript.StartCA(this);
-            UpdateRunBox();
-            UpdateIterationBox();
-            UpdateImage();
+            Invoke(new Action(() => UpdateRunBox()));
+            Invoke(new Action(() => UpdateIterationBox()));
+            Invoke(new Action(() => UpdateImage()));
         }
 
         private void editGridButton_Click(object sender, EventArgs e)
