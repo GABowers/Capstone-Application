@@ -181,15 +181,18 @@ namespace Capstone_Application
 
         private void editGridButton_Click(object sender, EventArgs e)
         {
-            if (controllerScript.editModeOn == false)
+            if(running == false)
             {
-                this.editGridButton.Text = "Editing";
-                controllerScript.editModeOn = true;
-            }
-            else if (controllerScript.editModeOn == true)
-            {
-                this.editGridButton.Text = "Edit Grid";
-                controllerScript.editModeOn = false;
+                if (controllerScript.editModeOn == false)
+                {
+                    this.editGridButton.Text = "Editing";
+                    controllerScript.editModeOn = true;
+                }
+                else if (controllerScript.editModeOn == true)
+                {
+                    this.editGridButton.Text = "Edit Grid";
+                    controllerScript.editModeOn = false;
+                }
             }
         }
 
