@@ -100,7 +100,14 @@ namespace Capstone_Application
         {
             info.color = colorBox.BackColor;
             //Maybe check that the number is valid first?
-            info.startingAmount = int.Parse(agentCount.Text);
+            if(int.TryParse(agentCount.Text, out int result))
+            {
+                info.startingAmount = int.Parse(agentCount.Text);
+            }
+            else
+            {
+                info.startingAmount = 0;
+            }
             for (int i = 0; i < info.probs.GetLength(0); i++)
             {
                 int otherState = i + 1;

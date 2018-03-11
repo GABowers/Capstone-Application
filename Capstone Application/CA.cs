@@ -237,21 +237,24 @@ public class CA
             {
                 for (int y = 0; y < gridHeight; ++y)
                 {
-                    int oldState = grid[x, y].agent.currentState;
-                    if (neighborType == NType.Advanced)
+                    if(grid[x,y].ContainsAgent)
                     {
-                        double[] probChances = AdvancedGetProbChances(oldState, x, y);
-                        grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                        int oldState = grid[x, y].agent.currentState;
+                        if (neighborType == NType.Advanced)
+                        {
+                            double[] probChances = AdvancedGetProbChances(oldState, x, y);
+                            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                        }
+                        else
+                        {
+                            List<int> neighborStateCount = GetNeighborCount(x, y);
+                            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+                            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                        }
+                        int newState = grid[x, y].agent.currentState;
+                        CheckTransitions(oldState, newState);
+                        stateCount[newState] += 1;
                     }
-                    else
-                    {
-                        List<int> neighborStateCount = GetNeighborCount(x, y);
-                        double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-                        grid[x, y].agent.currentState = GetStateFromProbability(probChances);
-                    }
-                    int newState = grid[x, y].agent.currentState;
-                    CheckTransitions(oldState, newState);
-                    stateCount[newState] += 1;
                 }
             }
         }
@@ -335,9 +338,14 @@ public class CA
                         break;
                 }
             }
-            if (modifiedP == null)
-                continue;
-            neighborCount[backup[modifiedP.X, modifiedP.Y].agent.currentState]++;
+
+            // Check that modifiedP exists--that it's not an empty spot
+            if (backup[modifiedP.X, modifiedP.Y].ContainsAgent)
+            {
+                if (modifiedP == null)
+                    continue;
+                neighborCount[backup[modifiedP.X, modifiedP.Y].agent.currentState]++;
+            }
         }
         return neighborCount;
     }
