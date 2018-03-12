@@ -48,7 +48,28 @@ namespace Capstone_Application
             }
         }
 
-        public void SetValues(StatePageInfo info, int currentState)
+        public void UpdateValues(StatePageInfo info)
+        {
+            colorBox.BackColor = info.color;
+
+            mobileNeighborHood.SelectedIndex = info.mobileNeighborhood;
+
+            agentCount.Text = info.startingAmount.ToString();
+
+            // This will need changed when adding ability to move diagonally
+
+            walkUpBox.Text = info.walkProbs[0].ToString();
+            walkRightBox.Text = info.walkProbs[1].ToString();
+            walkDownBox.Text = info.walkProbs[2].ToString();
+            walkLeftBox.Text = info.walkProbs[3].ToString();
+
+            if(info.sticking)
+            {
+                stickingBox.Text = info.stickingProb.ToString();
+            }
+        }
+
+        public void SetValues(StatePageInfo info)
         {
             info.caType = 1;
             info.color = colorBox.BackColor;

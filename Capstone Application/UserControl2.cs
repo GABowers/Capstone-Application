@@ -77,13 +77,12 @@ namespace Capstone_Application
             }
         }
 
-        public void UpdateValues(StatePageInfo info, int currentState, int amountOfStates)
+        public void UpdateValues(StatePageInfo info, int currentState)
         {
             colorBox.BackColor = info.color;
-            if (info.startingAmount.HasValue)
-                agentCount.Text = info.startingAmount.ToString();
+            agentCount.Text = info.startingAmount.ToString();
 
-            for (int otherState = 0; otherState < amountOfStates; otherState++)
+            for (int otherState = 0; otherState < info.advProbs.GetLength(0); otherState++)
             {
                 int currentOtherState = otherState + 1;
 
@@ -92,22 +91,28 @@ namespace Capstone_Application
                 // of however much of 0-1 is used)
                 // rather than keeping blank vVv   Just consider it...
                 if (currentOtherState == currentState)
+                {
+                    for (int neighborState = 0; neighborState < info.advProbs.GetLength(1); neighborState++)
+                    {
+                        info.advProbs[otherState, neighborState] = new double[1, 1];
+                    }
                     continue;
+                }
 
                 string stateName = "StatePanel" + otherState;
-
-                for (int neighborState = 0; neighborState < amountOfStates; neighborState++)
+                for (int neighborState = 0; neighborState < info.advProbs.GetLength(1); neighborState++)
                 {
                     string neighborName = "NeighborPanel" + neighborState;
-                    Neighbor_State_Entry currentNeighbor = this.fullPanel.Controls[stateName].Controls.Cast<Neighbor_State_Entry>().Where(c => c.Name == ("NeighborPanel" + neighborState)).FirstOrDefault();
+                    To_State_Panel currentStatePanel = this.fullPanel.Controls.Find(stateName, true).FirstOrDefault() as To_State_Panel;
+                    Neighbor_State_Entry currentNeighbor = currentStatePanel.Controls.Find(neighborName, true).FirstOrDefault() as Neighbor_State_Entry;
                     int columns = currentNeighbor.dataGridView1.ColumnCount;
                     int rows = currentNeighbor.dataGridView1.RowCount;
-                    double[,] probArray = new double[rows, columns];
-                    for(int i = 0; i < rows; i++)
+                    info.advProbs[otherState, neighborState] = new double[rows, columns];
+                    for (int i = 0; i < rows; i++)
                     {
-                        for(int j = 0; j < columns; j++)
+                        for (int j = 0; j < columns; j++)
                         {
-                            probArray[i, j] = Double.Parse(currentNeighbor.dataGridView1[i, j].ToString());
+                            currentNeighbor.dataGridView1[i, j].Value = info.advProbs[otherState, neighborState][i, j];
                         }
                     }
                 }

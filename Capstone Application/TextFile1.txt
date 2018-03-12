@@ -4,7 +4,6 @@ Documentation
 Second order
 - cell faces, agent attraction, joined agent transitions ("reactions")
 1D? 3D?
-Re-add grid types - cylinder, torus
 Possible add in plots or tables of cell counts? Real time.
 Change how the CA is started, so auxilary services like the cell counter window can function properly without starting the CA
 Consider allowing user to change filetypes (of auto-saved images)

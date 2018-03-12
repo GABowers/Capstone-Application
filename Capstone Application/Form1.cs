@@ -15,6 +15,7 @@ namespace Capstone_Application
 {
     public partial class Form1 : Form
     {
+        Form2 otherform;
         ToolTip locationTT;
         //bool unpaused;
         public bool counterFormOpen = false;
@@ -34,14 +35,20 @@ namespace Capstone_Application
             InitializeComponent();
             innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             locationTT = new ToolTip();
+            this.SetDesktopLocation(0, 0);
         }
 
         private void newModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string name = "New Model Dialog";
-            Form2 newModelDialog = new Form2(name, this);
-            newModelDialog.mainForm = this;
+            Form2 newModelDialog = new Form2(name, this, false);
+            otherform = newModelDialog;
             newModelDialog.ShowDialog();
+        }
+
+        public void OnOtherFormClose()
+        {
+            otherform.Dispose();
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
@@ -157,9 +164,10 @@ namespace Capstone_Application
         private void editModelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string name = "Edit Model Dialog";
-            Form2 newModelDialog = new Form2(name, this);
-            newModelDialog.mainForm = this;
-            newModelDialog.ShowDialog();
+            Form2 editModelDialog = new Form2(name, this, true);
+            otherform = editModelDialog;
+            editModelDialog.Visible = false;
+            editModelDialog.ShowDialog(this);
         }
 
         private void toolStripLabel3_Click(object sender, EventArgs e)

@@ -93,7 +93,7 @@ public class CA
         // this is a list of which states still needed to be added
         
         int gridSize = (gridWidth * gridHeight);
-        //int currentMin = gridSize;
+        // if total cells < gridSize, check/decide connectivity method - every other point, or what?
         int state = 0;
         
         var list = new List<int>(Enumerable.Range(1, gridSize));

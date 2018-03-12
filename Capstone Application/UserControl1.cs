@@ -76,8 +76,7 @@ namespace Capstone_Application
         public void UpdateValues(StatePageInfo info, int currentState)
         {
             colorBox.BackColor = info.color;
-            if (info.startingAmount.HasValue)
-                agentCount.Text = info.startingAmount.ToString();
+            agentCount.Text = info.startingAmount.ToString();
             for (int i = 0; i < info.probs.GetLength(0); i++)
             {
                 int otherState = i + 1;
@@ -89,8 +88,8 @@ namespace Capstone_Application
                     for (int neighbors = 0; neighbors < info.probs.GetLength(2); neighbors++)
                     {
                         string name = currentState + "." + i + "." + neighborState + "." + neighbors;
-                        //if (info.probs[i, neighborState, neighbors] != null)
-                            this.Controls[name].Text = info.probs[i, neighborState, neighbors].ToString();
+
+                        this.Controls[name].Text = info.probs[i, neighborState, neighbors].ToString();
                     }
                 }
             }

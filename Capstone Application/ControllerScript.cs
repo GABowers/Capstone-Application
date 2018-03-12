@@ -50,8 +50,9 @@ namespace Capstone_Application
             mainPageController = new MainPageController();
         }
 
-        public void SetMainInfo(ComboBox neighborType, ComboBox gridType, TextBox stateNumberBox, TextBox gridSizeHori, TextBox gridSizeVert)
+        public void SetMainInfo(ComboBox caType, ComboBox neighborType, ComboBox gridType, TextBox stateNumberBox, TextBox gridSizeHori, TextBox gridSizeVert)
         {
+            caType.SelectedIndex = mainPageInfo.caType;
             gridType.SelectedIndex = (int)mainPageInfo.gridType;
             neighborType.SelectedIndex = (int)mainPageInfo.nType;
             //May have errors here - previously it was an int? so it checked if a value had been assigned.
@@ -148,14 +149,30 @@ namespace Capstone_Application
             newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
 
+        public void RetrieveProbValues(UserControl1 newUC, int currentState)
+        {
+            // Do these need to be here? Seems a little like excessive OOP.
+            newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
+        }
+
         public void AdvancedUpdateProbValues(UserControl2 newUC, int currentState)
         {
             newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
 
+        public void AdvancedRetrieveProbValues(UserControl2 newUC, int currentState)
+        {
+            newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
+        }
+
         public void Update2ndOrder(_2ndOrderTabs newUC, int currentState)
         {
-            newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
+            newUC.SetValues(statePageInfo[(currentState - 1)]);
+        }
+
+        public void Retrieve2ndOrder(_2ndOrderTabs newUC, int currentState)
+        {
+            newUC.UpdateValues(statePageInfo[(currentState - 1)]);
         }
 
         // Stuff from other controller here

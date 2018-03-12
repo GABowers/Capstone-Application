@@ -41,7 +41,7 @@
             this.neighborTypeBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.caType = new System.Windows.Forms.ComboBox();
+            this.caTypeBox = new System.Windows.Forms.ComboBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.cancelTab = new System.Windows.Forms.Button();
             this.confirmTab = new System.Windows.Forms.Button();
@@ -74,7 +74,7 @@
             this.tabPage1.Controls.Add(this.neighborTypeBox);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.caType);
+            this.tabPage1.Controls.Add(this.caTypeBox);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -192,18 +192,18 @@
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
-            // caType
+            // caTypeBox
             // 
-            this.caType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.caType.FormattingEnabled = true;
-            this.caType.Items.AddRange(new object[] {
+            this.caTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.caTypeBox.FormattingEnabled = true;
+            this.caTypeBox.Items.AddRange(new object[] {
             "First Order",
             "Second Order"});
-            this.caType.Location = new System.Drawing.Point(147, 6);
-            this.caType.Name = "caType";
-            this.caType.Size = new System.Drawing.Size(121, 21);
-            this.caType.TabIndex = 0;
-            this.caType.SelectedIndexChanged += new System.EventHandler(this.caType_SelectedIndexChanged);
+            this.caTypeBox.Location = new System.Drawing.Point(147, 6);
+            this.caTypeBox.Name = "caTypeBox";
+            this.caTypeBox.Size = new System.Drawing.Size(121, 21);
+            this.caTypeBox.TabIndex = 0;
+            this.caTypeBox.SelectedIndexChanged += new System.EventHandler(this.caType_SelectedIndexChanged);
             // 
             // colorDialog1
             // 
@@ -271,7 +271,9 @@
             this.Controls.Add(this.cancelTab);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form2";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings Dialog";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -284,7 +286,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox caType;
+        private System.Windows.Forms.ComboBox caTypeBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
