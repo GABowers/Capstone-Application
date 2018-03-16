@@ -338,7 +338,6 @@ public class CA
                         break;
                 }
             }
-
             // Check that modifiedP exists--that it's not an empty spot
             if (backup[modifiedP.X, modifiedP.Y].ContainsAgent)
             {
