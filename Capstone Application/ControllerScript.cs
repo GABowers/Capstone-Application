@@ -189,7 +189,6 @@ namespace Capstone_Application
             fullCount.Add(currentCellCount);
             fullTransitions.Add(currentTransitions);
             CheckSettings(currentForm);
-            Console.WriteLine("Length of count: " + fullCount.Count);
         }
 
         public void CreateCA()
@@ -337,7 +336,6 @@ namespace Capstone_Application
             //probabilities.Clear();
             myCA = null;
             alreadyCA = false;
-            Console.WriteLine("Length of count: " + fullCount.Count);
         }
 
         public void ResetGrid()

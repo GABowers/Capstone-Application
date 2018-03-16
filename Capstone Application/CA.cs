@@ -311,7 +311,7 @@ public class CA
         for (int i = 0; i < numStates; ++i)
             neighborCount.Add(new int());
         List<Point> neighbors = neighborhood.GetNeighbors(x, y);
-        
+
         //Get a count of each state in our neighborhood
         foreach (Point p in neighbors)
         {
@@ -339,10 +339,12 @@ public class CA
                 }
             }
             // Check that modifiedP exists--that it's not an empty spot
+
+            if (modifiedP == null)
+                continue;
             if (backup[modifiedP.X, modifiedP.Y].ContainsAgent)
             {
-                if (modifiedP == null)
-                    continue;
+                
                 neighborCount[backup[modifiedP.X, modifiedP.Y].agent.currentState]++;
             }
         }
