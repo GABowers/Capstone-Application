@@ -46,6 +46,12 @@ namespace Capstone_Application
             stateNumberBox.Enabled = false;
             gridSizeHori.Enabled = false;
             gridSizeVert.Enabled = false;
+            for(int i = 0; i < (tabControl1.TabPages.Count - 1); i++)
+            {
+                int intToUse = i + 1;
+                string tabName = "uc." + intToUse.ToString();
+                tabControl1.TabPages[intToUse].Controls[tabName].Controls["agentCount"].Enabled = false;
+            }
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -261,6 +267,10 @@ namespace Capstone_Application
                     _2ndOrderTabs newUC = tabControl1.TabPages[i].Controls.Cast<_2ndOrderTabs>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
                     controllerScript.Update2ndOrder(newUC, i);
                 }
+            }
+            if(editForm)
+            {
+                controllerScript.EditCA();
             }
         }
 

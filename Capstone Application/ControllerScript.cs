@@ -252,6 +252,52 @@ namespace Capstone_Application
             }
         }
 
+        public void EditCA()
+        {
+            for (int h = 0; h < statePageInfo.Count; ++h)
+            {
+                colors[h] = statePageInfo[h].color;
+                if (statePageInfo[h].caType == 0)
+                {
+                    if (statePageInfo[h].nType == NType.Advanced)
+                    {
+                        for (int i = 0; i < statePageInfo[h].advProbs.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < (statePageInfo[h].advProbs.GetLength(1)); j++)
+                            {
+                                myCA.CreateStateArray(h, i, j, statePageInfo[h].advProbs[i, j].GetLength(0), statePageInfo[h].advProbs[i, j].GetLength(1));
+                                for (int k = 0; k < statePageInfo[h].advProbs[i, j].GetLength(0); k++)
+                                {
+                                    for (int l = 0; l < statePageInfo[h].advProbs[i, j].GetLength(1); l++)
+                                    {
+                                        myCA.SetStateInfo(h, i, j, k, l, statePageInfo[h].advProbs[i, j][k, l]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        for (int i = 0; i < statePageInfo[h].probs.GetLength(0); ++i)
+                        {
+                            for (int j = 0; j < (statePageInfo[h].probs.GetLength(1)); ++j)
+                            {
+                                for (int k = 0; k < statePageInfo[h].probs.GetLength(2); ++k)
+                                {
+                                    myCA.SetStateInfo(h, i, j, k, statePageInfo[h].probs[i, j, k]);
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (statePageInfo[h].caType == 1)
+                {
+                    myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProb, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
+                }
+            }
+        }
+
         public void StartCA(Form1 currentForm)
         {
             editModeOn = false;
@@ -328,8 +374,8 @@ namespace Capstone_Application
             //Destroy(board);
             //Destroy(sr);
             iterations = 0;
-            //ratios.Clear();
-            //colors.Clear();
+            ratios.Clear();
+            colors.Clear();
             fullCount.Clear();
             fullTransitions.Clear();
             //imageList.Clear();
