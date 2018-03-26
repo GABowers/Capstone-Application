@@ -172,14 +172,14 @@ namespace Capstone_Application
 
         private void toolStripLabel3_Click(object sender, EventArgs e)
         {
-            controllerScript.ResetGrid();
+            controllerScript.ResetGrid(this);
             UpdateRunBox();
             UpdateIterationBox();
         }
 
         public void AutoReset()
         {
-            controllerScript.ResetGrid();
+            controllerScript.ResetGrid(this);
             controllerScript.CreateCA();
             controllerScript.StartCA(this);
             Invoke(new Action(() => UpdateRunBox()));
@@ -371,14 +371,14 @@ namespace Capstone_Application
 
         public void SaveImages(string time)
         {
-            string imageName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + ".bmp";
+            string imageName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Image.bmp";
             string fileName = (imageSaveFolder + "/" + imageName);
             innerPictureBox.Image.Save(fileName);
         }
 
         public void SaveCounts(string time)
         {
-            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + ".txt";
+            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Cell Count.txt";
             string fileName = (countSaveFolder + "/" + countName);
             using (StreamWriter wt = new StreamWriter(fileName))
             {
@@ -604,9 +604,12 @@ namespace Capstone_Application
         private void cellCountToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.InitialDirectory = Application.StartupPath;
+            //saveFileDialog1.InitialDirectory = Application.StartupPath;
             saveFileDialog1.Filter = "(*.txt)|*.txt|(*.*)|*.*";
-            saveFileDialog1.RestoreDirectory = true;
+            saveFileDialog1.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
+                controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Cell Count";
+            //saveFileDialog1.RestoreDirectory = true;
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -661,7 +664,7 @@ namespace Capstone_Application
             sfd.Filter = "(*.bmp)|*.bmp|(*.jpeg)|*.jpeg|(*.png)|*.png|(*.tiff)|*.tiff";
             sfd.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
                 DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                controllerScript.caRuns + " Iteration " + controllerScript.iterations;
+                controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Image";
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 innerPictureBox.Image.Save(sfd.FileName);

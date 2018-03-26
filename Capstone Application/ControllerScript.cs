@@ -384,8 +384,10 @@ namespace Capstone_Application
             alreadyCA = false;
         }
 
-        public void ResetGrid()
+        public void ResetGrid(Form1 form)
         {
+            string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
+            CheckFinalDataSave(form, time);
             caRuns++;
             createdCA = false;
             editModeOn = false;
@@ -490,8 +492,6 @@ namespace Capstone_Application
         public void CheckSettings(Form1 form)
         {
             //Get system time here
-            string timeString = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + DateTime.Now.Millisecond;
 
             string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
 

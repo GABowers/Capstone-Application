@@ -5,6 +5,8 @@ Second order
 - cell faces, agent attraction, joined agent transitions ("reactions")
 1D? 3D?
 Possible add in plots or tables of cell counts? Real time.
+- have plot going out to 10, 25, 100, 250, etc iterations (shift min size when prev. goes to 10 increments). When you hit the current max
+  add another increment (when you hit 500, add 100 steps so 600 total shown) and rescale
 Change how the CA is started, so auxilary services like the cell counter window can function properly without starting the CA
 Consider allowing user to change filetypes (of auto-saved images)
 Think about making setup more extensible - changing where the grid size is made so users can adjust it on the fly,
@@ -21,3 +23,4 @@ Fix "CheckNeighbor" method. Have it check each neighbor to be real, then add the
 Add "template" system. Select template when adding grid, which changes settings. For ants, CA=second order, grid=box,
     neighborhood = something, agents = variable (3 or more, with 1 = colony, 2 = food, 3 = ants, 4 = obstacle), grid size editable
 Add line at beginning of count file, stating run and date
+Add reset runs button, to set run count back to 0
