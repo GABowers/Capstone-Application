@@ -85,6 +85,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.resetCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
@@ -366,7 +367,8 @@
             // 
             this.toolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runCountMaxRuns});
+            this.runCountMaxRuns,
+            this.resetCountToolStripMenuItem});
             this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
             this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
@@ -532,7 +534,7 @@
             this.increase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.increase.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.increase.Name = "increase";
-            this.increase.Size = new System.Drawing.Size(23, 22);
+            this.increase.Size = new System.Drawing.Size(23, 19);
             this.increase.Text = "+";
             this.increase.Click += new System.EventHandler(this.increase_Click);
             // 
@@ -578,6 +580,13 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
+            // resetCountToolStripMenuItem
+            // 
+            this.resetCountToolStripMenuItem.Name = "resetCountToolStripMenuItem";
+            this.resetCountToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.resetCountToolStripMenuItem.Text = "Reset Count";
+            this.resetCountToolStripMenuItem.Click += new System.EventHandler(this.resetCountToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -661,6 +670,7 @@
         private System.Windows.Forms.ToolStripButton decrease;
         private System.Windows.Forms.ToolStripButton increase;
         private System.Windows.Forms.ToolStripDropDownButton editGridButton;
+        private System.Windows.Forms.ToolStripMenuItem resetCountToolStripMenuItem;
     }
 }
 

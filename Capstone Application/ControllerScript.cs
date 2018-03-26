@@ -394,6 +394,11 @@ namespace Capstone_Application
             ClearGrid();
         }
 
+        public void ResetRuns()
+        {
+            caRuns = 1;
+        }
+
         public Tuple<int, int> TrueLocation(int xValue, int yValue, PictureBoxWithInterpolationMode container)
         {
             Double tempX = Convert.ToDouble(xValue);

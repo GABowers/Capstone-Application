@@ -781,5 +781,11 @@ namespace Capstone_Application
                 locationTT.SetToolTip(innerPictureBox, location);
             }
         }
+
+        private void resetCountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            controllerScript.ResetRuns();
+            UpdateRunBox();
+        }
     }
 }
