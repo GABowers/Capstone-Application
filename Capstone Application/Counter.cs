@@ -21,6 +21,7 @@ namespace Capstone_Application
             InitializeComponent();
             // Check for CA
             AddInfo();
+            SetSize();
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -34,6 +35,8 @@ namespace Capstone_Application
         }
         private void AddInfo()
         {
+            string misc = "Misc.";
+            string ci = "CI: ";
             if(controllerScript.createdCA == true)
             {
                 states = controllerScript.amountOfCellTypes;
@@ -47,9 +50,18 @@ namespace Capstone_Application
                     dataGridView1[1, i].Value = controllerScript.myCA.stateCount[i];
                     dataGridView1[2, i].Value = controllerScript.myCA.transitions[i];
                 }
+                dataGridView1.Rows.Add(new DataGridViewRow());
+                dataGridView1[0, states].Value = misc;
+                dataGridView1[1, states].Value = ci + controllerScript.ReturnConnectivityIndex();
                 dataGridView1.AllowUserToResizeColumns = false;
                 dataGridView1.AllowUserToResizeRows = false;
             }
+        }
+
+        void SetSize()
+        {
+            this.Height = 62 + (22 * dataGridView1.Rows.Count);
+            this.Width = 233;
         }
 
         public void UpdateCounts()

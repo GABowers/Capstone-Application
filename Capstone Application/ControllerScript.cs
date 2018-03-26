@@ -494,6 +494,18 @@ namespace Capstone_Application
             }
         }
 
+        public double ReturnConnectivityIndex()
+        {
+            if(createdCA)
+            {
+                return myCA.GetConnectivityIndex();
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         public void CheckSettings(Form1 form)
         {
             //Get system time here

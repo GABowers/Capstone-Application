@@ -305,6 +305,26 @@ public class CA
         }
     }
 
+    public double GetConnectivityIndex()
+    {
+        double connectivityIndex = 0;
+        double maxNeighbors = (gridWidth * gridHeight) * neighborhood.GetNeighborSize();
+        double totalNeighbors = 0;
+        for (int i = 0; i < gridWidth; i++)
+        {
+            for (int j = 0; j < gridHeight; j++)
+            {
+                if (grid[i, j].ContainsAgent)
+                {
+                int numNeighbors = CurrentGetNeighborCount(i, j);
+                totalNeighbors += numNeighbors;
+                }
+            }
+        }
+        connectivityIndex = totalNeighbors / maxNeighbors;
+        return connectivityIndex;
+    }
+
     private List<int> GetNeighborCount(int x, int y)
     {
         List<int> neighborCount = new List<int>();
@@ -349,6 +369,51 @@ public class CA
             }
         }
         return neighborCount;
+    }
+
+    // Gets neighbor count for the current grid
+    private int CurrentGetNeighborCount(int x, int y)
+    {
+        int numNeighbors = 0;
+        List<Point> neighbors = neighborhood.GetNeighbors(x, y);
+
+        //Get a count of each state in our neighborhood
+        foreach (Point p in neighbors)
+        {
+            // We can't change the variable in a foreach iteration
+            // So we make a copy
+            Point modifiedP = p;
+
+            // if modifiedP is not on the grid, adjust grid
+            if (!modifiedP.WithinRange(gridWidth, gridHeight))
+            {
+                switch (gridType)
+                {
+                    case GridType.Box:
+                        modifiedP = null; // make it null to skip it
+                        break;
+                    case GridType.CylinderW:
+                        modifiedP = Point.AdjustCylinderW(gridWidth, modifiedP);
+                        break;
+                    case GridType.CylinderH:
+                        modifiedP = Point.AdjustCylinderH(gridHeight, modifiedP);
+                        break;
+                    case GridType.Torus:
+                        modifiedP = Point.AdjustTorus(gridWidth, gridHeight, modifiedP);
+                        break;
+                }
+            }
+            // Check that modifiedP exists--that it's not an empty spot
+
+            if (modifiedP == null)
+                continue;
+            if (grid[modifiedP.X, modifiedP.Y].ContainsAgent)
+            {
+
+                numNeighbors++;
+            }
+        }
+        return numNeighbors;
     }
 
     private double[] AdvancedGetProbChances(int currentState, int x, int y)
