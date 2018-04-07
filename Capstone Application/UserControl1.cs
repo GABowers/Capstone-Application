@@ -23,7 +23,7 @@ namespace Capstone_Application
             yPosition = probTextField.Location.Y;
             otherXPosition = probInputField.Location.X;
             otherYPosition = probInputField.Location.Y;
-            this.Dock = DockStyle.Fill;
+            
             this.Controls.Remove(probTextField);
             this.Controls.Remove(probInputField);
             //Console.WriteLine(xPosition);
@@ -50,6 +50,11 @@ namespace Capstone_Application
             }
         }
 
+        public void FillForm()
+        {
+            this.Dock = DockStyle.Fill;
+        }
+
         public void UpdateProbFields(int currentState, int amountOfStates, int neighborCount)
         {
             for (int i = 0; i < amountOfStates; i++)
@@ -63,7 +68,7 @@ namespace Capstone_Application
                     for (int neighbors = 0; neighbors < (neighborCount + 1); neighbors++)
                     {
                         TextBox textBox = new TextBox { Location = new System.Drawing.Point(otherXPosition, otherYPosition), Name = (currentState + "." + i + "." + neighborState + "." + neighbors), Height = 20, Width = 121, };
-                        Label qweLabel = new Label { Location = new System.Drawing.Point(xPosition, yPosition), AutoSize = false, Height = 25, Width = 450, Text = string.Format("Probability of change from State {0} to State {1}, with {2} neighbors of type {3} (0-1 value)", currentState, otherState, neighbors, currentNeighborState) };
+                        Label qweLabel = new Label { Location = new System.Drawing.Point(xPosition, yPosition), AutoSize = false, Height = 25, Width = 438, Text = string.Format("Probability of change from state {0} to state {1}, with {2} neighbors of state {3} (0-1 value)", currentState, otherState, neighbors, currentNeighborState) };
                         Controls.Add(qweLabel);
                         Controls.Add(textBox);
                         yPosition += 30;
@@ -129,6 +134,11 @@ namespace Capstone_Application
                     }
                 }
             }
+        }
+
+        private void probTextField_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

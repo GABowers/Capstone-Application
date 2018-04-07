@@ -22,4 +22,5 @@ Fix "CheckNeighbor" method. Have it check each neighbor to be real, then add the
 
 Add "template" system. Select template when adding grid, which changes settings. For ants, CA=second order, grid=box,
     neighborhood = something, agents = variable (3 or more, with 1 = colony, 2 = food, 3 = ants, 4 = obstacle), grid size editable
+For template system, incorporate macro system, allowing user to select various options for when they arrive at X iteration
 Add line at beginning of count file, stating run and date

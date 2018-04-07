@@ -11,10 +11,17 @@ namespace Capstone_Application
         bool countSave = false;
         bool imageSave = false;
         bool autoReset = false;
+        bool autoPause = false;
         bool countReset = false;
+        bool countPause = false;
         bool iterationReset = false;
+        bool iterationPause = false;
+        bool runMax = false;
         int iterationResetValue = -1;
+        int iterationPauseValue = -1;
+        int runMaxValue = -1;
         List<int> countResetValues = new List<int>();
+        List<int> countPauseValues = new List<int>();
         List<int> countSaveValues = new List<int>();
         List<int> imageSaveValues = new List<int>();
 
@@ -27,6 +34,13 @@ namespace Capstone_Application
         public List<int> CountResetValues { get => countResetValues; set => countResetValues = value; }
         public List<int> CountSaveValues { get => countSaveValues; set => countSaveValues = value; }
         public List<int> ImageSaveValues { get => imageSaveValues; set => imageSaveValues = value; }
+        public bool RunMax { get => runMax; set => runMax = value; }
+        public int RunMaxValue { get => runMaxValue; set => runMaxValue = value; }
+        public List<int> CountPauseValues { get => countPauseValues; set => countPauseValues = value; }
+        public bool IterationPause { get => iterationPause; set => iterationPause = value; }
+        public bool CountPause { get => countPause; set => countPause = value; }
+        public bool AutoPause { get => autoPause; set => autoPause = value; }
+        public int IterationPauseValue { get => iterationPauseValue; set => iterationPauseValue = value; }
 
         public void CheckSettings(Form1 form)
         {

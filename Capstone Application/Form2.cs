@@ -99,6 +99,7 @@ namespace Capstone_Application
                         int j = i + 1;
                         tabPage2.Text = "State " + j;
                         uc.UpdateProbFields(j, amountOfStates, neighborCount);
+                        uc.FillForm();
                         //controllerScript.UpdateProbFields(uc, j);
                         //uc.UpdateValues(j, amountOfStates, neighborCount);
                         tabControl1.TabPages.Add(tabPage2);
@@ -315,6 +316,7 @@ namespace Capstone_Application
             //add code to save all tab data to new class
             UpdateAllValues();
             mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
+            mainForm.UpdateIterationPauseCell(int.Parse(stateNumberBox.Text));
             this.Close();
         }
 

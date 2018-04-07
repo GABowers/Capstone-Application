@@ -85,11 +85,19 @@ namespace Capstone_Application
 
         }
 
-        private void toolStripLabel2_Click(object sender, EventArgs e)
+        void toolStripLabel2_Click(object sender, EventArgs e)
         {
-            running = !running;
-            if (running == true)
-                backgroundWorker1.RunWorkerAsync();
+            PauseUnpauseCA();
+        }
+
+        public void PauseUnpauseCA()
+        {
+            if(controllerScript.createdCA)
+            {
+                running = !running;
+                if (running == true)
+                    backgroundWorker1.RunWorkerAsync();
+            }
         }
 
         private void RunCA()
@@ -182,6 +190,7 @@ namespace Capstone_Application
             controllerScript.ResetGrid(this);
             controllerScript.CreateCA();
             controllerScript.StartCA(this);
+            controllerScript.CheckMaxRuns(this);
             Invoke(new Action(() => UpdateRunBox()));
             Invoke(new Action(() => UpdateIterationBox()));
             Invoke(new Action(() => UpdateImage()));
@@ -301,6 +310,17 @@ namespace Capstone_Application
             }
         }
 
+        public void UpdateIterationPauseCell(int states)
+        {
+            for (int i = 0; i < states; i++)
+            {
+                string newname = "CellBox" + i.ToString();
+                ToolStripTextBox textBox = new ToolStripTextBox(newname);
+                textBox.TextChanged += new System.EventHandler(countPauseTextBox_TextChanged);
+                this.autoPauseCellCount.DropDownItems.Add(textBox);
+            }
+        }
+
         private void stateSelect_Click(object sender, EventArgs e)
         {
             UncheckOtherToolStripMenuItems((ToolStripMenuItem)sender);
@@ -327,9 +347,14 @@ namespace Capstone_Application
             // selectedMenuItem.Owner.Show();
         }
 
-        public string GetCountResetText(string controlName)
+        string GetCountResetText(string controlName)
         {
             return this.cellCountToolStripMenuItem.DropDownItems[controlName].Text;
+        }
+
+        string GetCountPauseText(string controlName)
+        {
+            return this.autoPauseCellCount.DropDownItems[controlName].Text;
         }
 
         private void setImageSaveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -343,6 +368,10 @@ namespace Capstone_Application
                     if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                     {
                         imageSaveFolder = fbd.SelectedPath;
+                    }
+                    else
+                    {
+                        setImageSaveToolStripMenuItem.Checked = false;
                     }
                 }
             }
@@ -360,6 +389,10 @@ namespace Capstone_Application
                     {
                         countSaveFolder = fbd.SelectedPath;
                     }
+                    else
+                    {
+                        toolStripMenuItem5.Checked = false;
+                    }
                 }
             }
         }
@@ -371,21 +404,21 @@ namespace Capstone_Application
 
         public void SaveImages(string time)
         {
-            string imageName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Image.bmp";
+            string imageName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Image.bmp";
             string fileName = (imageSaveFolder + "/" + imageName);
             innerPictureBox.Image.Save(fileName);
         }
 
         public void SaveCounts(string time)
         {
-            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Cell Count.txt";
+            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count.txt";
             string fileName = (countSaveFolder + "/" + countName);
             using (StreamWriter wt = new StreamWriter(fileName))
             {
 
                 for (int i = 0; i < controllerScript.fullCount.Count; ++i)
                 {
-                    wt.Write("Iteration: " + i);
+                    wt.Write("Iteration: " + (i + 1).ToString());
                     for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
                     {
                         string cellTypeString = (j + 1).ToString();
@@ -409,7 +442,7 @@ namespace Capstone_Application
 
                 for (int i = 0; i < controllerScript.fullCount.Count; ++i)
                 {
-                    wt.Write("Iteration: " + i);
+                    wt.Write("Iteration: " + (i + 1).ToString());
                     for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
                     {
                         string cellTypeString = (j + 1).ToString();
@@ -515,6 +548,26 @@ namespace Capstone_Application
             settingsScript.CountResetValues = cellCounts;
         }
 
+        private void countPauseTextBox_TextChanged(object sender, EventArgs e)
+        {
+            settingsScript.CountPauseValues.Clear();
+            List<int> cellCounts = new List<int>();
+            for (int i = 0; i < controllerScript.amountOfCellTypes; i++)
+            {
+                string currentName = "CellBox" + i.ToString();
+                string boxText = GetCountPauseText(currentName);
+                if (string.IsNullOrWhiteSpace(boxText))
+                {
+                    cellCounts.Add(-1);
+                }
+                else
+                {
+                    cellCounts.Add(int.Parse(boxText));
+                }
+            }
+            settingsScript.CountPauseValues = cellCounts;
+        }
+
         private void iterationCountCountSave_Leave(object sender, EventArgs e)
         {
             
@@ -608,7 +661,7 @@ namespace Capstone_Application
             saveFileDialog1.Filter = "(*.txt)|*.txt|(*.*)|*.*";
             saveFileDialog1.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
                 DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Cell Count";
+                controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count";
             //saveFileDialog1.RestoreDirectory = true;
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
@@ -617,7 +670,7 @@ namespace Capstone_Application
                 {
                     for (int i = 0; i < controllerScript.fullCount.Count; ++i)
                     {
-                        wt.Write("Iteration: " + i);
+                        wt.Write("Iteration: " + (i+1).ToString());
                         for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
                         {
                             string cellTypeString = (j + 1).ToString();
@@ -645,7 +698,7 @@ namespace Capstone_Application
 
                     for (int i = 0; i < controllerScript.fullTransitions.Count; ++i)
                     {
-                        wt.Write("Iteration: " + i);
+                        wt.Write("Iteration: " + (i + 1).ToString());
                         for (int j = 0; j < controllerScript.fullTransitions[i].Count; ++j)
                         {
                             string cellTypeString = (j + 1).ToString();
@@ -664,7 +717,7 @@ namespace Capstone_Application
             sfd.Filter = "(*.bmp)|*.bmp|(*.jpeg)|*.jpeg|(*.png)|*.png|(*.tiff)|*.tiff";
             sfd.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
                 DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                controllerScript.caRuns + " Iteration " + controllerScript.iterations + "Image";
+                controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Image";
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 innerPictureBox.Image.Save(sfd.FileName);
@@ -786,6 +839,88 @@ namespace Capstone_Application
         {
             controllerScript.ResetRuns();
             UpdateRunBox();
+        }
+
+        private void runCountMaxRuns_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void runCountMaxRuns_CheckedChanged(object sender, EventArgs e)
+        {
+            if (runCountMaxRuns.Checked)
+            {
+                settingsScript.RunMax = true;
+            }
+            else
+            {
+                settingsScript.RunMax = false;
+            }
+        }
+
+        private void toolStripTextBox1_Leave(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(toolStripTextBox1.Text, out int result))
+            {
+                settingsScript.RunMaxValue = int.Parse(toolStripTextBox1.Text);
+            }
+            else
+            {
+                settingsScript.RunMaxValue = -1;
+            }
+        }
+
+        private void autoPauseCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (autoPauseCheck.Checked)
+            {
+                settingsScript.AutoPause = true;
+            }
+            else
+            {
+                settingsScript.AutoPause = false;
+            }
+        }
+
+        private void autoPauseIterationCount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (autoPauseIterationCount.Checked)
+            {
+                settingsScript.IterationPause = true;
+            }
+            else
+            {
+                settingsScript.IterationPause = false;
+            }
+        }
+
+        private void autoPauseCellCount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (autoPauseCellCount.Checked)
+            {
+                settingsScript.CountPause = true;
+            }
+            else
+            {
+                settingsScript.CountPause = false;
+            }
+        }
+
+        private void autoPauseIterationCountTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(autoPauseIterationCountTextBox.Text, out int result))
+            {
+                settingsScript.IterationPauseValue = int.Parse(autoPauseIterationCountTextBox.Text);
+            }
+            else
+            {
+                settingsScript.IterationPauseValue = -1;
+            }
         }
     }
 }

@@ -41,22 +41,23 @@
             // 
             this.probTextField.Location = new System.Drawing.Point(3, 55);
             this.probTextField.Name = "probTextField";
-            this.probTextField.Size = new System.Drawing.Size(450, 25);
+            this.probTextField.Size = new System.Drawing.Size(438, 25);
             this.probTextField.TabIndex = 22;
-            this.probTextField.Text = "Probability of change (State X to State Y, with A neighbors of type B) (0-1 value" +
-    ")";
+            this.probTextField.Text = "Probability of change (state X to state Y, with A neighbors of state B) (0-1 valu" +
+    "e)";
             this.probTextField.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.probTextField.Click += new System.EventHandler(this.probTextField_Click);
             // 
             // agentCount
             // 
-            this.agentCount.Location = new System.Drawing.Point(459, 30);
+            this.agentCount.Location = new System.Drawing.Point(444, 30);
             this.agentCount.Name = "agentCount";
             this.agentCount.Size = new System.Drawing.Size(121, 20);
             this.agentCount.TabIndex = 21;
             // 
             // probInputField
             // 
-            this.probInputField.Location = new System.Drawing.Point(459, 56);
+            this.probInputField.Location = new System.Drawing.Point(444, 56);
             this.probInputField.Name = "probInputField";
             this.probInputField.Size = new System.Drawing.Size(121, 20);
             this.probInputField.TabIndex = 20;
@@ -88,7 +89,7 @@
             // 
             this.colorBox.BackColor = System.Drawing.Color.White;
             this.colorBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.colorBox.Location = new System.Drawing.Point(459, 3);
+            this.colorBox.Location = new System.Drawing.Point(444, 3);
             this.colorBox.Name = "colorBox";
             this.colorBox.Size = new System.Drawing.Size(121, 21);
             this.colorBox.TabIndex = 23;
@@ -108,7 +109,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "UserControl1";
-            this.Size = new System.Drawing.Size(583, 501);
+            this.Size = new System.Drawing.Size(568, 501);
             this.ResumeLayout(false);
             this.PerformLayout();
 

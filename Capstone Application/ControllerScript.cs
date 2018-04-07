@@ -522,7 +522,7 @@ namespace Capstone_Application
                 {
                     if(form.settingsScript.IterationResetValue == iterations)
                         {
-                            CheckFinalDataSave(form, time);
+                            //CheckFinalDataSave(form, time);
                             form.AutoReset();
                         }
                 }
@@ -533,8 +533,34 @@ namespace Capstone_Application
                     {
                         if(myCA.stateCount[i] == form.settingsScript.CountResetValues[i])
                         {
-                            CheckFinalDataSave(form, time);
+                            //CheckFinalDataSave(form, time);
                             form.AutoReset();
+                        }
+                    }
+                }
+            }
+
+            // Pause CA options
+            if (form.settingsScript.AutoPause)
+            {
+                // Iteration-based
+                if (form.settingsScript.IterationPause)
+                {
+                    if (form.settingsScript.IterationPauseValue == iterations)
+                    {
+                        //CheckFinalDataSave(form, time);
+                        form.PauseUnpauseCA();
+                    }
+                }
+                // Cell count based
+                if (form.settingsScript.CountPause)
+                {
+                    for (int i = 0; i < form.settingsScript.CountPauseValues.Count; i++)
+                    {
+                        if (myCA.stateCount[i] == form.settingsScript.CountPauseValues[i])
+                        {
+                            //CheckFinalDataSave(form, time);
+                            form.PauseUnpauseCA();
                         }
                     }
                 }
@@ -616,6 +642,17 @@ namespace Capstone_Application
                     {
                         form.InvokeImageSave(time);
                     }
+                }
+            }
+        }
+
+        public void CheckMaxRuns(Form1 form)
+        {
+            if(form.settingsScript.RunMax)
+            {
+                if(caRuns > form.settingsScript.RunMaxValue)
+                {
+                    form.PauseUnpauseCA();
                 }
             }
         }
