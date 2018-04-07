@@ -599,6 +599,7 @@
             // 
             // autoPauseCheck
             // 
+            this.autoPauseCheck.CheckOnClick = true;
             this.autoPauseCheck.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.autoPauseIterationCount,
             this.autoPauseCellCount});
@@ -609,6 +610,7 @@
             // 
             // autoPauseIterationCount
             // 
+            this.autoPauseIterationCount.CheckOnClick = true;
             this.autoPauseIterationCount.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.autoPauseIterationCountTextBox});
             this.autoPauseIterationCount.Name = "autoPauseIterationCount";
@@ -618,6 +620,7 @@
             // 
             // autoPauseCellCount
             // 
+            this.autoPauseCellCount.CheckOnClick = true;
             this.autoPauseCellCount.Name = "autoPauseCellCount";
             this.autoPauseCellCount.Size = new System.Drawing.Size(154, 22);
             this.autoPauseCellCount.Text = "Cell Count";

@@ -315,8 +315,11 @@ namespace Capstone_Application
         {
             //add code to save all tab data to new class
             UpdateAllValues();
-            mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
-            mainForm.UpdateIterationPauseCell(int.Parse(stateNumberBox.Text));
+            if (editForm == false)
+            {
+                mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
+                mainForm.UpdateIterationPauseCell(int.Parse(stateNumberBox.Text));
+            }
             this.Close();
         }
 
