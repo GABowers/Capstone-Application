@@ -167,12 +167,12 @@ namespace Capstone_Application
 
         public void Update2ndOrder(_2ndOrderTabs newUC, int currentState)
         {
-            newUC.SetValues(statePageInfo[(currentState - 1)]);
+            newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
 
         public void Retrieve2ndOrder(_2ndOrderTabs newUC, int currentState)
         {
-            newUC.UpdateValues(statePageInfo[(currentState - 1)]);
+            newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
         }
 
         // Stuff from other controller here
@@ -244,7 +244,7 @@ namespace Capstone_Application
                     }
                     else if(statePageInfo[h].caType == 1)
                     {
-                        myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProb, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
+                            myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProbs, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
                     }
                 }
                 myCA.InitializeGrid(cellAmounts);
@@ -293,7 +293,7 @@ namespace Capstone_Application
                 }
                 else if (statePageInfo[h].caType == 1)
                 {
-                    myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProb, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
+                    myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProbs, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
                 }
             }
         }
@@ -321,6 +321,8 @@ namespace Capstone_Application
                     int oldY = myCA.ActiveAgents[i].History[myCA.ActiveAgents[i].History.Count - 2].Item2;
                     int newX = myCA.ActiveAgents[i].History[myCA.ActiveAgents[i].History.Count - 1].Item1;
                     int newY = myCA.ActiveAgents[i].History[myCA.ActiveAgents[i].History.Count - 1].Item2;
+
+                    //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
 
                     if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
                     {

@@ -7,7 +7,8 @@ public class CellState
     public double[,][,] advProbs;
     float[,,] prob;
     public double[] walkProbs = new double[4];
-    public double stickingProb;
+    //public double stickingProb;
+    public double[] stickingProbs;
     public bool sticking;
     public int mobileNeighborhood;
 
@@ -15,6 +16,7 @@ public class CellState
     {
         advProbs = new double[totalStates, totalStates][,];
         prob = new float[totalStates, neighborState, neighborSize + 1];
+        stickingProbs = new double[totalStates];
     }
 
     public void SetProbability(int state, int neighborState, int numNeighbors, float val)
@@ -27,10 +29,11 @@ public class CellState
         return prob[state, neighborState, numNeighbors];
     }
 
-    public void Set2ndOrderInfo(double[] incomingWalkProbs, double incomingStickingProb, bool incomingSticking, int incomingNeighborhood)
+    public void Set2ndOrderInfo(double[] incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, int incomingNeighborhood)
     {
+        //stickingProbs = new double[incomingStickingProbs.Count];
         walkProbs = incomingWalkProbs;
-        stickingProb = incomingStickingProb;
+        stickingProbs = incomingStickingProbs.ToArray();
         sticking = incomingSticking;
         mobileNeighborhood = incomingNeighborhood;
     }

@@ -19,8 +19,8 @@ namespace Capstone_Application
         public float[,,] probs; // [x,y] prob to go to state x with y neighbors
         public List<string> locationCode;
         public List<double> probValue;
-        public double[] walkProbs = new double[4];
-        public double stickingProb;
+        public double[] walkProbs;
+        public List<double> stickingProbs = new List<double>();
         public bool sticking;
         public int mobileNeighborhood;
 
@@ -32,6 +32,11 @@ namespace Capstone_Application
             startingAmount = 0;
             advProbs = new double[totalStates, totalStates][,];
             probs = new float[totalStates, totalStates, neighbors + 1];
+        }
+
+        public void SetWalkProbs(int count)
+        {
+            walkProbs = new double[count];
         }
 
         //public StatePageInfo(int totalStates, int neighbors, int currentState, int rows, int columns)

@@ -38,6 +38,18 @@ namespace Capstone_Application
 
         }
 
+        public Tuple<bool, int> NeighborCheck(BlankGrid[,] grid, int x, int y)
+        {
+            if(grid[x, y].ContainsAgent == false)
+            {
+                return new Tuple<bool, int>(false, -1);
+            }
+            else
+            {
+                return new Tuple<bool, int>(true, grid[x, y].agent.currentState);
+            }
+        }
+
         //This could be optimized further. For immobile CA, we could set the neighborhood at the start of a CA run, so each agent knows
         //its neighbors in advance, rather than calculation each iteration. However, this method will work for both immobile and mobile
         //CA. May change things if too slow.

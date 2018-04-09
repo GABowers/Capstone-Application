@@ -89,7 +89,6 @@ public class CA
             agentCount.Add(cellAmounts[i]);
             totalCells += cellAmounts[i];
         }
-
         // this is a list of which states still needed to be added
         
         int gridSize = (gridWidth * gridHeight);
@@ -166,9 +165,9 @@ public class CA
 
     }
 
-    public void Set2ndOrder(int startState, double[] walkProbs, double stickingProb, bool sticking, int mobileNeighborhood)
+    public void Set2ndOrder(int startState, double[] walkProbs, List<double> stickingProbs, bool sticking, int mobileNeighborhood)
     {
-        states[startState].Set2ndOrderInfo(walkProbs, stickingProb, sticking, mobileNeighborhood);
+        states[startState].Set2ndOrderInfo(walkProbs, stickingProbs, sticking, mobileNeighborhood);
     }
 
     public void SetStateInfo(int startState, int endState, int neighborState, int rows, int columns, double prob)
@@ -568,75 +567,24 @@ public class CA
         {
             newX = currentAgent.xLocation - 1;
         }
-        if (newX > (gridWidth - 1) || newY > (gridHeight - 1) || newX < 0 || newY < 0)
+        Tuple<bool, int, int> tempTuple = GridCheckForLocation(newX, newY);
+        if(tempTuple.Item1)
         {
-            switch (gridType)
+            if (tempTuple.Item2 != oldX || tempTuple.Item3 != oldY)
             {
-                case GridType.Box:
-                    newX = currentAgent.xLocation;
-                    newY = currentAgent.yLocation;
-                    break;
-                case GridType.CylinderW:
-                    if (newX >= gridWidth)
-                    {
-                        newX -= gridWidth;
-                        newY = currentAgent.yLocation;
-                    }
-                    else
-                    {
-                        newX += gridWidth;
-                        newY = currentAgent.yLocation;
-                    }
-                    break;
-                case GridType.CylinderH:
-                    if (newY >= gridHeight)
-                    {
-                        newX = currentAgent.xLocation;
-                        newY -= gridHeight;
-                    }
-                    else
-                    {
-                        newX = currentAgent.xLocation;
-                        newY += gridHeight;
-                    }
-                    break;
-                case GridType.Torus:
-                    {
-                        if (newX >= gridWidth)
-                        {
-                            newX -= gridWidth;
-                        }
-                        else
-                        {
-                            newX += gridWidth;
-                        }
-                    }
-                    {
-                        if (newY >= gridHeight)
-                        {
-                            newY -= gridHeight;
-                        }
-                        else
-                        {
-                            newY += gridHeight;
-                        }
-                    }
-                    break;
-            }
-        }
-        if (newX != oldX || newY != oldY)
-        {
-            if (grid[newX, newY].ContainsAgent == false && System.Object.ReferenceEquals(grid[newX, newY].agent, null) == true)
-            {
-                grid[newX, newY].AddAgent(newX, newY, currentAgent);
-                grid[newX, newY].ContainsAgent = true;
-                grid[newX, newY].agent.currentState = currentAgent.currentState;
-                grid[newX, newY].agent.xLocation = newX;
-                grid[newX, newY].agent.yLocation = newY;
-                ActiveAgents[agentLocation] = grid[newX, newY].agent;
-                //Debug.Log("New: " + grid[newX, newY].agent.xLocation + ", " + grid[newX, newY].agent.yLocation);
-                grid[oldX, oldY].ContainsAgent = false;
-                grid[oldX, oldY].agent = null;
+                //Console.WriteLine("Old location: " + newX + "," + newY + " New Location" + tempTuple.Item2 + "," + tempTuple.Item3);
+                if (grid[tempTuple.Item2, tempTuple.Item3].ContainsAgent == false && System.Object.ReferenceEquals(grid[tempTuple.Item2, tempTuple.Item3].agent, null) == true)
+                {
+                    grid[tempTuple.Item2, tempTuple.Item3].AddAgent(newX, newY, currentAgent);
+                    grid[tempTuple.Item2, tempTuple.Item3].ContainsAgent = true;
+                    grid[tempTuple.Item2, tempTuple.Item3].agent.currentState = currentAgent.currentState;
+                    grid[tempTuple.Item2, tempTuple.Item3].agent.xLocation = tempTuple.Item2;
+                    grid[tempTuple.Item2, tempTuple.Item3].agent.yLocation = tempTuple.Item3;
+                    ActiveAgents[agentLocation] = grid[tempTuple.Item2, tempTuple.Item3].agent;
+                    //Debug.Log("New: " + grid[newX, newY].agent.xLocation + ", " + grid[newX, newY].agent.yLocation);
+                    grid[oldX, oldY].ContainsAgent = false;
+                    grid[oldX, oldY].agent = null;
+                }
             }
         }
     }
@@ -747,46 +695,170 @@ public class CA
         // to be extensible to the 4 or 8. Can use for this method and for agentmove.
         if (states[currentAgent.currentState].sticking)
         {
-            // Add check for type
-            int agentX = currentAgent.xLocation;
-            int agentY = currentAgent.yLocation;
-            int subX = agentX - 1;
-            int plusX = agentX + 1;
-            int subY = agentY - 1;
-            int plusY = agentY + 1;
-            if(currentAgent.NeighborCheck(grid, states[currentAgent.currentState]))
+            // Add check for type???
+            List<Tuple<int, int>> neighborList = GetNeighborhood(currentAgent);
+
+            for (int i = 0; i < neighborList.Count; i++)
             {
-                var rng = new RNGCryptoServiceProvider();
-                var bytes = new Byte[8];
-                rng.GetBytes(bytes);
-                var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
-                Double rand = ul / (Double)(1UL << 53);
-                double moveProb = states[currentAgent.currentState].stickingProb;
-                if (rand < moveProb)
-                    return false;
-                else
-                    return true;
+                Tuple<bool, int> tempTuple = AgentCheck(neighborList[i].Item1, neighborList[i].Item2);
+                if(tempTuple.Item1)
+                {
+                    var rng = new RNGCryptoServiceProvider();
+                    var bytes = new Byte[8];
+                    rng.GetBytes(bytes);
+                    var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
+                    Double rand = ul / (Double)(1UL << 53);
+                    double stayProb = states[currentAgent.currentState].stickingProbs[tempTuple.Item2];
+                    if (rand < stayProb)
+                        return false;
+                    else
+                        return true;
+                }
+                //check if locations contain agents. If so, run sticking prob
             }
-            // THIS IS NOT RIGHT. IN SITUATIONS WHERE A LOCATION IS NOT REAL, THAT LOCATION SHOULD BE SKIPPED
-            //if (IsReal(subX, agentY) && IsReal(plusX, agentY) && IsReal(agentX, subY) && IsReal(agentX, plusY))
-            //{
-            //    if (grid[subX, agentY].ContainsAgent || grid[plusX, agentY].ContainsAgent || grid[agentX, subY].ContainsAgent || grid[agentX, plusY].ContainsAgent)
-            //    {
-            //        double rand = myRand.NextDouble();
-            //        double moveProb = states[currentAgent.currentState].stickingProb;
-            //        if (rand < moveProb)
-            //            return false;
-            //        else
-            //            return true;
-            //    }
-            //    else
-            //        return true;
-            //}
-            else
-                return true;
+            return true;
         }
         else
             return true;
+    }
+
+    List<Tuple<int, int>> GetNeighborhood(AgentController agent)
+    {
+        List<Tuple<int, int>> neighborList = new List<Tuple<int, int>>();
+        switch(states[agent.currentState].mobileNeighborhood)
+        {
+            case 0:
+                for(int i = -1; i < 2; i++)
+                {
+                    for (int j = -1; j < 2; j++)
+                    {
+                        if((Math.Abs(i) + Math.Abs(j)) % 2 != 0)
+                        {
+                            Tuple<bool, int, int> tempTuple = GridCheckForLocation(agent.xLocation + i, agent.yLocation + j);
+                            if (tempTuple.Item1)
+                            {
+                                Tuple<int, int> temperTuple = new Tuple<int, int>(tempTuple.Item2, tempTuple.Item3);
+                                neighborList.Add(temperTuple);
+                            }
+                        }
+                    }
+                }
+                break;
+            case 1:
+                for (int i = -1; i < 2; i++)
+                {
+                    for (int j = -1; j < 2; j++)
+                    {
+                        if ((Math.Abs(i) + Math.Abs(j)) == 0)
+                        {
+                            continue;
+                        }
+                        Tuple<bool, int, int> tempTuple = GridCheckForLocation(agent.xLocation + i, agent.yLocation + j);
+                        if (tempTuple.Item1)
+                        {
+                            Tuple<int, int> temperTuple = new Tuple<int, int>(tempTuple.Item2, tempTuple.Item3);
+                            neighborList.Add(temperTuple);
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return neighborList;
+
+    }
+
+    Tuple<bool, int, int> GridCheckForLocation(int x, int y)
+    {
+        //Console.WriteLine("Old location: " + x + "," + y);
+        switch (gridType)
+        {
+            case GridType.Box:
+                if(x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
+                {
+                    return new Tuple<bool, int, int>(false, x, y);
+                }
+                else
+                {
+                    //Console.WriteLine("New location: " + x + "," + y);
+                    return new Tuple<bool, int, int>(true, x, y);
+                }
+                break;
+            case GridType.CylinderW:
+                if(y < 0 || y >= gridHeight)
+                {
+                    return new Tuple<bool, int, int>(false, x, y);
+                }
+                else
+                {
+                    if(x < 0)
+                    {
+                        x += gridWidth;
+                    }
+                    else if(x >= gridWidth)
+                    {
+                        x -= gridWidth;
+                    }
+                    //Console.WriteLine("New location: " + x + "," + y);
+                    return new Tuple<bool, int, int>(true, x, y);
+                }
+                break;
+            case GridType.CylinderH:
+                if (x < 0 || x >= gridWidth)
+                {
+                    return new Tuple<bool, int, int>(false, x, y);
+                }
+                else
+                {
+                    if (y < 0)
+                    {
+                        y += gridHeight;
+                    }
+                    else if (y >= gridHeight)
+                    {
+                        y -= gridHeight;
+                    }
+                    //Console.WriteLine("New location: " + x + "," + y);
+                    return new Tuple<bool, int, int>(true, x, y);
+                }
+                break;
+            case GridType.Torus:
+                {
+                    if(x < 0)
+                    {
+                        x += gridWidth;
+                    }
+                    else if(x >= gridWidth)
+                    {
+                        x -= gridWidth;
+                    }
+                    if(y < 0)
+                    {
+                        y += gridHeight;
+                    }
+                    else if(y >= gridHeight)
+                    {
+                        y -= gridHeight;
+                    }
+                    //Console.WriteLine("New location: " + x + "," + y);
+                    return new Tuple<bool, int, int>(true, x, y);
+                }
+                break;
+        }
+        return new Tuple<bool, int, int>(false, x, y);
+    }
+
+    Tuple<bool, int> AgentCheck(int x, int y)
+    {
+        if (grid[x, y].ContainsAgent == false)
+        {
+            return new Tuple<bool, int>(false, -1);
+        }
+        else
+        {
+            return new Tuple<bool, int>(true, grid[x, y].agent.currentState);
+        }
     }
 
     //private void RemoveBadAgents()

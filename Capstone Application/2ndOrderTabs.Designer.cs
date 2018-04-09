@@ -33,17 +33,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.agentCount = new System.Windows.Forms.TextBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.walkUpBox = new System.Windows.Forms.TextBox();
-            this.walkRightBox = new System.Windows.Forms.TextBox();
-            this.walkDownBox = new System.Windows.Forms.TextBox();
-            this.walkLeftBox = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.stickingBox = new System.Windows.Forms.TextBox();
+            this.randWalkLabelUp = new System.Windows.Forms.Label();
+            this.randWalkBoxUp = new System.Windows.Forms.TextBox();
+            this.calculateButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.mobileNeighborHood = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
@@ -85,96 +77,32 @@
             this.agentCount.Size = new System.Drawing.Size(121, 20);
             this.agentCount.TabIndex = 26;
             // 
-            // label3
+            // randWalkLabelUp
             // 
-            this.label3.Location = new System.Drawing.Point(3, 84);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(125, 21);
-            this.label3.TabIndex = 27;
-            this.label3.Text = "Random walk (up)";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label3.Click += new System.EventHandler(this.label3_Click);
+            this.randWalkLabelUp.Location = new System.Drawing.Point(3, 84);
+            this.randWalkLabelUp.Name = "randWalkLabelUp";
+            this.randWalkLabelUp.Size = new System.Drawing.Size(125, 21);
+            this.randWalkLabelUp.TabIndex = 27;
+            this.randWalkLabelUp.Text = "Random walk (up)";
+            this.randWalkLabelUp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.randWalkLabelUp.Click += new System.EventHandler(this.label3_Click);
             // 
-            // label6
+            // randWalkBoxUp
             // 
-            this.label6.Location = new System.Drawing.Point(3, 111);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(125, 21);
-            this.label6.TabIndex = 30;
-            this.label6.Text = "Random walk (right)";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.randWalkBoxUp.Location = new System.Drawing.Point(459, 84);
+            this.randWalkBoxUp.Name = "randWalkBoxUp";
+            this.randWalkBoxUp.Size = new System.Drawing.Size(121, 20);
+            this.randWalkBoxUp.TabIndex = 33;
             // 
-            // label7
+            // calculateButton
             // 
-            this.label7.Location = new System.Drawing.Point(3, 138);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(175, 21);
-            this.label7.TabIndex = 31;
-            this.label7.Text = "Random walk (down) (gravity)";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label8
-            // 
-            this.label8.Location = new System.Drawing.Point(3, 165);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(125, 21);
-            this.label8.TabIndex = 32;
-            this.label8.Text = "Random walk (left)";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // walkUpBox
-            // 
-            this.walkUpBox.Location = new System.Drawing.Point(459, 84);
-            this.walkUpBox.Name = "walkUpBox";
-            this.walkUpBox.Size = new System.Drawing.Size(121, 20);
-            this.walkUpBox.TabIndex = 33;
-            // 
-            // walkRightBox
-            // 
-            this.walkRightBox.Location = new System.Drawing.Point(459, 111);
-            this.walkRightBox.Name = "walkRightBox";
-            this.walkRightBox.Size = new System.Drawing.Size(121, 20);
-            this.walkRightBox.TabIndex = 34;
-            // 
-            // walkDownBox
-            // 
-            this.walkDownBox.Location = new System.Drawing.Point(459, 138);
-            this.walkDownBox.Name = "walkDownBox";
-            this.walkDownBox.Size = new System.Drawing.Size(121, 20);
-            this.walkDownBox.TabIndex = 35;
-            // 
-            // walkLeftBox
-            // 
-            this.walkLeftBox.Location = new System.Drawing.Point(459, 165);
-            this.walkLeftBox.Name = "walkLeftBox";
-            this.walkLeftBox.Size = new System.Drawing.Size(121, 20);
-            this.walkLeftBox.TabIndex = 36;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(358, 138);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(95, 21);
-            this.button1.TabIndex = 37;
-            this.button1.Text = "Calculate Others";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // label4
-            // 
-            this.label4.Location = new System.Drawing.Point(3, 192);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(125, 21);
-            this.label4.TabIndex = 38;
-            this.label4.Text = "Sticking probability";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // stickingBox
-            // 
-            this.stickingBox.Location = new System.Drawing.Point(459, 192);
-            this.stickingBox.Name = "stickingBox";
-            this.stickingBox.Size = new System.Drawing.Size(121, 20);
-            this.stickingBox.TabIndex = 39;
+            this.calculateButton.Location = new System.Drawing.Point(358, 138);
+            this.calculateButton.Name = "calculateButton";
+            this.calculateButton.Size = new System.Drawing.Size(95, 21);
+            this.calculateButton.TabIndex = 37;
+            this.calculateButton.Text = "Calculate Others";
+            this.calculateButton.UseVisualStyleBackColor = true;
+            this.calculateButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // label5
             // 
@@ -196,6 +124,7 @@
             this.mobileNeighborHood.Name = "mobileNeighborHood";
             this.mobileNeighborHood.Size = new System.Drawing.Size(121, 21);
             this.mobileNeighborHood.TabIndex = 41;
+            this.mobileNeighborHood.SelectedValueChanged += new System.EventHandler(this.mobileNeighborHood_SelectedValueChanged);
             // 
             // _2ndOrderTabs
             // 
@@ -204,17 +133,9 @@
             this.AutoScroll = true;
             this.Controls.Add(this.mobileNeighborHood);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.stickingBox);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.walkLeftBox);
-            this.Controls.Add(this.walkDownBox);
-            this.Controls.Add(this.walkRightBox);
-            this.Controls.Add(this.walkUpBox);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.calculateButton);
+            this.Controls.Add(this.randWalkBoxUp);
+            this.Controls.Add(this.randWalkLabelUp);
             this.Controls.Add(this.agentCount);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.colorBox);
@@ -233,17 +154,9 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox agentCount;
         private System.Windows.Forms.ColorDialog colorDialog1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox walkUpBox;
-        private System.Windows.Forms.TextBox walkRightBox;
-        private System.Windows.Forms.TextBox walkDownBox;
-        private System.Windows.Forms.TextBox walkLeftBox;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox stickingBox;
+        private System.Windows.Forms.Label randWalkLabelUp;
+        private System.Windows.Forms.TextBox randWalkBoxUp;
+        private System.Windows.Forms.Button calculateButton;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox mobileNeighborHood;
     }
