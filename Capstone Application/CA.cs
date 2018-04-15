@@ -551,6 +551,12 @@ public class CA
         double downProb = states[currentAgent.currentState].walkProbs[2];
         double leftProb = states[currentAgent.currentState].walkProbs[3];
 
+        double newRight = (upProb + rightProb);
+        double newDown = newRight + downProb;
+        double newLeft = newDown + leftProb;
+
+        Console.WriteLine("Prob: " + randomWalk + " up: " + upProb + " right: " + newRight + " down: " + newDown + " left: " + newLeft);
+
         if (randomWalk < upProb)
         {
             newY = currentAgent.yLocation - 1;

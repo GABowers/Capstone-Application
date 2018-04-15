@@ -23,6 +23,7 @@ namespace Capstone_Application
         //bool saveImages = false;
         string imageSaveFolder;
         string countSaveFolder;
+        string pathSaveFolder;
         int mouseDownX = 0;
         int mouseDownY = 0;
         int iterationSpeed = 0;
@@ -426,6 +427,37 @@ namespace Capstone_Application
                     }
                     wt.WriteLine();
                 }
+                wt.Close();
+            }
+        }
+
+        public void AutoPathSave(string time)
+        {
+            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Agent Paths.txt";
+            string fileName = (pathSaveFolder + "/" + countName);
+            string agent = "Agent ";
+            using (StreamWriter wt = new StreamWriter(fileName))
+            {
+                int maxLength = (controllerScript.myCA.gridWidth.ToString().Length * 2) + 4;
+
+                if ((controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6 > maxLength)
+                {
+                    maxLength = (controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6;
+                }
+                for (int i = 0; i < controllerScript.myCA.ActiveAgents.Count; ++i)
+                {
+                    wt.Write(agent.PadRight(maxLength - (i + 1).ToString().Length) + (i + 1) + "|");
+                }
+                wt.WriteLine();
+                for (int i = 0; i < (controllerScript.iterations + 1); i++)
+                {
+                    for (int j = 0; j < controllerScript.myCA.ActiveAgents.Count; j++)
+                    {
+                        wt.Write(controllerScript.myCA.ActiveAgents[j].History[i].ToString().PadRight(maxLength) + "|");
+                    }
+                    wt.WriteLine();
+                }
+
                 wt.Close();
             }
         }
@@ -920,6 +952,70 @@ namespace Capstone_Application
             else
             {
                 settingsScript.IterationPauseValue = -1;
+            }
+        }
+
+        private void iterationCountPathSave_TextChanged(object sender, EventArgs e)
+        {
+            settingsScript.PathSaveValues.Clear();
+            if (string.IsNullOrWhiteSpace(iterationCountPathSave.Text))
+            {
+
+            }
+            else
+            {
+                List<int> pathValueList = new List<int>();
+                if (iterationCountPathSave.Text.Contains(","))
+                {
+                    string[] pathValues = iterationCountPathSave.Text.Split(',');
+                    for (int i = 0; i < pathValues.Length; i++)
+                    {
+                        if (int.TryParse(pathValues[i], out int result))
+                        {
+                            pathValueList.Add(int.Parse(pathValues[i]));
+                        }
+                    }
+                }
+                else
+                {
+                    if (int.TryParse(iterationCountPathSave.Text, out int result))
+                    {
+                        pathValueList.Add(int.Parse(iterationCountPathSave.Text));
+                    }
+                }
+                settingsScript.PathSaveValues = pathValueList;
+            }
+        }
+
+        private void setPathSaveToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (setPathSaveToolStripMenuItem.Checked)
+            {
+                settingsScript.PathSave = true;
+            }
+            else
+            {
+                settingsScript.PathSave = false;
+            }
+        }
+
+        private void setPathSaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (setPathSaveToolStripMenuItem.Checked == true)
+            {
+                using (var fbd = new FolderBrowserDialog())
+                {
+                    DialogResult result = fbd.ShowDialog();
+
+                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    {
+                        pathSaveFolder = fbd.SelectedPath;
+                    }
+                    else
+                    {
+                        setPathSaveToolStripMenuItem.Checked = false;
+                    }
+                }
             }
         }
     }

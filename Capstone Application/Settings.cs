@@ -10,6 +10,7 @@ namespace Capstone_Application
     {
         bool countSave = false;
         bool imageSave = false;
+        bool pathSave = false;
         bool autoReset = false;
         bool autoPause = false;
         bool countReset = false;
@@ -24,6 +25,7 @@ namespace Capstone_Application
         List<int> countPauseValues = new List<int>();
         List<int> countSaveValues = new List<int>();
         List<int> imageSaveValues = new List<int>();
+        List<int> pathSaveValues = new List<int>();
 
         public bool CountSave { get => countSave; set => countSave = value; }
         public bool ImageSave { get => imageSave; set => imageSave = value; }
@@ -41,6 +43,8 @@ namespace Capstone_Application
         public bool CountPause { get => countPause; set => countPause = value; }
         public bool AutoPause { get => autoPause; set => autoPause = value; }
         public int IterationPauseValue { get => iterationPauseValue; set => iterationPauseValue = value; }
+        public List<int> PathSaveValues { get => pathSaveValues; set => pathSaveValues = value; }
+        public bool PathSave { get => pathSave; set => pathSave = value; }
 
         public void CheckSettings(Form1 form)
         {

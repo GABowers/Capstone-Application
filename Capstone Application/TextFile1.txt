@@ -11,16 +11,21 @@ Change how the CA is started, so auxilary services like the cell counter window 
 Consider allowing user to change filetypes (of auto-saved images)
 Think about making setup more extensible - changing where the grid size is made so users can adjust it on the fly,
     making the initial numbers percentages to support this, etc.
-IMPORTANT: How many directions should agents be able to move? Just 4 regular, or the diagonals too?
 Vector-based graphics for multi-faced agents
 
 consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
 to allow for addition of StatePageInfos without knowing the exact number of rows and columns.
 
-Fix "CheckNeighbor" method. Have it check each neighbor to be real, then add them to a list. Then move through that list checking each
-    individual spot in a new method or something, perhaps which returns a list of True/false
-
 Add "template" system. Select template when adding grid, which changes settings. For ants, CA=second order, grid=box,
     neighborhood = something, agents = variable (3 or more, with 1 = colony, 2 = food, 3 = ants, 4 = obstacle), grid size editable
 For template system, incorporate macro system, allowing user to select various options for when they arrive at X iteration
 Add line at beginning of count file, stating run and date?
+Heatmap/trace how to show multiple agents
+
+Completely revamp how a CA is made. Make it so you only define the grid size and number of agents initially (maybe not even grid size).
+    for each agent, define whether it's mobile or immobile, its neighborhood, whether it has any prob. of change (for mobile mainly) or
+	sticking effects/random walk/whatever.
+Change "count" to "amount"
+grid not expanding all the way in larger places
+picture control not showing grid of height 1
+moving the mouse over the picturebox still shows coordinates, even when outside of grid

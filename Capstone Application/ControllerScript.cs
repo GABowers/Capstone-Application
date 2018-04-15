@@ -584,8 +584,8 @@ namespace Capstone_Application
                     }
                     else
                     {
-                        int tempInt = form.settingsScript.CountSaveValues[i];
-                        int remainder = iterations % tempInt;
+                        //int tempInt = form.settingsScript.CountSaveValues[i];
+                        int remainder = iterations % form.settingsScript.CountSaveValues[i];
                         if (remainder == 0)
                         {
                             // Auto count save
@@ -607,12 +607,35 @@ namespace Capstone_Application
                     }
                     else
                     {
-                        int tempInt = form.settingsScript.ImageSaveValues[i];
-                        int remainder = iterations % tempInt;
+                        //int tempInt = form.settingsScript.ImageSaveValues[i];
+                        int remainder = iterations % form.settingsScript.ImageSaveValues[i];
                         if (remainder == 0)
                         {
                             // Auto image save
                             form.InvokeImageSave(time);
+                        }
+                    }
+                }
+            }
+
+            // For path saving
+            if (form.settingsScript.PathSave)
+            {
+                // Check if iteration is the same as any in the list. If so, do the image save
+                for (int i = 0; i < form.settingsScript.PathSaveValues.Count; i++)
+                {
+                    if (form.settingsScript.PathSaveValues[i] == -1)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        //int tempInt = form.settingsScript.PathSaveValues[i];
+                        int remainder = iterations % form.settingsScript.PathSaveValues[i];
+                        if (remainder == 0)
+                        {
+                            // Auto image save
+                            form.AutoPathSave(time);
                         }
                     }
                 }
@@ -643,6 +666,19 @@ namespace Capstone_Application
                     if (form.settingsScript.ImageSaveValues[i] == -1)
                     {
                         form.InvokeImageSave(time);
+                    }
+                }
+            }
+
+            // For image saving
+            if (form.settingsScript.PathSave)
+            {
+                // Check for code denoting save at reset. If so, do the image save
+                for (int i = 0; i < form.settingsScript.PathSaveValues.Count; i++)
+                {
+                    if (form.settingsScript.PathSaveValues[i] == -1)
+                    {
+                        form.AutoPathSave(time);
                     }
                 }
             }

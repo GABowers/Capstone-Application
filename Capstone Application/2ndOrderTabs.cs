@@ -158,7 +158,7 @@ namespace Capstone_Application
             {
                 int otherState = i + 1;
                 TextBox textBox = new TextBox { Location = new System.Drawing.Point(otherXPosition, yPosition), Name = (state + "." + otherState), Height = 20, Width = 121, };
-                Console.WriteLine("Adding: " + (state + "." + otherState));
+                //Console.WriteLine("Adding: " + (state + "." + otherState));
                 Label qweLabel = new Label { Location = new System.Drawing.Point(xPosition, yPosition), Name = ("StickLabel" + otherState), AutoSize = false, Height = 25, Width = 438, Text = string.Format("Sticking probability (to state {0})", otherState) };
                 Controls.Add(qweLabel);
                 Controls.Add(textBox);
@@ -227,9 +227,9 @@ namespace Capstone_Application
             }
             for (int i = 0; i < numStates; i++)
             {
-                Console.WriteLine("Firing!");
+                //Console.WriteLine("Firing!");
                 TextBox tempBox = this.Controls[(state + "." + (i + 1))] as TextBox;
-                Console.WriteLine("Searching: " + (state + "." + (i + 1)));
+                //Console.WriteLine("Searching: " + (state + "." + (i + 1)));
                 Label tempLabel = this.Controls[("StickLabel" + (i + 1))] as Label;
                 this.Controls.Remove(tempBox);
                 this.Controls.Remove(tempLabel);
