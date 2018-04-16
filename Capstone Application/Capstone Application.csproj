@@ -79,6 +79,12 @@
     <Compile Include="2ndOrderTabs.Designer.cs">
       <DependentUpon>2ndOrderTabs.cs</DependentUpon>
     </Compile>
+    <Compile Include="AdvancedCellPlacement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdvancedCellPlacement.Designer.cs">
+      <DependentUpon>AdvancedCellPlacement.cs</DependentUpon>
+    </Compile>
     <Compile Include="AgentController.cs" />
     <Compile Include="BlankGrid.cs" />
     <Compile Include="CA.cs" />
@@ -150,6 +156,9 @@
     </Compile>
     <EmbeddedResource Include="2ndOrderTabs.resx">
       <DependentUpon>2ndOrderTabs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AdvancedCellPlacement.resx">
+      <DependentUpon>AdvancedCellPlacement.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Counter.resx">
       <DependentUpon>Counter.cs</DependentUpon>

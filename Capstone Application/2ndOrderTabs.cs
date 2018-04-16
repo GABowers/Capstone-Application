@@ -18,15 +18,19 @@ namespace Capstone_Application
         int originalY;
         int state;
         int numStates;
+        Form1 form;
+        Form2 container;
         //int otherYPosition;
         //int randWalkLabelXPos;
         //int randWalkLabelYPos;
         //int randWalkBoxXPos;
         //int randWalkBoxYPos;
         List<string> neighborhoodList = new List<string>();
-        public _2ndOrderTabs(int currentState, int amountOfStates)
+        public _2ndOrderTabs(Form1 mainForm, Form2 owner, int currentState, int amountOfStates)
         {
             InitializeComponent();
+            form = mainForm;
+            container = owner;
             state = currentState;
             numStates = amountOfStates;
             xPosition = randWalkLabelUp.Location.X;
@@ -235,6 +239,21 @@ namespace Capstone_Application
                 this.Controls.Remove(tempLabel);
             }
             PropagateFields();
+        }
+
+        private void advancedAmountButton_Click(object sender, EventArgs e)
+        {
+            int count;
+            if(int.TryParse(agentCount.Text, out int result))
+            {
+                count = int.Parse(agentCount.Text);
+            }
+            else
+            {
+                count = 0;
+            }
+            AdvancedCellPlacement newModelDialog = new AdvancedCellPlacement(form, count, (container.tabControl1.SelectedIndex - 1));
+            newModelDialog.ShowDialog();
         }
     }
 }

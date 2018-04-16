@@ -111,7 +111,7 @@ namespace Capstone_Application
                 else if(this.caTypeBox.SelectedIndex == 1)
                 {
                     int j = i + 1;
-                    _2ndOrderTabs uc3 = new _2ndOrderTabs(j, amountOfStates);
+                    _2ndOrderTabs uc3 = new _2ndOrderTabs(mainForm, this, j, amountOfStates);
                     tabPage2 = new TabPage();
                     tabPage2.Text = "State " + j;
                     //uc3.SetInfo(j, amountOfStates);

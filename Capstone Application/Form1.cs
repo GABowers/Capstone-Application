@@ -120,6 +120,7 @@ namespace Capstone_Application
         {
             RunCA();
             UpdateImage();
+            controllerScript.CheckSettings(this);
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -131,11 +132,13 @@ namespace Capstone_Application
                 {
                     RunCA();
                     Invoke(new Action(() => UpdateImage()));
+                    controllerScript.CheckSettings(this);
                 }
                 else if(iterationSpeed > 0)
                 {
                     RunCA();
                     Invoke(new Action(() => UpdateImage()));
+                    controllerScript.CheckSettings(this);
                     System.Threading.Thread.Sleep(iterationSpeed);
                 }
             }

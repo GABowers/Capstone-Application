@@ -282,8 +282,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox caTypeBox;
@@ -303,5 +301,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button previousTab;
         private System.Windows.Forms.Button nextTab;
+        internal System.Windows.Forms.TabControl tabControl1;
     }
 }

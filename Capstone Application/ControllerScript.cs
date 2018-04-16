@@ -188,7 +188,6 @@ namespace Capstone_Application
             currentTransitions.AddRange(myCA.transitions);
             fullCount.Add(currentCellCount);
             fullTransitions.Add(currentTransitions);
-            CheckSettings(currentForm);
         }
 
         public void CreateCA()

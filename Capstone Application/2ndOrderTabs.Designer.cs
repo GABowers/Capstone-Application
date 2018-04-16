@@ -38,6 +38,7 @@
             this.calculateButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.mobileNeighborHood = new System.Windows.Forms.ComboBox();
+            this.advancedAmountButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -126,11 +127,22 @@
             this.mobileNeighborHood.TabIndex = 41;
             this.mobileNeighborHood.SelectedValueChanged += new System.EventHandler(this.mobileNeighborHood_SelectedValueChanged);
             // 
+            // advancedAmountButton
+            // 
+            this.advancedAmountButton.Location = new System.Drawing.Point(358, 57);
+            this.advancedAmountButton.Name = "advancedAmountButton";
+            this.advancedAmountButton.Size = new System.Drawing.Size(95, 21);
+            this.advancedAmountButton.TabIndex = 42;
+            this.advancedAmountButton.Text = "Advanced";
+            this.advancedAmountButton.UseVisualStyleBackColor = true;
+            this.advancedAmountButton.Click += new System.EventHandler(this.advancedAmountButton_Click);
+            // 
             // _2ndOrderTabs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.advancedAmountButton);
             this.Controls.Add(this.mobileNeighborHood);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.calculateButton);
@@ -159,5 +171,6 @@
         private System.Windows.Forms.Button calculateButton;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox mobileNeighborHood;
+        private System.Windows.Forms.Button advancedAmountButton;
     }
 }
