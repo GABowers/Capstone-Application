@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Capstone_Application
 {
-    public class Settings
+    public class InstanceSettings
     {
         bool countSave = false;
         bool imageSave = false;

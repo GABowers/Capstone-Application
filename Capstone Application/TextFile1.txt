@@ -18,6 +18,7 @@ to allow for addition of StatePageInfos without knowing the exact number of rows
 
 Add "template" system. Select template when adding grid, which changes settings. For ants, CA=second order, grid=box,
     neighborhood = something, agents = variable (3 or more, with 1 = colony, 2 = food, 3 = ants, 4 = obstacle), grid size editable
+	considering having grid (or background) settings, like pheremones dropped
 For template system, incorporate macro system, allowing user to select various options for when they arrive at X iteration
 Add line at beginning of count file, stating run and date?
 Heatmap/trace how to show multiple agents
@@ -29,3 +30,6 @@ Change "count" to "amount"
 grid not expanding all the way in larger places
 picture control not showing grid of height 1
 moving the mouse over the picturebox still shows coordinates, even when outside of grid
+Consider converting path trace stuff to 16-bit greyscale
+Couldn't connectivity index be for each cell type? If so, it should have its own column.
+enable/disable different operations--calculating cell count, CIndex, transitions, etc. per iteration

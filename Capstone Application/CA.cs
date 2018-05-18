@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 //using System.Threading.Tasks;
 
 public class CA
@@ -14,6 +15,7 @@ public class CA
     public static MobileCA mobileCA = new MobileCA();
     int caType = 0;
     List<AgentController> activeAgents = new List<AgentController>();
+    //AgentController[] activeAgentsArray;
     System.Object[,] objects;
     //private BlankGrid blankGrid;
     //AgentController agent;
@@ -27,16 +29,23 @@ public class CA
     public int gridHeight;
     private int numStates;
     public int agentLocation;
+    private int connectedVertices;
     public  List<int> stateCount = new List<int>();
     public List<int> stateCountReplacement = new List<int>();
     public List<int> neighborCount = new List<int>();
     public  List<int> transitions = new List<int>();
     public List<float> neighborAnalysis = new List<float>();
+    private List<Tuple<int, int, int, int>> edges = new List<Tuple<int, int, int, int>>();
+    List<Tuple<int, int, int, int>> dataList;
 
     private StatePageInfo statePageInfo;
 
     public int CaType { get => caType; set => caType = value; }
+    //public AgentController[] ActiveAgentsArray { get => activeAgentsArray; set => activeAgentsArray = value; }
+
     public List<AgentController> ActiveAgents { get => activeAgents; set => activeAgents = value; }
+    public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
+    public int ConnectedVertices { get => connectedVertices; set => connectedVertices = value; }
 
     public CA(int width, int height, int numStates, NType type, int incomingCAType, GridType gType = GridType.Box)
     {
@@ -89,9 +98,11 @@ public class CA
             agentCount.Add(cellAmounts[i]);
             totalCells += cellAmounts[i];
         }
+
         // this is a list of which states still needed to be added
         
         int gridSize = (gridWidth * gridHeight);
+        //ActiveAgentsArray = new AgentController[gridSize];
         // if total cells < gridSize, check/decide connectivity method - every other point, or what?
         int state = 0;
         
@@ -110,8 +121,9 @@ public class CA
             grid[xValue, yValue].agent.currentState = state;
             grid[xValue, yValue].agent.xLocation = xValue;
             grid[xValue, yValue].agent.yLocation = yValue;
+            AddAgent(grid[xValue, yValue].agent);
 
-            ActiveAgents.Add(grid[xValue, yValue].agent);
+            //ActiveAgentsArray[] = (grid[xValue, yValue].agent);
 
             // Subtract that state from its agentcount
             // And if it goes to zero remove it from both our lists
@@ -232,11 +244,38 @@ public class CA
         }
         if (CaType == 0) // 0 = first order
         {
+            // int length = gridWidth * gridHeight;
+            // int count = 0;
+            // Parallel.For(0, length, i =>
+            //{
+            //    count++;
+            //    int x = (i / gridWidth);
+            //    int y = (i % gridWidth);
+            //    Console.WriteLine("Length" + length + " Count: " + count);
+            //    if (grid[x, y].ContainsAgent)
+            //    {
+            //        int oldState = grid[x, y].agent.currentState;
+            //        if (neighborType == NType.Advanced)
+            //        {
+            //            double[] probChances = AdvancedGetProbChances(oldState, x, y);
+            //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+            //        }
+            //        else
+            //        {
+            //            List<int> neighborStateCount = GetNeighborCount(x, y);
+            //            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+            //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+            //        }
+            //        int newState = grid[x, y].agent.currentState;
+            //        CheckTransitions(oldState, newState);
+            //        stateCount[newState] += 1;
+            //    }
+            //});
             for (int x = 0; x < gridWidth; ++x)
             {
                 for (int y = 0; y < gridHeight; ++y)
                 {
-                    if(grid[x,y].ContainsAgent)
+                    if (grid[x, y].ContainsAgent)
                     {
                         int oldState = grid[x, y].agent.currentState;
                         if (neighborType == NType.Advanced)
@@ -256,6 +295,64 @@ public class CA
                     }
                 }
             }
+        }
+    }
+
+    // clearly not working correctly. up to 5 times SLOWER than other method.
+    async void ASyncRun()
+    {
+        dataList = new List<Tuple<int, int, int, int>>();
+        List<Task<Tuple<int, int, int, int>>> tasks = new List<Task<Tuple<int, int, int, int>>>();
+        for (int x = 0; x < gridWidth; ++x)
+        {
+            for (int y = 0; y < gridHeight; ++y)
+            {
+                // create tuple at end of operation returning location and new state.
+                // Then move through grid changing each location (this part must be synchronous)
+                tasks.Add(ASyncIndividualRun(x, y));
+            }
+        }
+        //Console.WriteLine("Number of entries: " + tasks.Count);
+        await Task.WhenAll(tasks);
+        //when changing grid, make sure to check if an actual agent is there. If none, skip reassignment
+        //Console.WriteLine("I'll never forget...");
+        foreach (Task<Tuple<int, int, int, int>> task in tasks)
+        {
+            //Console.WriteLine(task.Result);
+            //Console.WriteLine("We're here because we're here");
+            dataList.Add(task.Result);
+            
+        }
+        
+    }
+
+    async Task<Tuple<int, int, int, int>> ASyncIndividualRun(int x, int y)
+    {
+        if (grid[x, y].ContainsAgent)
+        {
+            int newState;
+            int oldState = grid[x, y].agent.currentState;
+            // change when updating agent type setup
+            if (neighborType == NType.Advanced)
+            {
+                double[] probChances = AdvancedGetProbChances(oldState, x, y);
+                newState = GetStateFromProbability(probChances);
+                //dataList.Add(new Tuple<int, int, int>(x, y, ));
+            }
+            else
+            {
+                List<int> neighborStateCount = GetNeighborCount(x, y);
+                double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+                newState = GetStateFromProbability(probChances);
+            }
+            return new Tuple<int, int, int, int>(x, y, oldState, newState);
+
+            //CheckTransitions(oldState, newState);
+            //stateCount[newState] += 1;
+        }
+        else
+        {
+            return new Tuple<int, int, int, int>(x, y, -1, -1);
         }
     }
 
@@ -304,24 +401,88 @@ public class CA
         }
     }
 
-    public double GetConnectivityIndex()
+    public double GetCIndex(int state)
     {
-        double connectivityIndex = 0;
-        double maxNeighbors = (gridWidth * gridHeight) * neighborhood.GetNeighborSize();
-        double totalNeighbors = 0;
-        for (int i = 0; i < gridWidth; i++)
+        Edges.Clear();
+        ConnectedVertices = 0;
+        //double connectivityIndex = 0;
+        //double maxNeighbors = (gridWidth * gridHeight) * neighborhood.GetNeighborSize();
+        int totalEdges = 0;
+        int amount = stateCount[state];
+        int neighborhoodFactor = 0;
+        int maxEdges = 0;
+
+        switch(neighborType)
         {
-            for (int j = 0; j < gridHeight; j++)
+            case NType.None:
+                neighborhoodFactor = 0;
+                break;
+            case NType.VonNeumann:
+                neighborhoodFactor = 2;
+                break;
+            case NType.Moore:
+                neighborhoodFactor = 4;
+                break;
+            case NType.Hybrid:
+                // This is an estimate!
+                neighborhoodFactor = 6;
+                break;
+            case NType.Advanced:
+                //??? You tell me
+                break;
+        }
+
+        // Determine the # edges for a maximally clustered graph
+        {
+            int n = amount;
+            int s = (int)Math.Floor(Math.Sqrt((double)n));
+            int x = s;
+            int r = n - (s * s);
+            int f;
+            int y;
+            if(r > s)
             {
-                if (grid[i, j].ContainsAgent)
-                {
-                int numNeighbors = CurrentGetNeighborCount(i, j);
-                totalNeighbors += numNeighbors;
-                }
+                int t = r - s;
+                f = ((t - 1) * neighborhoodFactor) + 1;
+                y = s + 1;
+            }
+            else
+            {
+                f = ((r - 1) * neighborhoodFactor) + 1;
+                y = s;
+            }
+            switch(neighborType)
+            {
+                case NType.None:
+                    //Worry about later
+                    break;
+                case NType.VonNeumann:
+                    maxEdges = ((x * (y - 1)) + (y * (x - 1))) + f;
+                    break;
+                case NType.Moore:
+                    maxEdges = ((x * (y - 1)) + (y * (x - 1)) + (2 * (x - 1) * (y - 1))) + f;
+                    break;
+                case NType.Hybrid:
+                    // Worry about later
+                    break;
+                case NType.Advanced:
+                    //??? You tell me
+                    break;
             }
         }
-        connectivityIndex = totalNeighbors / maxNeighbors;
-        return connectivityIndex;
+
+        for(int i = 0; i < ActiveAgents.Count; i++)
+        {
+            if(activeAgents[i].currentState == state)
+            {
+                // check if neighbors are of current state
+                // Add neighbors to an edge count
+                int edges = GetEdges(activeAgents[i].xLocation, activeAgents[i].yLocation, state);
+                totalEdges += edges;
+            }
+        }
+        int cIndex = (Edges.Count / maxEdges) * (ConnectedVertices / amount);
+        return cIndex;
     }
 
     private List<int> GetNeighborCount(int x, int y)
@@ -371,9 +532,10 @@ public class CA
     }
 
     // Gets neighbor count for the current grid
-    private int CurrentGetNeighborCount(int x, int y)
+    private int GetEdges(int x, int y, int centerState)
     {
         int numNeighbors = 0;
+        bool connections = false;
         List<Point> neighbors = neighborhood.GetNeighbors(x, y);
 
         //Get a count of each state in our neighborhood
@@ -408,8 +570,28 @@ public class CA
                 continue;
             if (grid[modifiedP.X, modifiedP.Y].ContainsAgent)
             {
-
-                numNeighbors++;
+                if(connections == false)
+                {
+                    ConnectedVertices += 1;
+                    connections = true;
+                }
+                if(grid[modifiedP.X, modifiedP.Y].agent.currentState == centerState)
+                {
+                    Tuple<int, int, int, int> forward = new Tuple<int, int, int, int>(x, y, modifiedP.X, modifiedP.Y);
+                    Tuple<int, int, int, int> backward = new Tuple<int, int, int, int>(modifiedP.X, modifiedP.Y, x, y);
+                    if (Edges.Contains(forward))
+                    {
+                        continue;
+                    }
+                    else if(Edges.Contains(backward))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        Edges.Add(forward);
+                    }
+                }
             }
         }
         return numNeighbors;

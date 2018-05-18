@@ -49,10 +49,11 @@ namespace Capstone_Application
                     dataGridView1[0, i].Value = (i + 1).ToString();
                     dataGridView1[1, i].Value = controllerScript.myCA.stateCount[i];
                     dataGridView1[2, i].Value = controllerScript.myCA.transitions[i];
+                    dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
                 }
-                dataGridView1.Rows.Add(new DataGridViewRow());
-                dataGridView1[0, states].Value = misc;
-                dataGridView1[1, states].Value = ci + controllerScript.ReturnConnectivityIndex();
+                //dataGridView1.Rows.Add(new DataGridViewRow());
+                //dataGridView1[0, states].Value = misc;
+                //dataGridView1[1, states].Value = ci + controllerScript.ReturnConnectivityIndex();
                 dataGridView1.AllowUserToResizeColumns = false;
                 dataGridView1.AllowUserToResizeRows = false;
             }
@@ -70,6 +71,7 @@ namespace Capstone_Application
             {
                 dataGridView1[1, i].Value = controllerScript.myCA.stateCount[i];
                 dataGridView1[2, i].Value = controllerScript.myCA.transitions[i];
+                dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
             }
         }
 

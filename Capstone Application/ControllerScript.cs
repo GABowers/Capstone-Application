@@ -495,11 +495,11 @@ namespace Capstone_Application
             }
         }
 
-        public double ReturnConnectivityIndex()
+        public double ReturnConnectivityIndex(int state)
         {
             if(createdCA)
             {
-                return myCA.GetConnectivityIndex();
+                return myCA.GetCIndex(state);
             }
             else
             {

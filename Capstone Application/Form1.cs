@@ -28,7 +28,7 @@ namespace Capstone_Application
         int mouseDownY = 0;
         int iterationSpeed = 0;
         int editState = 0;
-        public Settings settingsScript = new Settings();
+        public InstanceSettings settingsScript = new InstanceSettings();
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
         public Form1()
