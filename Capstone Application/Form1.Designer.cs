@@ -43,6 +43,7 @@
             this.imageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visualizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dansNeighborAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,6 +53,11 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.userGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toggleSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.countToggle = new System.Windows.Forms.ToolStripMenuItem();
+            this.transToggle = new System.Windows.Forms.ToolStripMenuItem();
+            this.bIndexToggle = new System.Windows.Forms.ToolStripMenuItem();
+            this.pathToggle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -68,14 +74,22 @@
             this.runCountBox = new System.Windows.Forms.ToolStripLabel();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.setDataSave = new System.Windows.Forms.ToolStripMenuItem();
             this.iterationCountCountSave = new System.Windows.Forms.ToolStripTextBox();
             this.setImageSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iterationCountImageSave = new System.Windows.Forms.ToolStripTextBox();
+            this.setPathSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.iterationCountPathSave = new System.Windows.Forms.ToolStripTextBox();
             this.setAutoResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iterationCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetIterationTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.cellCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoPauseCheck = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoPauseIterationCount = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoPauseIterationCountTextBox = new System.Windows.Forms.ToolStripTextBox();
+            this.autoPauseCellCount = new System.Windows.Forms.ToolStripMenuItem();
+            this.setAutoSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.countToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iterationCountBox = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -86,12 +100,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.autoPauseCheck = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoPauseIterationCount = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoPauseCellCount = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoPauseIterationCountTextBox = new System.Windows.Forms.ToolStripTextBox();
-            this.setPathSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.iterationCountPathSave = new System.Windows.Forms.ToolStripTextBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
@@ -106,7 +114,8 @@
             this.saveToolStripMenuItem,
             this.analysisToolStripMenuItem,
             this.toolStripMenuItem3,
-            this.toolStripMenuItem4});
+            this.toolStripMenuItem4,
+            this.toggleSaveToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(505, 24);
@@ -177,7 +186,8 @@
             this.transitionsToolStripMenuItem,
             this.imageToolStripMenuItem,
             this.pathToolStripMenuItem,
-            this.visualizationToolStripMenuItem});
+            this.visualizationToolStripMenuItem,
+            this.dataToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
             this.saveToolStripMenuItem.Text = "Save";
@@ -216,6 +226,13 @@
             this.visualizationToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.visualizationToolStripMenuItem.Text = "Visualization";
             this.visualizationToolStripMenuItem.Click += new System.EventHandler(this.visualizationToolStripMenuItem_Click);
+            // 
+            // dataToolStripMenuItem
+            // 
+            this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dataToolStripMenuItem.Text = "Data";
+            this.dataToolStripMenuItem.Click += new System.EventHandler(this.dataToolStripMenuItem_Click);
             // 
             // analysisToolStripMenuItem
             // 
@@ -281,6 +298,49 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            // 
+            // toggleSaveToolStripMenuItem
+            // 
+            this.toggleSaveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.countToggle,
+            this.transToggle,
+            this.bIndexToggle,
+            this.pathToggle});
+            this.toggleSaveToolStripMenuItem.Name = "toggleSaveToolStripMenuItem";
+            this.toggleSaveToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
+            this.toggleSaveToolStripMenuItem.Text = "Toggle Save";
+            // 
+            // countToggle
+            // 
+            this.countToggle.CheckOnClick = true;
+            this.countToggle.Name = "countToggle";
+            this.countToggle.Size = new System.Drawing.Size(152, 22);
+            this.countToggle.Text = "Count";
+            this.countToggle.Click += new System.EventHandler(this.countToggle_Click);
+            // 
+            // transToggle
+            // 
+            this.transToggle.CheckOnClick = true;
+            this.transToggle.Name = "transToggle";
+            this.transToggle.Size = new System.Drawing.Size(152, 22);
+            this.transToggle.Text = "Transitions";
+            this.transToggle.Click += new System.EventHandler(this.transToggle_Click);
+            // 
+            // bIndexToggle
+            // 
+            this.bIndexToggle.CheckOnClick = true;
+            this.bIndexToggle.Name = "bIndexToggle";
+            this.bIndexToggle.Size = new System.Drawing.Size(152, 22);
+            this.bIndexToggle.Text = "B Index";
+            this.bIndexToggle.Click += new System.EventHandler(this.bIndexToggle_Click);
+            // 
+            // pathToggle
+            // 
+            this.pathToggle.CheckOnClick = true;
+            this.pathToggle.Name = "pathToggle";
+            this.pathToggle.Size = new System.Drawing.Size(152, 22);
+            this.pathToggle.Text = "Path";
+            this.pathToggle.Click += new System.EventHandler(this.pathToggle_Click);
             // 
             // toolStrip1
             // 
@@ -394,7 +454,6 @@
             // 
             // toolStripTextBox1
             // 
-            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
             this.toolStripTextBox1.Leave += new System.EventHandler(this.toolStripTextBox1_Leave);
@@ -422,11 +481,12 @@
             // 
             this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem5,
+            this.setDataSave,
             this.setImageSaveToolStripMenuItem,
             this.setPathSaveToolStripMenuItem,
             this.setAutoResetToolStripMenuItem,
-            this.autoPauseCheck});
+            this.autoPauseCheck,
+            this.setAutoSaveToolStripMenuItem});
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Transparent;
             this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
@@ -434,22 +494,21 @@
             this.toolStripDropDownButton1.Text = "Iteration";
             this.toolStripDropDownButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             // 
-            // toolStripMenuItem5
+            // setDataSave
             // 
-            this.toolStripMenuItem5.AutoToolTip = true;
-            this.toolStripMenuItem5.CheckOnClick = true;
-            this.toolStripMenuItem5.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setDataSave.AutoToolTip = true;
+            this.setDataSave.CheckOnClick = true;
+            this.setDataSave.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.iterationCountCountSave});
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(153, 22);
-            this.toolStripMenuItem5.Text = "Set Count Save";
-            this.toolStripMenuItem5.ToolTipText = resources.GetString("toolStripMenuItem5.ToolTipText");
-            this.toolStripMenuItem5.CheckedChanged += new System.EventHandler(this.toolStripMenuItem5_CheckedChanged);
-            this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
+            this.setDataSave.Name = "setDataSave";
+            this.setDataSave.Size = new System.Drawing.Size(153, 22);
+            this.setDataSave.Text = "Set Data Save";
+            this.setDataSave.ToolTipText = resources.GetString("setDataSave.ToolTipText");
+            this.setDataSave.CheckedChanged += new System.EventHandler(this.toolStripMenuItem5_CheckedChanged);
+            this.setDataSave.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
             // iterationCountCountSave
             // 
-            this.iterationCountCountSave.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.iterationCountCountSave.Name = "iterationCountCountSave";
             this.iterationCountCountSave.Size = new System.Drawing.Size(100, 23);
             this.iterationCountCountSave.Leave += new System.EventHandler(this.iterationCountCountSave_Leave);
@@ -468,11 +527,27 @@
             // 
             // iterationCountImageSave
             // 
-            this.iterationCountImageSave.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.iterationCountImageSave.Name = "iterationCountImageSave";
             this.iterationCountImageSave.Size = new System.Drawing.Size(100, 23);
             this.iterationCountImageSave.Leave += new System.EventHandler(this.iterationCountImageSave_Leave);
             this.iterationCountImageSave.TextChanged += new System.EventHandler(this.iterationCountImageSave_TextChanged);
+            // 
+            // setPathSaveToolStripMenuItem
+            // 
+            this.setPathSaveToolStripMenuItem.CheckOnClick = true;
+            this.setPathSaveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.iterationCountPathSave});
+            this.setPathSaveToolStripMenuItem.Name = "setPathSaveToolStripMenuItem";
+            this.setPathSaveToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.setPathSaveToolStripMenuItem.Text = "Set Path Save";
+            this.setPathSaveToolStripMenuItem.CheckedChanged += new System.EventHandler(this.setPathSaveToolStripMenuItem_CheckedChanged);
+            this.setPathSaveToolStripMenuItem.Click += new System.EventHandler(this.setPathSaveToolStripMenuItem_Click);
+            // 
+            // iterationCountPathSave
+            // 
+            this.iterationCountPathSave.Name = "iterationCountPathSave";
+            this.iterationCountPathSave.Size = new System.Drawing.Size(100, 23);
+            this.iterationCountPathSave.TextChanged += new System.EventHandler(this.iterationCountPathSave_TextChanged);
             // 
             // setAutoResetToolStripMenuItem
             // 
@@ -498,7 +573,6 @@
             // 
             // resetIterationTextBox
             // 
-            this.resetIterationTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.resetIterationTextBox.Name = "resetIterationTextBox";
             this.resetIterationTextBox.Size = new System.Drawing.Size(100, 23);
             this.resetIterationTextBox.Leave += new System.EventHandler(this.resetIterationTextBox_Leave);
@@ -512,6 +586,56 @@
             this.cellCountToolStripMenuItem.Text = "Cell Count";
             this.cellCountToolStripMenuItem.CheckedChanged += new System.EventHandler(this.cellCountToolStripMenuItem_CheckedChanged);
             this.cellCountToolStripMenuItem.Click += new System.EventHandler(this.cellCountToolStripMenuItem_Click);
+            // 
+            // autoPauseCheck
+            // 
+            this.autoPauseCheck.CheckOnClick = true;
+            this.autoPauseCheck.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoPauseIterationCount,
+            this.autoPauseCellCount});
+            this.autoPauseCheck.Name = "autoPauseCheck";
+            this.autoPauseCheck.Size = new System.Drawing.Size(153, 22);
+            this.autoPauseCheck.Text = "Set Auto Pause";
+            this.autoPauseCheck.CheckedChanged += new System.EventHandler(this.autoPauseCheck_CheckedChanged);
+            // 
+            // autoPauseIterationCount
+            // 
+            this.autoPauseIterationCount.CheckOnClick = true;
+            this.autoPauseIterationCount.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoPauseIterationCountTextBox});
+            this.autoPauseIterationCount.Name = "autoPauseIterationCount";
+            this.autoPauseIterationCount.Size = new System.Drawing.Size(154, 22);
+            this.autoPauseIterationCount.Text = "Iteration Count";
+            this.autoPauseIterationCount.CheckedChanged += new System.EventHandler(this.autoPauseIterationCount_CheckedChanged);
+            this.autoPauseIterationCount.Click += new System.EventHandler(this.autoPauseIterationCount_Click);
+            // 
+            // autoPauseIterationCountTextBox
+            // 
+            this.autoPauseIterationCountTextBox.Name = "autoPauseIterationCountTextBox";
+            this.autoPauseIterationCountTextBox.Size = new System.Drawing.Size(100, 23);
+            this.autoPauseIterationCountTextBox.TextChanged += new System.EventHandler(this.autoPauseIterationCountTextBox_TextChanged);
+            // 
+            // autoPauseCellCount
+            // 
+            this.autoPauseCellCount.CheckOnClick = true;
+            this.autoPauseCellCount.Name = "autoPauseCellCount";
+            this.autoPauseCellCount.Size = new System.Drawing.Size(154, 22);
+            this.autoPauseCellCount.Text = "Cell Count";
+            this.autoPauseCellCount.CheckedChanged += new System.EventHandler(this.autoPauseCellCount_CheckedChanged);
+            // 
+            // setAutoSaveToolStripMenuItem
+            // 
+            this.setAutoSaveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.countToolStripMenuItem});
+            this.setAutoSaveToolStripMenuItem.Name = "setAutoSaveToolStripMenuItem";
+            this.setAutoSaveToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.setAutoSaveToolStripMenuItem.Text = "Set Auto Save";
+            // 
+            // countToolStripMenuItem
+            // 
+            this.countToolStripMenuItem.Name = "countToolStripMenuItem";
+            this.countToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.countToolStripMenuItem.Text = "Data";
             // 
             // iterationCountBox
             // 
@@ -536,7 +660,6 @@
             // 
             // speedInput
             // 
-            this.speedInput.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.speedInput.MaxLength = 3;
             this.speedInput.Name = "speedInput";
             this.speedInput.Size = new System.Drawing.Size(25, 25);
@@ -558,7 +681,7 @@
             this.increase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.increase.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.increase.Name = "increase";
-            this.increase.Size = new System.Drawing.Size(23, 19);
+            this.increase.Size = new System.Drawing.Size(23, 22);
             this.increase.Text = "+";
             this.increase.Click += new System.EventHandler(this.increase_Click);
             // 
@@ -604,59 +727,6 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
-            // 
-            // autoPauseCheck
-            // 
-            this.autoPauseCheck.CheckOnClick = true;
-            this.autoPauseCheck.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoPauseIterationCount,
-            this.autoPauseCellCount});
-            this.autoPauseCheck.Name = "autoPauseCheck";
-            this.autoPauseCheck.Size = new System.Drawing.Size(153, 22);
-            this.autoPauseCheck.Text = "Set Auto Pause";
-            this.autoPauseCheck.CheckedChanged += new System.EventHandler(this.autoPauseCheck_CheckedChanged);
-            // 
-            // autoPauseIterationCount
-            // 
-            this.autoPauseIterationCount.CheckOnClick = true;
-            this.autoPauseIterationCount.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoPauseIterationCountTextBox});
-            this.autoPauseIterationCount.Name = "autoPauseIterationCount";
-            this.autoPauseIterationCount.Size = new System.Drawing.Size(154, 22);
-            this.autoPauseIterationCount.Text = "Iteration Count";
-            this.autoPauseIterationCount.CheckedChanged += new System.EventHandler(this.autoPauseIterationCount_CheckedChanged);
-            // 
-            // autoPauseCellCount
-            // 
-            this.autoPauseCellCount.CheckOnClick = true;
-            this.autoPauseCellCount.Name = "autoPauseCellCount";
-            this.autoPauseCellCount.Size = new System.Drawing.Size(154, 22);
-            this.autoPauseCellCount.Text = "Cell Count";
-            this.autoPauseCellCount.CheckedChanged += new System.EventHandler(this.autoPauseCellCount_CheckedChanged);
-            // 
-            // autoPauseIterationCountTextBox
-            // 
-            this.autoPauseIterationCountTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.autoPauseIterationCountTextBox.Name = "autoPauseIterationCountTextBox";
-            this.autoPauseIterationCountTextBox.Size = new System.Drawing.Size(100, 23);
-            this.autoPauseIterationCountTextBox.TextChanged += new System.EventHandler(this.autoPauseIterationCountTextBox_TextChanged);
-            // 
-            // setPathSaveToolStripMenuItem
-            // 
-            this.setPathSaveToolStripMenuItem.CheckOnClick = true;
-            this.setPathSaveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.iterationCountPathSave});
-            this.setPathSaveToolStripMenuItem.Name = "setPathSaveToolStripMenuItem";
-            this.setPathSaveToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.setPathSaveToolStripMenuItem.Text = "Set Path Save";
-            this.setPathSaveToolStripMenuItem.CheckedChanged += new System.EventHandler(this.setPathSaveToolStripMenuItem_CheckedChanged);
-            this.setPathSaveToolStripMenuItem.Click += new System.EventHandler(this.setPathSaveToolStripMenuItem_Click);
-            // 
-            // iterationCountPathSave
-            // 
-            this.iterationCountPathSave.Name = "iterationCountPathSave";
-            this.iterationCountPathSave.Size = new System.Drawing.Size(100, 23);
-            this.iterationCountPathSave.TextChanged += new System.EventHandler(this.iterationCountPathSave_TextChanged);
             // 
             // Form1
             // 
@@ -710,7 +780,7 @@
         private System.Windows.Forms.ToolStripLabel runCountBox;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
-        public System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
+        public System.Windows.Forms.ToolStripMenuItem setDataSave;
         public System.Windows.Forms.ToolStripMenuItem setImageSaveToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem setAutoResetToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel iterationCountBox;
@@ -747,6 +817,14 @@
         private System.Windows.Forms.ToolStripMenuItem autoPauseCellCount;
         public System.Windows.Forms.ToolStripMenuItem setPathSaveToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox iterationCountPathSave;
+        private System.Windows.Forms.ToolStripMenuItem setAutoSaveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem countToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toggleSaveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem countToggle;
+        private System.Windows.Forms.ToolStripMenuItem transToggle;
+        private System.Windows.Forms.ToolStripMenuItem bIndexToggle;
+        private System.Windows.Forms.ToolStripMenuItem pathToggle;
     }
 }
 

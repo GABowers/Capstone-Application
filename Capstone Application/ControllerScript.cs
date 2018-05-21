@@ -20,8 +20,9 @@ namespace Capstone_Application
         List<Color> colors = new List<Color>();
         List<float> ratios = new List<float>();
         List<int> cellAmounts = new List<int>();
-        public List<List<int>> fullCount = new List<List<int>>();
-        public List<List<int>> fullTransitions = new List<List<int>>();
+        List<List<int>> fullCount = new List<List<int>>();
+        List<List<int>> fullTransitions = new List<List<int>>();
+        List<List<double>> fullIndex = new List<List<double>>();
 
         public bool editModeOn = false;
         public bool createdCA = false;
@@ -41,6 +42,10 @@ namespace Capstone_Application
             get { return mainPageInfo; }
             set { mainPageInfo = value; }
         }
+
+        public List<List<int>> FullCount { get => fullCount; set => fullCount = value; }
+        public List<List<int>> FullTransitions { get => fullTransitions; set => fullTransitions = value; }
+        public List<List<double>> FullIndex { get => fullIndex; set => fullIndex = value; }
 
         static ControllerScript()
         {
@@ -182,15 +187,32 @@ namespace Capstone_Application
             running = true;
             myCA.OneIteration();
             iterations++;
-            List<int> currentCellCount = new List<int>();
-            List<int> currentTransitions = new List<int>();
-            currentCellCount.AddRange(myCA.stateCount);
-            currentTransitions.AddRange(myCA.transitions);
-            fullCount.Add(currentCellCount);
-            fullTransitions.Add(currentTransitions);
+
+            // move these to check settings?
+            if (currentForm.settingsScript.CountPossible)
+            {
+                //Console.WriteLine("Saving Count");
+                List<int> currentCellCount = new List<int>();
+                currentCellCount.AddRange(myCA.StateCount);
+                FullCount.Add(currentCellCount);
+            }
+            if (currentForm.settingsScript.TransPossible)
+            {
+                //Console.WriteLine("Saving Trans");
+                List<int> currentTransitions = new List<int>();
+                currentTransitions.AddRange(myCA.Transitions);
+                FullTransitions.Add(currentTransitions);
+            }
+            if (currentForm.settingsScript.BIndexPossible)
+            {
+                //Console.WriteLine("Saving BINdex");
+                List<double> currentIndex = new List<double>();
+                currentIndex.AddRange(myCA.CIndexes);
+                FullIndex.Add(currentIndex);
+            }
         }
 
-        public void CreateCA()
+        public void CreateCA(Form1 form)
         {
             if (createdCA == false)
             {
@@ -201,7 +223,7 @@ namespace Capstone_Application
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
                 gType = mainPageInfo.gridType;
-                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, mainPageInfo.caType, gType);
+                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, mainPageInfo.caType, form.settingsScript.BIndexPossible, gType);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
                     ratios.Add(statePageInfo[h].startingAmount.Value);
@@ -377,8 +399,8 @@ namespace Capstone_Application
             iterations = 0;
             ratios.Clear();
             colors.Clear();
-            fullCount.Clear();
-            fullTransitions.Clear();
+            FullCount.Clear();
+            FullTransitions.Clear();
             //imageList.Clear();
             //probabilities.Clear();
             myCA = null;
@@ -495,17 +517,26 @@ namespace Capstone_Application
             }
         }
 
-        public double ReturnConnectivityIndex(int state)
-        {
-            if(createdCA)
-            {
-                return myCA.GetCIndex(state);
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        //public List<double> ReturnConnectivityIndex()
+        //{
+        //    Console.WriteLine("ReturnConnectivityIndex");
+        //    List<double> tempList = new List<double>();
+        //    if(createdCA)
+        //    {
+        //        for (int i = 0; i < amountOfCellTypes; i++)
+        //        {
+        //            tempList.Add(myCA.GetCIndex(i));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < amountOfCellTypes; i++)
+        //        {
+        //            tempList.Add(0);
+        //        }
+        //    }
+        //    return tempList;
+        //}
 
         public void CheckSettings(Form1 form)
         {
@@ -532,7 +563,7 @@ namespace Capstone_Application
                 {
                     for(int i = 0; i < form.settingsScript.CountResetValues.Count; i++)
                     {
-                        if(myCA.stateCount[i] == form.settingsScript.CountResetValues[i])
+                        if(myCA.StateCount[i] == form.settingsScript.CountResetValues[i])
                         {
                             //CheckFinalDataSave(form, time);
                             form.AutoReset();
@@ -558,7 +589,7 @@ namespace Capstone_Application
                 {
                     for (int i = 0; i < form.settingsScript.CountPauseValues.Count; i++)
                     {
-                        if (myCA.stateCount[i] == form.settingsScript.CountPauseValues[i])
+                        if (myCA.StateCount[i] == form.settingsScript.CountPauseValues[i])
                         {
                             //CheckFinalDataSave(form, time);
                             form.PauseUnpauseCA();

@@ -64,7 +64,7 @@ namespace Capstone_Application
 
         private void toolStripLabel1_Click(object sender, EventArgs e)
         {
-            controllerScript.CreateCA();
+            controllerScript.CreateCA((this));
             controllerScript.StartCA(this);
             UpdateRunBox();
             UpdateIterationBox();
@@ -192,7 +192,7 @@ namespace Capstone_Application
         public void AutoReset()
         {
             controllerScript.ResetGrid(this);
-            controllerScript.CreateCA();
+            controllerScript.CreateCA((this));
             controllerScript.StartCA(this);
             controllerScript.CheckMaxRuns(this);
             Invoke(new Action(() => UpdateRunBox()));
@@ -383,7 +383,7 @@ namespace Capstone_Application
 
         private void toolStripMenuItem5_Click(object sender, EventArgs e)
         {
-            if(toolStripMenuItem5.Checked == true)
+            if(setDataSave.Checked == true)
             {
                 using (var fbd = new FolderBrowserDialog())
                 {
@@ -395,7 +395,7 @@ namespace Capstone_Application
                     }
                     else
                     {
-                        toolStripMenuItem5.Checked = false;
+                        setDataSave.Checked = false;
                     }
                 }
             }
@@ -420,13 +420,13 @@ namespace Capstone_Application
             using (StreamWriter wt = new StreamWriter(fileName))
             {
 
-                for (int i = 0; i < controllerScript.fullCount.Count; ++i)
+                for (int i = 0; i < controllerScript.FullCount.Count; ++i)
                 {
                     wt.Write("Iteration: " + (i + 1).ToString());
-                    for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
+                    for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
                     {
                         string cellTypeString = (j + 1).ToString();
-                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.fullCount[i][j]);
+                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
                     }
                     wt.WriteLine();
                 }
@@ -475,13 +475,13 @@ namespace Capstone_Application
             using (StreamWriter wt = new StreamWriter(fileName))
             {
 
-                for (int i = 0; i < controllerScript.fullCount.Count; ++i)
+                for (int i = 0; i < controllerScript.FullCount.Count; ++i)
                 {
                     wt.Write("Iteration: " + (i + 1).ToString());
-                    for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
+                    for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
                     {
                         string cellTypeString = (j + 1).ToString();
-                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.fullCount[i][j]);
+                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
                     }
                     wt.WriteLine();
                 }
@@ -500,7 +500,7 @@ namespace Capstone_Application
 
         private void toolStripMenuItem5_CheckedChanged(object sender, EventArgs e)
         {
-            if(toolStripMenuItem5.Checked)
+            if(setDataSave.Checked)
             {
                 settingsScript.CountSave = true;
             }
@@ -703,13 +703,13 @@ namespace Capstone_Application
             {
                 using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
                 {
-                    for (int i = 0; i < controllerScript.fullCount.Count; ++i)
+                    for (int i = 0; i < controllerScript.FullCount.Count; ++i)
                     {
                         wt.Write("Iteration: " + (i+1).ToString());
-                        for (int j = 0; j < controllerScript.fullCount[i].Count; ++j)
+                        for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
                         {
                             string cellTypeString = (j + 1).ToString();
-                            wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.fullCount[i][j]);
+                            wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
                         }
                         wt.WriteLine();
                     }
@@ -731,13 +731,13 @@ namespace Capstone_Application
                 using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
                 {
 
-                    for (int i = 0; i < controllerScript.fullTransitions.Count; ++i)
+                    for (int i = 0; i < controllerScript.FullTransitions.Count; ++i)
                     {
                         wt.Write("Iteration: " + (i + 1).ToString());
-                        for (int j = 0; j < controllerScript.fullTransitions[i].Count; ++j)
+                        for (int j = 0; j < controllerScript.FullTransitions[i].Count; ++j)
                         {
                             string cellTypeString = (j + 1).ToString();
-                            wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.fullTransitions[i][j]);
+                            wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullTransitions[i][j]);
                         }
                         wt.WriteLine();
                     }
@@ -1018,6 +1018,153 @@ namespace Capstone_Application
                     {
                         setPathSaveToolStripMenuItem.Checked = false;
                     }
+                }
+            }
+        }
+
+        private void autoPauseIterationCount_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void countToggle_Click(object sender, EventArgs e)
+        {
+            if(countToggle.Checked)
+            {
+                settingsScript.CountToggled = true;
+            }
+
+            else
+            {
+                settingsScript.CountToggled = false;
+            }
+        }
+
+        private void transToggle_Click(object sender, EventArgs e)
+        {
+            if (transToggle.Checked)
+            {
+                settingsScript.TransToggled = true;
+            }
+
+            else
+            {
+                settingsScript.TransToggled = false;
+            }
+        }
+
+        private void bIndexToggle_Click(object sender, EventArgs e)
+        {
+            if (bIndexToggle.Checked)
+            {
+                settingsScript.BIndexToggled = true;
+            }
+
+            else
+            {
+                settingsScript.BIndexToggled = false;
+            }
+        }
+
+        private void pathToggle_Click(object sender, EventArgs e)
+        {
+            if (pathToggle.Checked)
+            {
+                settingsScript.PathToggled = true;
+            }
+
+            else
+            {
+                settingsScript.PathToggled = false;
+            }
+        }
+
+        private void dataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            //saveFileDialog1.InitialDirectory = Application.StartupPath;
+            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
+                {
+                    //pertinent info - run, iteration, time
+                    string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs: " + controllerScript.caRuns + " Iterations: " + controllerScript.iterations;
+                    wt.Write(thing);
+                    wt.WriteLine();
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        string cellTypeString = (j + 1).ToString();
+                        wt.Write("Type " + cellTypeString);
+                        if (settingsScript.CountPossible && settingsScript.CountToggled)
+                        {
+                            wt.Write(" | Amount");
+                        }
+                        if (settingsScript.TransPossible && settingsScript.TransToggled)
+                        {
+                            for (int k = 0; k < controllerScript.amountOfCellTypes; k++)
+                            {
+                                if (k == j)
+                                {
+                                    continue;
+                                }
+                                int toType = k + 1;
+                                wt.Write(" | Transition (" + cellTypeString + " to " + toType + ")");
+                            }
+                        }
+                        if (settingsScript.BIndexPossible && settingsScript.BIndexToggled)
+                        {
+                            wt.Write(" | B Index |");
+                        }
+                    }
+                    wt.WriteLine();
+                    for (int i = 0; i < controllerScript.iterations; ++i)
+                    {
+                        wt.Write("Iteration: " + (i + 1).ToString());
+                        wt.WriteLine();
+                    }
+                    wt.Close();
+                }
+                string[] lines = File.ReadAllLines(saveFileDialog1.FileName);
+                for (int i = 0; i < controllerScript.iterations; ++i)
+                {
+                    int line = i + 2;
+                    string currentLine = lines[line];
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        if (settingsScript.CountPossible && settingsScript.CountToggled)
+                        {
+                            // Argument out of range exception
+                            string newCurrentLine = currentLine + " | " + controllerScript.FullCount[i][j];
+                            currentLine = newCurrentLine;
+                        }
+                        if (settingsScript.TransPossible && settingsScript.TransToggled)
+                        {
+                            for (int k = 0; k < (controllerScript.amountOfCellTypes - 1); k++)
+                            {
+                                string newCurrentLine = currentLine + " | " + controllerScript.FullTransitions[i][(j * (controllerScript.amountOfCellTypes - 1)) + k];
+                                currentLine = newCurrentLine;
+                            }
+                        }
+                        if (settingsScript.BIndexPossible && settingsScript.BIndexToggled)
+                        {
+                            string newCurrentLine = currentLine + " | " + controllerScript.FullIndex[i][j];
+                            currentLine = newCurrentLine;
+                        }
+                    }
+                    lines[line] = currentLine;
+                }
+                using (StreamWriter writer = new StreamWriter(saveFileDialog1.FileName, false))
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        writer.Write(lines[i]);
+                        writer.WriteLine();
+                    }
+                    writer.Close();
                 }
             }
         }

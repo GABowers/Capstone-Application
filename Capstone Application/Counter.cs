@@ -47,9 +47,9 @@ namespace Capstone_Application
                 for (int i = 0; i < states; i++)
                 {
                     dataGridView1[0, i].Value = (i + 1).ToString();
-                    dataGridView1[1, i].Value = controllerScript.myCA.stateCount[i];
-                    dataGridView1[2, i].Value = controllerScript.myCA.transitions[i];
-                    dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
+                    dataGridView1[1, i].Value = controllerScript.myCA.StateCount[i];
+                    dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
+                    //dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
                 }
                 //dataGridView1.Rows.Add(new DataGridViewRow());
                 //dataGridView1[0, states].Value = misc;
@@ -69,9 +69,9 @@ namespace Capstone_Application
         {
             for (int i = 0; i < states; i++)
             {
-                dataGridView1[1, i].Value = controllerScript.myCA.stateCount[i];
-                dataGridView1[2, i].Value = controllerScript.myCA.transitions[i];
-                dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
+                dataGridView1[1, i].Value = controllerScript.myCA.StateCount[i];
+                dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
+                //dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
             }
         }
 

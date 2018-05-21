@@ -46,7 +46,11 @@ namespace Capstone_Application
             stateNumberBox.Enabled = false;
             gridSizeHori.Enabled = false;
             gridSizeVert.Enabled = false;
-            for(int i = 0; i < (tabControl1.TabPages.Count - 1); i++)
+            checkBoxCount.Enabled = false;
+            checkBoxTrans.Enabled = false;
+            checkBoxBIndex.Enabled = false;
+            checkBoxPath.Enabled = false;
+            for (int i = 0; i < (tabControl1.TabPages.Count - 1); i++)
             {
                 int intToUse = i + 1;
                 string tabName = "uc." + intToUse.ToString();
@@ -240,6 +244,38 @@ namespace Capstone_Application
         private void UpdateAllValues()
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
+            if(checkBoxCount.Checked)
+            {
+                mainForm.settingsScript.CountPossible = true;
+            }
+            else
+            {
+                mainForm.settingsScript.CountPossible = false;
+            }
+            if (checkBoxTrans.Checked)
+            {
+                mainForm.settingsScript.TransPossible = true;
+            }
+            else
+            {
+                mainForm.settingsScript.TransPossible = false;
+            }
+            if (checkBoxBIndex.Checked)
+            {
+                mainForm.settingsScript.BIndexPossible = true;
+            }
+            else
+            {
+                mainForm.settingsScript.BIndexPossible = false;
+            }
+            if (checkBoxPath.Checked)
+            {
+                mainForm.settingsScript.PathPossible = true;
+            }
+            else
+            {
+                mainForm.settingsScript.PathPossible = false;
+            }
             //for loop for each tab
             if (this.caTypeBox.SelectedIndex == 0)
             {
@@ -332,6 +368,11 @@ namespace Capstone_Application
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
             mainForm.OnOtherFormClose();
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

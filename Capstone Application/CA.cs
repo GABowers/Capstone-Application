@@ -15,6 +15,7 @@ public class CA
     public static MobileCA mobileCA = new MobileCA();
     int caType = 0;
     List<AgentController> activeAgents = new List<AgentController>();
+    List<List<AgentController>> separateAgents = new List<List<AgentController>>();
     //AgentController[] activeAgentsArray;
     System.Object[,] objects;
     //private BlankGrid blankGrid;
@@ -25,15 +26,21 @@ public class CA
     public BlankGrid[,] grid;
     NType neighborType;
     BlankGrid[,] backup;
+    bool getCI = false;
     public int gridWidth;
     public int gridHeight;
     private int numStates;
     public int agentLocation;
     private int connectedVertices;
-    public  List<int> stateCount = new List<int>();
+
+    //int CICalcs = 0;
+    int edgeCalcs = 0;
+
+     List<int> stateCount = new List<int>();
     public List<int> stateCountReplacement = new List<int>();
     public List<int> neighborCount = new List<int>();
-    public  List<int> transitions = new List<int>();
+    List<int> transitions = new List<int>();
+    List<double> cIndexes = new List<double>();
     public List<float> neighborAnalysis = new List<float>();
     private List<Tuple<int, int, int, int>> edges = new List<Tuple<int, int, int, int>>();
     List<Tuple<int, int, int, int>> dataList;
@@ -44,11 +51,18 @@ public class CA
     //public AgentController[] ActiveAgentsArray { get => activeAgentsArray; set => activeAgentsArray = value; }
 
     public List<AgentController> ActiveAgents { get => activeAgents; set => activeAgents = value; }
-    public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
     public int ConnectedVertices { get => connectedVertices; set => connectedVertices = value; }
+    public List<double> CIndexes { get => cIndexes; set => cIndexes = value; }
+    public List<int> StateCount { get => stateCount; set => stateCount = value; }
+    public List<int> Transitions { get => transitions; set => transitions = value; }
+    public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
+    public List<List<AgentController>> SeparateAgents { get => separateAgents; set => separateAgents = value; }
 
-    public CA(int width, int height, int numStates, NType type, int incomingCAType, GridType gType = GridType.Box)
+    public CA(int width, int height, int numStates, NType type, int incomingCAType, bool permitCI,  GridType gType = GridType.Box)
     {
+        StateCount.Clear();
+        Transitions.Clear();
+        CIndexes.Clear();
         gridWidth = width;
         gridHeight = height;
         this.numStates = numStates;
@@ -59,11 +73,17 @@ public class CA
         neighborhood = new Neighborhood(type);
         states = new CellState[numStates];
         CaType = incomingCAType;
+        getCI = permitCI;
         for (int i = 0; i < numStates; ++i)
         {
-            transitions.Add(0);
-            stateCount.Add(0);
+            StateCount.Add(0);
+            CIndexes.Add(0);
+            separateAgents.Add(new List<AgentController>());
             states[i] = new CellState(numStates, numStates, neighborhood.GetNeighborSize());
+            for (int j = 0; j < (numStates - 1); j++)
+            {
+                Transitions.Add(0);
+            }
         }
     }
 
@@ -223,11 +243,19 @@ public class CA
 
     public void OneIteration()
     {
+        for (int i = 0; i < numStates; i++)
+        {
+            separateAgents[i].Clear();
+        }
+        //CICalcs = 0;
         Array.Copy(grid, backup, gridWidth * gridHeight);
         for (int i = 0; i < numStates; ++i)
         {
-            stateCount[i] = 0;
-            transitions[i] = 0;
+            StateCount[i] = 0;
+            for (int j = 0; j < (numStates - 1); j++)
+            {
+                Transitions[(i * (numStates - 1)) + j] = 0;
+            }
         }
             
         if (CaType == 1) //1 = second order
@@ -244,33 +272,35 @@ public class CA
         }
         if (CaType == 0) // 0 = first order
         {
-            // int length = gridWidth * gridHeight;
-            // int count = 0;
-            // Parallel.For(0, length, i =>
-            //{
-            //    count++;
-            //    int x = (i / gridWidth);
-            //    int y = (i % gridWidth);
-            //    Console.WriteLine("Length" + length + " Count: " + count);
-            //    if (grid[x, y].ContainsAgent)
-            //    {
-            //        int oldState = grid[x, y].agent.currentState;
-            //        if (neighborType == NType.Advanced)
-            //        {
-            //            double[] probChances = AdvancedGetProbChances(oldState, x, y);
-            //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
-            //        }
-            //        else
-            //        {
-            //            List<int> neighborStateCount = GetNeighborCount(x, y);
-            //            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-            //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
-            //        }
-            //        int newState = grid[x, y].agent.currentState;
-            //        CheckTransitions(oldState, newState);
-            //        stateCount[newState] += 1;
-            //    }
-            //});
+            {
+                // int length = gridWidth * gridHeight;
+                // int count = 0;
+                // Parallel.For(0, length, i =>
+                //{
+                //    count++;
+                //    int x = (i / gridWidth);
+                //    int y = (i % gridWidth);
+                //    Console.WriteLine("Length" + length + " Count: " + count);
+                //    if (grid[x, y].ContainsAgent)
+                //    {
+                //        int oldState = grid[x, y].agent.currentState;
+                //        if (neighborType == NType.Advanced)
+                //        {
+                //            double[] probChances = AdvancedGetProbChances(oldState, x, y);
+                //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                //        }
+                //        else
+                //        {
+                //            List<int> neighborStateCount = GetNeighborCount(x, y);
+                //            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+                //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
+                //        }
+                //        int newState = grid[x, y].agent.currentState;
+                //        CheckTransitions(oldState, newState);
+                //        stateCount[newState] += 1;
+                //    }
+                //});
+            }
             for (int x = 0; x < gridWidth; ++x)
             {
                 for (int y = 0; y < gridHeight; ++y)
@@ -285,82 +315,96 @@ public class CA
                         }
                         else
                         {
-                            List<int> neighborStateCount = GetNeighborCount(x, y);
+                            List<int> neighborStateCount = GetNeighborCount(x, y, oldState);
                             double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
                             grid[x, y].agent.currentState = GetStateFromProbability(probChances);
                         }
                         int newState = grid[x, y].agent.currentState;
+                        separateAgents[newState].Add(grid[x, y].agent);
                         CheckTransitions(oldState, newState);
-                        stateCount[newState] += 1;
+                        StateCount[newState] += 1;
                     }
                 }
+            }
+        }
+
+        if(getCI)
+        {
+            for (int i = 0; i < numStates; i++)
+            {
+                GetCIndex(i);
             }
         }
     }
 
     // clearly not working correctly. up to 5 times SLOWER than other method.
-    async void ASyncRun()
-    {
-        dataList = new List<Tuple<int, int, int, int>>();
-        List<Task<Tuple<int, int, int, int>>> tasks = new List<Task<Tuple<int, int, int, int>>>();
-        for (int x = 0; x < gridWidth; ++x)
-        {
-            for (int y = 0; y < gridHeight; ++y)
-            {
-                // create tuple at end of operation returning location and new state.
-                // Then move through grid changing each location (this part must be synchronous)
-                tasks.Add(ASyncIndividualRun(x, y));
-            }
-        }
-        //Console.WriteLine("Number of entries: " + tasks.Count);
-        await Task.WhenAll(tasks);
-        //when changing grid, make sure to check if an actual agent is there. If none, skip reassignment
-        //Console.WriteLine("I'll never forget...");
-        foreach (Task<Tuple<int, int, int, int>> task in tasks)
-        {
-            //Console.WriteLine(task.Result);
-            //Console.WriteLine("We're here because we're here");
-            dataList.Add(task.Result);
+    //async void ASyncRun()
+    //{
+    //    dataList = new List<Tuple<int, int, int, int>>();
+    //    List<Task<Tuple<int, int, int, int>>> tasks = new List<Task<Tuple<int, int, int, int>>>();
+    //    for (int x = 0; x < gridWidth; ++x)
+    //    {
+    //        for (int y = 0; y < gridHeight; ++y)
+    //        {
+    //            // create tuple at end of operation returning location and new state.
+    //            // Then move through grid changing each location (this part must be synchronous)
+    //            tasks.Add(ASyncIndividualRun(x, y));
+    //        }
+    //    }
+    //    //Console.WriteLine("Number of entries: " + tasks.Count);
+    //    await Task.WhenAll(tasks);
+    //    //when changing grid, make sure to check if an actual agent is there. If none, skip reassignment
+    //    //Console.WriteLine("I'll never forget...");
+    //    foreach (Task<Tuple<int, int, int, int>> task in tasks)
+    //    {
+    //        //Console.WriteLine(task.Result);
+    //        //Console.WriteLine("We're here because we're here");
+    //        dataList.Add(task.Result);
             
-        }
+    //    }
         
-    }
+    //}
 
-    async Task<Tuple<int, int, int, int>> ASyncIndividualRun(int x, int y)
-    {
-        if (grid[x, y].ContainsAgent)
-        {
-            int newState;
-            int oldState = grid[x, y].agent.currentState;
-            // change when updating agent type setup
-            if (neighborType == NType.Advanced)
-            {
-                double[] probChances = AdvancedGetProbChances(oldState, x, y);
-                newState = GetStateFromProbability(probChances);
-                //dataList.Add(new Tuple<int, int, int>(x, y, ));
-            }
-            else
-            {
-                List<int> neighborStateCount = GetNeighborCount(x, y);
-                double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-                newState = GetStateFromProbability(probChances);
-            }
-            return new Tuple<int, int, int, int>(x, y, oldState, newState);
+    //async Task<Tuple<int, int, int, int>> ASyncIndividualRun(int x, int y)
+    //{
+    //    if (grid[x, y].ContainsAgent)
+    //    {
+    //        int newState;
+    //        int oldState = grid[x, y].agent.currentState;
+    //        // change when updating agent type setup
+    //        if (neighborType == NType.Advanced)
+    //        {
+    //            double[] probChances = AdvancedGetProbChances(oldState, x, y);
+    //            newState = GetStateFromProbability(probChances);
+    //            //dataList.Add(new Tuple<int, int, int>(x, y, ));
+    //        }
+    //        else
+    //        {
+    //            List<int> neighborStateCount = GetNeighborCount(x, y);
+    //            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+    //            newState = GetStateFromProbability(probChances);
+    //        }
+    //        return new Tuple<int, int, int, int>(x, y, oldState, newState);
 
-            //CheckTransitions(oldState, newState);
-            //stateCount[newState] += 1;
-        }
-        else
-        {
-            return new Tuple<int, int, int, int>(x, y, -1, -1);
-        }
-    }
+    //        //CheckTransitions(oldState, newState);
+    //        //stateCount[newState] += 1;
+    //    }
+    //    else
+    //    {
+    //        return new Tuple<int, int, int, int>(x, y, -1, -1);
+    //    }
+    //}
 
     public void CheckTransitions(int oldState, int newState)
     {
         if(oldState != newState)
         {
-            transitions[newState] += 1;
+            int tempNew = newState;
+            if(newState > oldState)
+            {
+                tempNew = newState - 1;
+            }
+            Transitions[(oldState * (numStates - 1)) + tempNew] += 1;
         }
     }
 
@@ -377,7 +421,7 @@ public class CA
             for (int y = 0; y < gridHeight; ++y)
             {
                 int currentState = grid[x, y].agent.currentState;
-                List<int> neighborStateCount = GetNeighborCount(x, y);
+                List<int> neighborStateCount = GetNeighborCount(x, y, currentState);
                 stateCountReplacement[currentState] += 1;
                 for (int i = 0; i < numStates; ++i)
                 {
@@ -401,14 +445,16 @@ public class CA
         }
     }
 
-    public double GetCIndex(int state)
+    public void GetCIndex(int state)
     {
+        //CICalcs++;
+        //Console.WriteLine("GetCIndex " + CICalcs);
+        edgeCalcs = 0;
         Edges.Clear();
         ConnectedVertices = 0;
         //double connectivityIndex = 0;
         //double maxNeighbors = (gridWidth * gridHeight) * neighborhood.GetNeighborSize();
-        int totalEdges = 0;
-        int amount = stateCount[state];
+        int amount = StateCount[state];
         int neighborhoodFactor = 0;
         int maxEdges = 0;
 
@@ -438,18 +484,20 @@ public class CA
             int s = (int)Math.Floor(Math.Sqrt((double)n));
             int x = s;
             int r = n - (s * s);
-            int f;
-            int y;
-            if(r > s)
+            int f = 0;
+            int y = s;
+            if(r != 0)
             {
-                int t = r - s;
-                f = ((t - 1) * neighborhoodFactor) + 1;
-                y = s + 1;
-            }
-            else
-            {
-                f = ((r - 1) * neighborhoodFactor) + 1;
-                y = s;
+                if (r > s)
+                {
+                    int t = r - s;
+                    f = ((t - 1) * neighborhoodFactor) + 1;
+                    y = s + 1;
+                }
+                else
+                {
+                    f = ((r - 1) * neighborhoodFactor) + 1;
+                }
             }
             switch(neighborType)
             {
@@ -470,22 +518,26 @@ public class CA
                     break;
             }
         }
-
-        for(int i = 0; i < ActiveAgents.Count; i++)
+        for (int j = 0; j < separateAgents[state].Count; j++)
         {
-            if(activeAgents[i].currentState == state)
+            if (separateAgents[state][j].currentState == state)
             {
                 // check if neighbors are of current state
                 // Add neighbors to an edge count
-                int edges = GetEdges(activeAgents[i].xLocation, activeAgents[i].yLocation, state);
-                totalEdges += edges;
+                GetEdges(separateAgents[state][j].xLocation, separateAgents[state][j].yLocation, state);
             }
         }
-        int cIndex = (Edges.Count / maxEdges) * (ConnectedVertices / amount);
-        return cIndex;
+        int finalEdge = edgeCalcs / 2;
+        //Console.WriteLine("Old:" + Edges.Count + " New: " + edgeCalcs);
+        double cIndex = 0;
+        if(amount > 1)
+        {
+            cIndex = (finalEdge / (double)maxEdges) * ((double)ConnectedVertices / amount);
+        }
+        CIndexes[state] = cIndex;
     }
 
-    private List<int> GetNeighborCount(int x, int y)
+    private List<int> GetNeighborCount(int x, int y, int oldState)
     {
         List<int> neighborCount = new List<int>();
         for (int i = 0; i < numStates; ++i)
@@ -522,9 +574,9 @@ public class CA
 
             if (modifiedP == null)
                 continue;
+            //Console.WriteLine("Values: " + modifiedP.X + "," + modifiedP.Y);
             if (backup[modifiedP.X, modifiedP.Y].ContainsAgent)
             {
-                
                 neighborCount[backup[modifiedP.X, modifiedP.Y].agent.currentState]++;
             }
         }
@@ -532,9 +584,8 @@ public class CA
     }
 
     // Gets neighbor count for the current grid
-    private int GetEdges(int x, int y, int centerState)
+    private void GetEdges(int x, int y, int centerState)
     {
-        int numNeighbors = 0;
         bool connections = false;
         List<Point> neighbors = neighborhood.GetNeighbors(x, y);
 
@@ -570,31 +621,31 @@ public class CA
                 continue;
             if (grid[modifiedP.X, modifiedP.Y].ContainsAgent)
             {
-                if(connections == false)
+                if (connections == false)
                 {
                     ConnectedVertices += 1;
                     connections = true;
                 }
-                if(grid[modifiedP.X, modifiedP.Y].agent.currentState == centerState)
+                if (grid[modifiedP.X, modifiedP.Y].agent.currentState == centerState)
                 {
-                    Tuple<int, int, int, int> forward = new Tuple<int, int, int, int>(x, y, modifiedP.X, modifiedP.Y);
-                    Tuple<int, int, int, int> backward = new Tuple<int, int, int, int>(modifiedP.X, modifiedP.Y, x, y);
-                    if (Edges.Contains(forward))
-                    {
-                        continue;
-                    }
-                    else if(Edges.Contains(backward))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        Edges.Add(forward);
-                    }
+                    edgeCalcs++;
+                    //Tuple<int, int, int, int> forward = new Tuple<int, int, int, int>(x, y, modifiedP.X, modifiedP.Y);
+                    //Tuple<int, int, int, int> backward = new Tuple<int, int, int, int>(modifiedP.X, modifiedP.Y, x, y);
+                    //if (Edges.Contains(forward))
+                    //{
+                    //    continue;
+                    //}
+                    //else if (Edges.Contains(backward))
+                    //{
+                    //    continue;
+                    //}
+                    //else
+                    //{
+                    //    Edges.Add(forward);
+                    //}
                 }
             }
         }
-        return numNeighbors;
     }
 
     private double[] AdvancedGetProbChances(int currentState, int x, int y)

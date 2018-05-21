@@ -18,6 +18,14 @@ namespace Capstone_Application
         bool iterationReset = false;
         bool iterationPause = false;
         bool runMax = false;
+        bool countPossible = false;
+        bool transPossible = false;
+        bool bIndexPossible = false;
+        bool pathPossible = false;
+        bool countToggled = false;
+        bool transToggled = false;
+        bool bIndexToggled = false;
+        bool pathToggled = false;
         int iterationResetValue = -1;
         int iterationPauseValue = -1;
         int runMaxValue = -1;
@@ -47,29 +55,13 @@ namespace Capstone_Application
         public List<int> PathSaveValues { get => pathSaveValues; set => pathSaveValues = value; }
         public bool PathSave { get => pathSave; set => pathSave = value; }
         public List<Tuple<int, Tuple<int, int>>> StartingLocations { get => startingLocations; set => startingLocations = value; }
-
-        public void CheckSettings(Form1 form)
-        {
-            if(CountSave)
-            {
-
-            }
-            if(ImageSave)
-            {
-
-            }
-
-            if (AutoReset)
-            {
-                if(CountReset)
-                {
-
-                }
-                if(IterationReset)
-                {
-
-                }
-            }
-        }
+        public bool CountPossible { get => countPossible; set => countPossible = value; }
+        public bool TransPossible { get => transPossible; set => transPossible = value; }
+        public bool BIndexPossible { get => bIndexPossible; set => bIndexPossible = value; }
+        public bool PathPossible { get => pathPossible; set => pathPossible = value; }
+        public bool CountToggled { get => countToggled; set => countToggled = value; }
+        public bool TransToggled { get => transToggled; set => transToggled = value; }
+        public bool BIndexToggled { get => bIndexToggled; set => bIndexToggled = value; }
+        public bool PathToggled { get => pathToggled; set => pathToggled = value; }
     }
 }
