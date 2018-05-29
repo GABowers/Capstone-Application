@@ -187,7 +187,7 @@ namespace Capstone_Application
             running = true;
             myCA.OneIteration();
             iterations++;
-
+            Console.WriteLine(iterations + ": " + currentForm.settingsScript.CountPossible);
             // move these to check settings?
             if (currentForm.settingsScript.CountPossible)
             {

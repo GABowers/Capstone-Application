@@ -273,9 +273,9 @@ public class CA
         if (CaType == 0) // 0 = first order
         {
             {
-                // int length = gridWidth * gridHeight;
-                // int count = 0;
-                // Parallel.For(0, length, i =>
+                //int length = gridWidth * gridHeight;
+                //int count = 0;
+                //Parallel.For(0, length, i =>
                 //{
                 //    count++;
                 //    int x = (i / gridWidth);
@@ -291,7 +291,7 @@ public class CA
                 //        }
                 //        else
                 //        {
-                //            List<int> neighborStateCount = GetNeighborCount(x, y);
+                //            List<int> neighborStateCount = GetNeighborCount(x, y, oldState);
                 //            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
                 //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
                 //        }

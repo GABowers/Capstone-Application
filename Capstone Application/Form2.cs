@@ -207,6 +207,38 @@ namespace Capstone_Application
 
         void RetrieveValues()
         {
+            if(mainForm.settingsScript.CountPossible)
+            {
+                checkBoxCount.Checked = true;
+            }
+            else
+            {
+                checkBoxCount.Checked = false;
+            }
+            if (mainForm.settingsScript.TransPossible)
+            {
+                checkBoxTrans.Checked = true;
+            }
+            else
+            {
+                checkBoxTrans.Checked = false;
+            }
+            if (mainForm.settingsScript.BIndexPossible)
+            {
+                checkBoxBIndex.Checked = true;
+            }
+            else
+            {
+                checkBoxBIndex.Checked = false;
+            }
+            if (mainForm.settingsScript.PathPossible)
+            {
+                checkBoxPath.Checked = true;
+            }
+            else
+            {
+                checkBoxPath.Checked = false;
+            }
             int amountOfStates = int.Parse(stateNumberBox.Text);
             //for loop for each tab
             if (this.caTypeBox.SelectedIndex == 0)
