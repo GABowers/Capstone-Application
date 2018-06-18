@@ -50,6 +50,7 @@ namespace Capstone_Application
             checkBoxTrans.Enabled = false;
             checkBoxBIndex.Enabled = false;
             checkBoxPath.Enabled = false;
+            //lock advanced placement
             for (int i = 0; i < (tabControl1.TabPages.Count - 1); i++)
             {
                 int intToUse = i + 1;
@@ -276,6 +277,7 @@ namespace Capstone_Application
         private void UpdateAllValues()
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
+
             if(checkBoxCount.Checked)
             {
                 mainForm.settingsScript.CountPossible = true;
@@ -308,6 +310,7 @@ namespace Capstone_Application
             {
                 mainForm.settingsScript.PathPossible = false;
             }
+
             //for loop for each tab
             if (this.caTypeBox.SelectedIndex == 0)
             {

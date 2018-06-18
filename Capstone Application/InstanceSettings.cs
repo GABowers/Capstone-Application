@@ -34,7 +34,7 @@ namespace Capstone_Application
         List<int> countSaveValues = new List<int>();
         List<int> imageSaveValues = new List<int>();
         List<int> pathSaveValues = new List<int>();
-        List<Tuple<int, Tuple<int, int>>> startingLocations = new List<Tuple<int, Tuple<int, int>>>();
+        
 
         public bool CountSave { get => countSave; set => countSave = value; }
         public bool ImageSave { get => imageSave; set => imageSave = value; }
@@ -54,7 +54,6 @@ namespace Capstone_Application
         public int IterationPauseValue { get => iterationPauseValue; set => iterationPauseValue = value; }
         public List<int> PathSaveValues { get => pathSaveValues; set => pathSaveValues = value; }
         public bool PathSave { get => pathSave; set => pathSave = value; }
-        public List<Tuple<int, Tuple<int, int>>> StartingLocations { get => startingLocations; set => startingLocations = value; }
         public bool CountPossible { get => countPossible; set => countPossible = value; }
         public bool TransPossible { get => transPossible; set => transPossible = value; }
         public bool BIndexPossible { get => bIndexPossible; set => bIndexPossible = value; }

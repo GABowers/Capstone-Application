@@ -31,5 +31,8 @@ grid not expanding all the way in larger places
 picture control not showing grid of height 1
 moving the mouse over the picturebox still shows coordinates, even when outside of grid
 Consider converting path trace stuff to 16-bit greyscale
-Couldn't connectivity index be for each cell type? If so, it should have its own column.
 enable/disable different operations--calculating cell count, CIndex, transitions, etc. per iteration
+For path saving, might have an option to save path over multiple runs.
+
+THE STATES INCREMENTER IN THE CA SCRIPT NEEDS WORK. If it's anything other than 0, that group gets removed, but it will still be selected
+by the following spawner.

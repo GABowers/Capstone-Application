@@ -180,6 +180,12 @@ namespace Capstone_Application
             newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
         }
 
+        public void SetStartingLocations(List<Tuple<int, int>> incomingStartingLocations, int currentState)
+        {
+            statePageInfo[currentState].startingLocations = new List<Tuple<int, int>>();
+            statePageInfo[currentState].startingLocations = incomingStartingLocations;
+        }
+
         // Stuff from other controller here
 
         public void OneIteration(Form1 currentForm)
@@ -187,7 +193,6 @@ namespace Capstone_Application
             running = true;
             myCA.OneIteration();
             iterations++;
-            Console.WriteLine(iterations + ": " + currentForm.settingsScript.CountPossible);
             // move these to check settings?
             if (currentForm.settingsScript.CountPossible)
             {
@@ -265,7 +270,7 @@ namespace Capstone_Application
                     }
                     else if(statePageInfo[h].caType == 1)
                     {
-                            myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProbs, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
+                            myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProbs, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood, statePageInfo[h].startingLocations);
                     }
                 }
                 myCA.InitializeGrid(cellAmounts);
@@ -314,7 +319,7 @@ namespace Capstone_Application
                 }
                 else if (statePageInfo[h].caType == 1)
                 {
-                    myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProbs, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood);
+                    myCA.Set2ndOrder(h, statePageInfo[h].walkProbs, statePageInfo[h].stickingProbs, statePageInfo[h].sticking, statePageInfo[h].mobileNeighborhood, statePageInfo[h].startingLocations);
                 }
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public class CellState
@@ -11,6 +12,7 @@ public class CellState
     public double[] stickingProbs;
     public bool sticking;
     public int mobileNeighborhood;
+    public List<Tuple<int, int>> startingLocations;
 
     public CellState(int totalStates, int neighborState, int neighborSize)
     {
@@ -29,13 +31,15 @@ public class CellState
         return prob[state, neighborState, numNeighbors];
     }
 
-    public void Set2ndOrderInfo(double[] incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, int incomingNeighborhood)
+    public void Set2ndOrderInfo(double[] incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, int incomingNeighborhood, List<Tuple<int, int>> incomingStartingLocations)
     {
         //stickingProbs = new double[incomingStickingProbs.Count];
         walkProbs = incomingWalkProbs;
         stickingProbs = incomingStickingProbs.ToArray();
         sticking = incomingSticking;
         mobileNeighborhood = incomingNeighborhood;
+        startingLocations = new List<Tuple<int, int>>();
+        startingLocations = incomingStartingLocations;
     }
 
     public void SetProbability(int state, int neighborState, int rows, int columns, double val)

@@ -23,6 +23,7 @@ namespace Capstone_Application
         public List<double> stickingProbs = new List<double>();
         public bool sticking;
         public int mobileNeighborhood;
+        public List<Tuple<int, int>> startingLocations;
 
         public StatePageInfo(int totalStates, int neighbors, int currentState, NType neighborType, int caType)
         {

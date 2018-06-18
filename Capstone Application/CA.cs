@@ -125,11 +125,53 @@ public class CA
         //ActiveAgentsArray = new AgentController[gridSize];
         // if total cells < gridSize, check/decide connectivity method - every other point, or what?
         int state = 0;
+        int reducer = 0;
         
         var list = new List<int>(Enumerable.Range(1, gridSize));
         list.Shuffle();
+
+        // Checks for custom-placed locations. If there are any, places them, removes from the appropriate agentCount list,
+        // then adds to an increment which will lower the totalCells increment below.
+
+        for (int i = 0; i < numStates; i++)
+        {
+            if(states[i].startingLocations.Count > 0)
+            {
+                for (int j = 0; j < states[i].startingLocations.Count; j++)
+                {
+                    int x = states[i].startingLocations[j].Item1;
+                    int y = states[i].startingLocations[j].Item2;
+                    int combination = (x * gridWidth) + y;
+                    grid[x, y] = new BlankGrid();
+                    grid[x, y].AddAgent(x, y, new AgentController(x, y));
+                    grid[x, y].ContainsAgent = true;
+                    grid[x, y].agent.currentState = i;
+                    grid[x, y].agent.xLocation = x;
+                    grid[x, y].agent.yLocation = y;
+                    AddAgent(grid[x, y].agent);
+
+                    list.Remove(combination);
+                    reducer++;
+
+                    // Subtract that state from its agentcount
+                    // And if it goes to zero remove it from both our lists
+
+                    agentCount[i]--;
+
+                    if (agentCount[i] == 0)
+                    {
+                        agentCount.RemoveAt(i);
+                        if(i == 0)
+                        {
+                            state += 1;
+                        }
+                    }
+                }
+            }
+        }
+
         // This uses totalCells, not list size, because the "second order" CA will almost always have less cells than the full grid size.
-        for (int i = 0; i < totalCells; i++)
+        for (int i = 0; i < (totalCells - reducer); i++)
         {
             int increment = list[i] - 1;
             int xValue = (increment / gridWidth);
@@ -143,8 +185,6 @@ public class CA
             grid[xValue, yValue].agent.yLocation = yValue;
             AddAgent(grid[xValue, yValue].agent);
 
-            //ActiveAgentsArray[] = (grid[xValue, yValue].agent);
-
             // Subtract that state from its agentcount
             // And if it goes to zero remove it from both our lists
 
@@ -156,6 +196,7 @@ public class CA
                 state += 1;
             }
         }
+
         if(totalCells < gridSize)
         {
             for (int i = 0; i < gridWidth; ++i)
@@ -197,9 +238,9 @@ public class CA
 
     }
 
-    public void Set2ndOrder(int startState, double[] walkProbs, List<double> stickingProbs, bool sticking, int mobileNeighborhood)
+    public void Set2ndOrder(int startState, double[] walkProbs, List<double> stickingProbs, bool sticking, int mobileNeighborhood, List<Tuple<int, int>> startingLocations)
     {
-        states[startState].Set2ndOrderInfo(walkProbs, stickingProbs, sticking, mobileNeighborhood);
+        states[startState].Set2ndOrderInfo(walkProbs, stickingProbs, sticking, mobileNeighborhood, startingLocations);
     }
 
     public void SetStateInfo(int startState, int endState, int neighborState, int rows, int columns, double prob)
@@ -788,7 +829,7 @@ public class CA
         double newDown = newRight + downProb;
         double newLeft = newDown + leftProb;
 
-        Console.WriteLine("Prob: " + randomWalk + " up: " + upProb + " right: " + newRight + " down: " + newDown + " left: " + newLeft);
+        //Console.WriteLine("Prob: " + randomWalk + " up: " + upProb + " right: " + newRight + " down: " + newDown + " left: " + newLeft);
 
         if (randomWalk < upProb)
         {

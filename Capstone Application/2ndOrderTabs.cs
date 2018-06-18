@@ -252,7 +252,7 @@ namespace Capstone_Application
             {
                 count = 0;
             }
-            AdvancedCellPlacement newModelDialog = new AdvancedCellPlacement(form, count, (container.tabControl1.SelectedIndex - 1));
+            AdvancedCellPlacement newModelDialog = new AdvancedCellPlacement(form, container, (container.tabControl1.SelectedIndex - 1));
             newModelDialog.ShowDialog();
         }
     }
