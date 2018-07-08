@@ -25,7 +25,7 @@ namespace Capstone_Application
         List<List<double>> fullIndex = new List<List<double>>();
 
         public bool editModeOn = false;
-        public bool createdCA = false;
+        bool createdCA = false;
         bool alreadyCA = false;
         bool running = false;
         public int iterations = 0;
@@ -46,6 +46,8 @@ namespace Capstone_Application
         public List<List<int>> FullCount { get => fullCount; set => fullCount = value; }
         public List<List<int>> FullTransitions { get => fullTransitions; set => fullTransitions = value; }
         public List<List<double>> FullIndex { get => fullIndex; set => fullIndex = value; }
+        public bool CreatedCA { get => createdCA; set => createdCA = value; }
+        public bool AlreadyCA { get => alreadyCA; set => alreadyCA = value; }
 
         static ControllerScript()
         {
@@ -219,7 +221,7 @@ namespace Capstone_Application
 
         public void CreateCA(Form1 form)
         {
-            if (createdCA == false)
+            if (CreatedCA == false)
             {
                 iterations = 0;
                 editModeOn = false;
@@ -274,7 +276,7 @@ namespace Capstone_Application
                     }
                 }
                 myCA.InitializeGrid(cellAmounts);
-                createdCA = true;
+                CreatedCA = true;
             }
         }
 
@@ -327,12 +329,12 @@ namespace Capstone_Application
         public void StartCA(Form1 currentForm)
         {
             editModeOn = false;
-            if (alreadyCA == false)
+            if (AlreadyCA == false)
             {
                 iterations = 0;
                 bmp = new Bitmap(localGridWidth, localGridHeight);
                 UpdateBoard(currentForm);
-                alreadyCA = true;
+                AlreadyCA = true;
             }
         }
 
@@ -409,7 +411,7 @@ namespace Capstone_Application
             //imageList.Clear();
             //probabilities.Clear();
             myCA = null;
-            alreadyCA = false;
+            AlreadyCA = false;
         }
 
         public void ResetGrid(Form1 form)
@@ -417,7 +419,7 @@ namespace Capstone_Application
             string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
             CheckFinalDataSave(form, time);
             caRuns++;
-            createdCA = false;
+            CreatedCA = false;
             editModeOn = false;
             ClearGrid();
         }
@@ -728,6 +730,29 @@ namespace Capstone_Application
                     form.PauseUnpauseCA();
                 }
             }
+        }
+
+        public void GetAllGroupings(int numRuns, Form1 form, ProgressBar progressBar)
+        {
+            progressBar.Value = 0;
+            double inc = (double)100 / numRuns;
+            double trueTotal = 0;
+            List<List<double>> groupings = new List<List<double>>();
+            for (int i = 0; i < numRuns; i++)
+            {
+                groupings.Add(new List<double>());
+                for (int j = 0; j <amountOfCellTypes; j++)
+                {
+                    groupings[i].Add(myCA.GetCIndex(j));
+                }
+                form.AutoReset();
+                trueTotal += inc;
+                progressBar.Value = (int)trueTotal;
+            }
+
+            // think about making this parallel like before
+            form.SaveGroupings(groupings);
+            groupings.Clear();
         }
     }
 }

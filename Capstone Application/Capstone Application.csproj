@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\GAB\Desktop\CAPSTONE\Winform\2018-04-20-2\</PublishUrl>
+    <PublishUrl>C:\Users\GAB\Desktop\CAPSTONE\Winform\2018-06-30\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -22,7 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -108,6 +108,12 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="GroupingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupingForm.Designer.cs">
+      <DependentUpon>GroupingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ImageTrace.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,6 +174,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupingForm.resx">
+      <DependentUpon>GroupingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageTrace.resx">
       <DependentUpon>ImageTrace.cs</DependentUpon>

@@ -37,7 +37,7 @@ namespace Capstone_Application
         {
             string misc = "Misc.";
             string ci = "CI: ";
-            if(controllerScript.createdCA == true)
+            if(controllerScript.CreatedCA == true)
             {
                 states = controllerScript.amountOfCellTypes;
                 for (int i = 0; i < states; i++)

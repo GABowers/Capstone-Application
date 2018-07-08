@@ -96,14 +96,16 @@
             this.speedInput = new System.Windows.Forms.ToolStripTextBox();
             this.decrease = new System.Windows.Forms.ToolStripButton();
             this.increase = new System.Windows.Forms.ToolStripButton();
-            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.randomWalkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -230,14 +232,16 @@
             // dataToolStripMenuItem
             // 
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.dataToolStripMenuItem.Text = "Data";
             this.dataToolStripMenuItem.Click += new System.EventHandler(this.dataToolStripMenuItem_Click);
             // 
             // analysisToolStripMenuItem
             // 
             this.analysisToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dansNeighborAnalysisToolStripMenuItem});
+            this.dansNeighborAnalysisToolStripMenuItem,
+            this.randomWalkToolStripMenuItem,
+            this.groupingToolStripMenuItem});
             this.analysisToolStripMenuItem.Name = "analysisToolStripMenuItem";
             this.analysisToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisToolStripMenuItem.Text = "Analysis";
@@ -262,19 +266,19 @@
             // mainWindowToolStripMenuItem
             // 
             this.mainWindowToolStripMenuItem.Name = "mainWindowToolStripMenuItem";
-            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mainWindowToolStripMenuItem.Text = "Main Window";
             // 
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
-            this.modelToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
             // cellCounterToolStripMenuItem
             // 
             this.cellCounterToolStripMenuItem.Name = "cellCounterToolStripMenuItem";
-            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.cellCounterToolStripMenuItem.Text = "Run Data";
             this.cellCounterToolStripMenuItem.Click += new System.EventHandler(this.cellCounterToolStripMenuItem_Click);
             // 
@@ -314,7 +318,7 @@
             // 
             this.countToggle.CheckOnClick = true;
             this.countToggle.Name = "countToggle";
-            this.countToggle.Size = new System.Drawing.Size(152, 22);
+            this.countToggle.Size = new System.Drawing.Size(131, 22);
             this.countToggle.Text = "Count";
             this.countToggle.Click += new System.EventHandler(this.countToggle_Click);
             // 
@@ -322,7 +326,7 @@
             // 
             this.transToggle.CheckOnClick = true;
             this.transToggle.Name = "transToggle";
-            this.transToggle.Size = new System.Drawing.Size(152, 22);
+            this.transToggle.Size = new System.Drawing.Size(131, 22);
             this.transToggle.Text = "Transitions";
             this.transToggle.Click += new System.EventHandler(this.transToggle_Click);
             // 
@@ -330,7 +334,7 @@
             // 
             this.bIndexToggle.CheckOnClick = true;
             this.bIndexToggle.Name = "bIndexToggle";
-            this.bIndexToggle.Size = new System.Drawing.Size(152, 22);
+            this.bIndexToggle.Size = new System.Drawing.Size(131, 22);
             this.bIndexToggle.Text = "B Index";
             this.bIndexToggle.Click += new System.EventHandler(this.bIndexToggle_Click);
             // 
@@ -338,7 +342,7 @@
             // 
             this.pathToggle.CheckOnClick = true;
             this.pathToggle.Name = "pathToggle";
-            this.pathToggle.Size = new System.Drawing.Size(152, 22);
+            this.pathToggle.Size = new System.Drawing.Size(131, 22);
             this.pathToggle.Text = "Path";
             this.pathToggle.Click += new System.EventHandler(this.pathToggle_Click);
             // 
@@ -685,6 +689,40 @@
             this.increase.Text = "+";
             this.increase.Click += new System.EventHandler(this.increase_Click);
             // 
+            // panel1
+            // 
+            this.panel1.AutoSize = true;
+            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel1.Controls.Add(this.innerPictureBox);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 49);
+            this.panel1.Margin = new System.Windows.Forms.Padding(0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(505, 505);
+            this.panel1.TabIndex = 4;
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
+            // randomWalkToolStripMenuItem
+            // 
+            this.randomWalkToolStripMenuItem.Name = "randomWalkToolStripMenuItem";
+            this.randomWalkToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.randomWalkToolStripMenuItem.Text = "Random Walk";
+            // 
+            // groupingToolStripMenuItem
+            // 
+            this.groupingToolStripMenuItem.Name = "groupingToolStripMenuItem";
+            this.groupingToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.groupingToolStripMenuItem.Text = "Grouping";
+            this.groupingToolStripMenuItem.Click += new System.EventHandler(this.groupingToolStripMenuItem_Click);
+            // 
             // innerPictureBox
             // 
             this.innerPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -707,27 +745,6 @@
             this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
             this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
             // 
-            // panel1
-            // 
-            this.panel1.AutoSize = true;
-            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel1.Controls.Add(this.innerPictureBox);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 49);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(505, 505);
-            this.panel1.TabIndex = 4;
-            // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
-            // saveFileDialog1
-            // 
-            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -745,8 +762,8 @@
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -825,6 +842,8 @@
         private System.Windows.Forms.ToolStripMenuItem transToggle;
         private System.Windows.Forms.ToolStripMenuItem bIndexToggle;
         private System.Windows.Forms.ToolStripMenuItem pathToggle;
+        private System.Windows.Forms.ToolStripMenuItem randomWalkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem groupingToolStripMenuItem;
     }
 }
 

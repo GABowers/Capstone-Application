@@ -115,6 +115,7 @@ public class CA
         int totalCells = 0;
         for (int i = 0; i < numStates; ++i)
         {
+            StateCount[i] = cellAmounts[i];
             agentCount.Add(cellAmounts[i]);
             totalCells += cellAmounts[i];
         }
@@ -135,35 +136,43 @@ public class CA
 
         for (int i = 0; i < numStates; i++)
         {
-            if(states[i].startingLocations.Count > 0)
+            if (states[i].startingLocations == null)
             {
-                for (int j = 0; j < states[i].startingLocations.Count; j++)
+                continue;
+            }
+            else
+            {
+                if (states[i].startingLocations.Count > 0)
                 {
-                    int x = states[i].startingLocations[j].Item1;
-                    int y = states[i].startingLocations[j].Item2;
-                    int combination = (x * gridWidth) + y;
-                    grid[x, y] = new BlankGrid();
-                    grid[x, y].AddAgent(x, y, new AgentController(x, y));
-                    grid[x, y].ContainsAgent = true;
-                    grid[x, y].agent.currentState = i;
-                    grid[x, y].agent.xLocation = x;
-                    grid[x, y].agent.yLocation = y;
-                    AddAgent(grid[x, y].agent);
-
-                    list.Remove(combination);
-                    reducer++;
-
-                    // Subtract that state from its agentcount
-                    // And if it goes to zero remove it from both our lists
-
-                    agentCount[i]--;
-
-                    if (agentCount[i] == 0)
+                    for (int j = 0; j < states[i].startingLocations.Count; j++)
                     {
-                        agentCount.RemoveAt(i);
-                        if(i == 0)
+                        int x = states[i].startingLocations[j].Item1;
+                        int y = states[i].startingLocations[j].Item2;
+                        int combination = (x * gridWidth) + y;
+                        grid[x, y] = new BlankGrid();
+                        grid[x, y].AddAgent(x, y, new AgentController(x, y));
+                        grid[x, y].ContainsAgent = true;
+                        grid[x, y].agent.currentState = i;
+                        grid[x, y].agent.xLocation = x;
+                        grid[x, y].agent.yLocation = y;
+                        AddAgent(grid[x, y].agent);
+                        separateAgents[i].Add(grid[x, y].agent);
+
+                        list.Remove(combination);
+                        reducer++;
+
+                        // Subtract that state from its agentcount
+                        // And if it goes to zero remove it from both our lists
+
+                        agentCount[i]--;
+
+                        if (agentCount[i] == 0)
                         {
-                            state += 1;
+                            agentCount.RemoveAt(i);
+                            if (i == 0)
+                            {
+                                state += 1;
+                            }
                         }
                     }
                 }
@@ -184,6 +193,7 @@ public class CA
             grid[xValue, yValue].agent.xLocation = xValue;
             grid[xValue, yValue].agent.yLocation = yValue;
             AddAgent(grid[xValue, yValue].agent);
+            separateAgents[state].Add(grid[xValue, yValue].agent);
 
             // Subtract that state from its agentcount
             // And if it goes to zero remove it from both our lists
@@ -314,33 +324,7 @@ public class CA
         if (CaType == 0) // 0 = first order
         {
             {
-                //int length = gridWidth * gridHeight;
-                //int count = 0;
-                //Parallel.For(0, length, i =>
-                //{
-                //    count++;
-                //    int x = (i / gridWidth);
-                //    int y = (i % gridWidth);
-                //    Console.WriteLine("Length" + length + " Count: " + count);
-                //    if (grid[x, y].ContainsAgent)
-                //    {
-                //        int oldState = grid[x, y].agent.currentState;
-                //        if (neighborType == NType.Advanced)
-                //        {
-                //            double[] probChances = AdvancedGetProbChances(oldState, x, y);
-                //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
-                //        }
-                //        else
-                //        {
-                //            List<int> neighborStateCount = GetNeighborCount(x, y, oldState);
-                //            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-                //            grid[x, y].agent.currentState = GetStateFromProbability(probChances);
-                //        }
-                //        int newState = grid[x, y].agent.currentState;
-                //        CheckTransitions(oldState, newState);
-                //        stateCount[newState] += 1;
-                //    }
-                //});
+
             }
             for (int x = 0; x < gridWidth; ++x)
             {
@@ -486,7 +470,7 @@ public class CA
         }
     }
 
-    public void GetCIndex(int state)
+    public double GetCIndex(int state)
     {
         //CICalcs++;
         //Console.WriteLine("GetCIndex " + CICalcs);
@@ -496,6 +480,7 @@ public class CA
         //double connectivityIndex = 0;
         //double maxNeighbors = (gridWidth * gridHeight) * neighborhood.GetNeighborSize();
         int amount = StateCount[state];
+        //Console.WriteLine("amount " + amount);
         int neighborhoodFactor = 0;
         int maxEdges = 0;
 
@@ -569,13 +554,14 @@ public class CA
             }
         }
         int finalEdge = edgeCalcs / 2;
-        //Console.WriteLine("Old:" + Edges.Count + " New: " + edgeCalcs);
         double cIndex = 0;
         if(amount > 1)
         {
             cIndex = (finalEdge / (double)maxEdges) * ((double)ConnectedVertices / amount);
         }
-        CIndexes[state] = cIndex;
+        //Console.WriteLine(separateAgents[state].Count + "," + finalEdge + "," + maxEdges + "," + ConnectedVertices + "," + amount + "," +  cIndex);
+        return cIndex;
+        //CIndexes[state] = cIndex;
     }
 
     private List<int> GetNeighborCount(int x, int y, int oldState)
@@ -630,6 +616,8 @@ public class CA
         bool connections = false;
         List<Point> neighbors = neighborhood.GetNeighbors(x, y);
 
+        // this ^^^ only returns places that exist. SHould it be that way???
+
         //Get a count of each state in our neighborhood
         foreach (Point p in neighbors)
         {
@@ -670,20 +658,7 @@ public class CA
                 if (grid[modifiedP.X, modifiedP.Y].agent.currentState == centerState)
                 {
                     edgeCalcs++;
-                    //Tuple<int, int, int, int> forward = new Tuple<int, int, int, int>(x, y, modifiedP.X, modifiedP.Y);
-                    //Tuple<int, int, int, int> backward = new Tuple<int, int, int, int>(modifiedP.X, modifiedP.Y, x, y);
-                    //if (Edges.Contains(forward))
-                    //{
-                    //    continue;
-                    //}
-                    //else if (Edges.Contains(backward))
-                    //{
-                    //    continue;
-                    //}
-                    //else
-                    //{
-                    //    Edges.Add(forward);
-                    //}
+                    // this needs to be outside of "contains agent"
                 }
             }
         }
