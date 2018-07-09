@@ -731,28 +731,5 @@ namespace Capstone_Application
                 }
             }
         }
-
-        public void GetAllGroupings(int numRuns, Form1 form, ProgressBar progressBar)
-        {
-            progressBar.Value = 0;
-            double inc = (double)100 / numRuns;
-            double trueTotal = 0;
-            List<List<double>> groupings = new List<List<double>>();
-            for (int i = 0; i < numRuns; i++)
-            {
-                groupings.Add(new List<double>());
-                for (int j = 0; j <amountOfCellTypes; j++)
-                {
-                    groupings[i].Add(myCA.GetCIndex(j));
-                }
-                form.AutoReset();
-                trueTotal += inc;
-                progressBar.Value = (int)trueTotal;
-            }
-
-            // think about making this parallel like before
-            form.SaveGroupings(groupings);
-            groupings.Clear();
-        }
     }
 }
