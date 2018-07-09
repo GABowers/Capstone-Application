@@ -83,6 +83,7 @@
             this.cancelGroupings.TabIndex = 4;
             this.cancelGroupings.Text = "Cancel";
             this.cancelGroupings.UseVisualStyleBackColor = true;
+            this.cancelGroupings.Click += new System.EventHandler(this.cancelGroupings_Click);
             // 
             // infoLabel
             // 

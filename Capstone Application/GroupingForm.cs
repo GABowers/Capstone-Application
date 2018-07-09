@@ -45,6 +45,8 @@ namespace Capstone_Application
 
         private void runGetAllGroups_Click(object sender, EventArgs e)
         {
+            textBox1.Enabled = false;
+            runGetAllGroups.Enabled = false;
             newBW.RunWorkerAsync();
             UpdateText();
             timer1.Start();
@@ -139,8 +141,17 @@ namespace Capstone_Application
             progressBar1.Value = e.ProgressPercentage;
         }
 
+        private void cancelGroupings_Click(object sender, EventArgs e)
+        {
+            newBW.CancelAsync();
+        }
+
         private void newBW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            timer1.Stop();
+            timer2.Stop();
+            textBox1.Enabled = true;
+            runGetAllGroups.Enabled = true;
             this.Close();
         }
     }
