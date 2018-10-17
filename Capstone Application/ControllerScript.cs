@@ -15,6 +15,7 @@ namespace Capstone_Application
         static MainPageInfo mainPageInfo;
         public CA myCA;
         static  List<StatePageInfo> statePageInfo;
+        public RunSettings runSettings = Form1.runSettings;
         public GridType gType;
         NType nType;
         List<Color> colors = new List<Color>();
@@ -196,27 +197,17 @@ namespace Capstone_Application
             myCA.OneIteration();
             iterations++;
             // move these to check settings?
-            if (currentForm.settingsScript.CountPossible)
-            {
-                //Console.WriteLine("Saving Count");
-                List<int> currentCellCount = new List<int>();
-                currentCellCount.AddRange(myCA.StateCount);
-                FullCount.Add(currentCellCount);
-            }
-            if (currentForm.settingsScript.TransPossible)
-            {
-                //Console.WriteLine("Saving Trans");
-                List<int> currentTransitions = new List<int>();
-                currentTransitions.AddRange(myCA.Transitions);
-                FullTransitions.Add(currentTransitions);
-            }
-            if (currentForm.settingsScript.BIndexPossible)
-            {
-                //Console.WriteLine("Saving BINdex");
-                List<double> currentIndex = new List<double>();
-                currentIndex.AddRange(myCA.CIndexes);
-                FullIndex.Add(currentIndex);
-            }
+            List<int> currentCellCount = new List<int>();
+            currentCellCount.AddRange(myCA.StateCount);
+            FullCount.Add(currentCellCount);
+            //Console.WriteLine("Saving Trans");
+            List<int> currentTransitions = new List<int>();
+            currentTransitions.AddRange(myCA.Transitions);
+            FullTransitions.Add(currentTransitions);
+            //Console.WriteLine("Saving BINdex");
+            List<double> currentIndex = new List<double>();
+            currentIndex.AddRange(myCA.CIndexes);
+            FullIndex.Add(currentIndex);
         }
 
         public void CreateCA(Form1 form)
@@ -230,7 +221,7 @@ namespace Capstone_Application
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
                 gType = mainPageInfo.gridType;
-                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, mainPageInfo.caType, form.settingsScript.BIndexPossible, gType);
+                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nType, mainPageInfo.caType, gType);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
                     ratios.Add(statePageInfo[h].startingAmount.Value);
@@ -553,54 +544,49 @@ namespace Capstone_Application
 
             CheckDataSave(form, time);
 
+            //Console.WriteLine("Reset: " + runSettings.AutoReset);
             // Reset CA options
-            if (form.settingsScript.AutoReset)
+            if (runSettings.ResetIterations.Count > 0 || runSettings.ResetCounts.Count > 0)
             {
                 // Iteration-based
-                if(form.settingsScript.IterationReset)
+                for (int i = 0; i < runSettings.ResetIterations.Count; i++)
                 {
-                    if(form.settingsScript.IterationResetValue == iterations)
-                        {
-                            //CheckFinalDataSave(form, time);
-                            form.AutoReset();
-                        }
+                    if (runSettings.ResetIterations[i] == iterations)
+                    {
+                        //CheckFinalDataSave(form, time);
+                        form.AutoReset();
+                    }
                 }
                 // Cell count based
-                if(form.settingsScript.CountReset)
+                for(int i = 0; i < runSettings.ResetCounts.Count; i++)
                 {
-                    for(int i = 0; i < form.settingsScript.CountResetValues.Count; i++)
+                    if (myCA.StateCount[i] == runSettings.ResetCounts[i])
                     {
-                        if(myCA.StateCount[i] == form.settingsScript.CountResetValues[i])
-                        {
-                            //CheckFinalDataSave(form, time);
-                            form.AutoReset();
-                        }
+                        //CheckFinalDataSave(form, time);
+                        form.AutoReset();
                     }
                 }
             }
 
             // Pause CA options
-            if (form.settingsScript.AutoPause)
+            if (runSettings.PauseIterations.Count > 0 || runSettings.PauseCounts.Count > 0)
             {
                 // Iteration-based
-                if (form.settingsScript.IterationPause)
+                for (int i = 0; i < runSettings.PauseIterations.Count; i++)
                 {
-                    if (form.settingsScript.IterationPauseValue == iterations)
+                    if (runSettings.PauseIterations[i] == iterations)
                     {
                         //CheckFinalDataSave(form, time);
                         form.PauseUnpauseCA();
                     }
                 }
                 // Cell count based
-                if (form.settingsScript.CountPause)
+                for (int i = 0; i < runSettings.PauseCounts.Count; i++)
                 {
-                    for (int i = 0; i < form.settingsScript.CountPauseValues.Count; i++)
+                    if (myCA.StateCount[i] == runSettings.PauseCounts[i])
                     {
-                        if (myCA.StateCount[i] == form.settingsScript.CountPauseValues[i])
-                        {
-                            //CheckFinalDataSave(form, time);
-                            form.PauseUnpauseCA();
-                        }
+                        //CheckFinalDataSave(form, time);
+                        form.PauseUnpauseCA();
                     }
                 }
             }
@@ -609,43 +595,44 @@ namespace Capstone_Application
         // This is for saving the cell count and images upon reseting the grid
         void CheckDataSave(Form1 form, string time)
         {
+            bool counts = runSettings.SaveCounts;
+            bool trans = runSettings.SaveTrans;
+            bool cIndex = runSettings.SaveIndex;
             // This is for saving the cell counts in text file
-            if (form.settingsScript.CountSave)
+            if (runSettings.DataIncs.Count > 0)
             {
-                // Check if iteration is the same as any in the list. If so, do the image save
-                for (int i = 0; i < form.settingsScript.CountSaveValues.Count; i++)
+                // Check if iteration is the same as any in the list. If so, do the count save
+                for (int i = 0; i < runSettings.DataIncs.Count; i++)
                 {
-                    if (form.settingsScript.CountSaveValues[i] == -1)
+                    if (runSettings.DataIncs[i] == -1)
                     {
                         continue;
                     }
                     else
                     {
-                        //int tempInt = form.settingsScript.CountSaveValues[i];
-                        int remainder = iterations % form.settingsScript.CountSaveValues[i];
+                        int remainder = iterations % runSettings.DataIncs[i];
                         if (remainder == 0)
                         {
                             // Auto count save
-                            form.SaveCounts(time);
+                            form.SaveData(time, counts, trans, cIndex, runSettings.DataPath);
                         }
                     }
                 }
             }
 
             // For image saving
-            if (form.settingsScript.ImageSave)
+            if (runSettings.ImageIncs.Count > 0)
             {
                 // Check if iteration is the same as any in the list. If so, do the image save
-                for (int i = 0; i < form.settingsScript.ImageSaveValues.Count; i++)
+                for (int i = 0; i < runSettings.ImageIncs.Count; i++)
                 {
-                    if (form.settingsScript.ImageSaveValues[i] == -1)
+                    if (runSettings.ImageIncs[i] == -1)
                     {
                         continue;
                     }
                     else
                     {
-                        //int tempInt = form.settingsScript.ImageSaveValues[i];
-                        int remainder = iterations % form.settingsScript.ImageSaveValues[i];
+                        int remainder = iterations % runSettings.ImageIncs[i];
                         if (remainder == 0)
                         {
                             // Auto image save
@@ -656,19 +643,18 @@ namespace Capstone_Application
             }
 
             // For path saving
-            if (form.settingsScript.PathSave)
+            if (runSettings.PathsIncs.Count > 0)
             {
                 // Check if iteration is the same as any in the list. If so, do the image save
-                for (int i = 0; i < form.settingsScript.PathSaveValues.Count; i++)
+                for (int i = 0; i < runSettings.PathsIncs.Count; i++)
                 {
-                    if (form.settingsScript.PathSaveValues[i] == -1)
+                    if (runSettings.PathsIncs[i] == -1)
                     {
                         continue;
                     }
                     else
                     {
-                        //int tempInt = form.settingsScript.PathSaveValues[i];
-                        int remainder = iterations % form.settingsScript.PathSaveValues[i];
+                        int remainder = iterations % runSettings.PathsIncs[i];
                         if (remainder == 0)
                         {
                             // Auto image save
@@ -681,39 +667,43 @@ namespace Capstone_Application
 
         void CheckFinalDataSave(Form1 form, string time)
         {
+            bool counts = runSettings.SaveCounts;
+            bool trans = runSettings.SaveTrans;
+            bool cIndex = runSettings.SaveIndex;
             // This is for saving the cell counts in text file
-            if (form.settingsScript.CountSave)
+            if (runSettings.DataIncs.Count > 0)
             {
                 // Check for code denoting save at reset. If so, do the image save
-                for (int i = 0; i < form.settingsScript.CountSaveValues.Count; i++)
+                for (int i = 0; i < runSettings.DataIncs.Count; i++)
                 {
-                    if (form.settingsScript.CountSaveValues[i] == -1)
+                    if (runSettings.DataIncs[i] == -1)
                     {
-                        form.SaveCounts(time);
+                        Console.WriteLine("We're here because we're here");
+                        form.SaveData(time, counts, trans, cIndex, runSettings.DataPath);
                     }
                 }
             }
 
             // For image saving
-            if (form.settingsScript.ImageSave)
+            if (runSettings.ImageIncs.Count > 0)
             {
                 // Check for code denoting save at reset. If so, do the image save
-                for (int i = 0; i < form.settingsScript.ImageSaveValues.Count; i++)
+                for (int i = 0; i < runSettings.ImageIncs.Count; i++)
                 {
-                    if (form.settingsScript.ImageSaveValues[i] == -1)
+                    if (runSettings.ImageIncs[i] == -1)
                     {
                         form.InvokeImageSave(time);
                     }
                 }
             }
 
-            // For image saving
-            if (form.settingsScript.PathSave)
+            // For path saving
+            if (runSettings.PathsIncs.Count > 0)
             {
                 // Check for code denoting save at reset. If so, do the image save
-                for (int i = 0; i < form.settingsScript.PathSaveValues.Count; i++)
+                for (int i = 0; i < runSettings.PathsIncs.Count; i++)
                 {
-                    if (form.settingsScript.PathSaveValues[i] == -1)
+                    if (runSettings.PathsIncs[i] == -1)
                     {
                         form.AutoPathSave(time);
                     }
@@ -723,9 +713,9 @@ namespace Capstone_Application
 
         public void CheckMaxRuns(Form1 form)
         {
-            if(form.settingsScript.RunMax)
+            if(form.RunMax.HasValue)
             {
-                if(caRuns > form.settingsScript.RunMaxValue)
+                if(caRuns > form.RunMax)
                 {
                     form.PauseUnpauseCA();
                 }

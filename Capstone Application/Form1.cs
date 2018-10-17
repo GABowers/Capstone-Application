@@ -28,9 +28,14 @@ namespace Capstone_Application
         int mouseDownY = 0;
         int iterationSpeed = 0;
         int editState = 0;
-        public InstanceSettings settingsScript = new InstanceSettings();
+        int? runMax;
+        public static RunSettings runSettings;
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
+        SaveDataDialog saveDialog;
+
+        public int? RunMax { get => runMax; set => runMax = value; }
+
         public Form1()
         {
             InitializeComponent();
@@ -489,6 +494,88 @@ namespace Capstone_Application
             }
         }
 
+        public void SaveData(string time, bool counts, bool trans, bool cIndex, string path)
+        {
+            path = path + "/" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Data.csv";
+            Console.WriteLine("Path: " + path);
+            using (StreamWriter wt = new StreamWriter(path))
+            {
+                //pertinent info - run, iteration, time
+                string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs: " + controllerScript.caRuns + " Iterations: " + controllerScript.iterations;
+                wt.Write(thing);
+                wt.WriteLine();
+                wt.Write("Iteration,");
+                if (counts)
+                {
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        string cellTypeString = (j + 1).ToString();
+                        wt.Write("Counts Type " + cellTypeString + ",");
+                    }
+                }
+                if (trans)
+                {
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        string cellTypeString = (j + 1).ToString();
+                        wt.Write("Transitions Type " + cellTypeString + ",");
+                    }
+                }
+                if (cIndex)
+                {
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        string cellTypeString = (j + 1).ToString();
+                        wt.Write("C Index Type " + cellTypeString + ",");
+                    }
+                }
+                wt.WriteLine();
+                for (int i = 0; i < controllerScript.iterations; ++i)
+                {
+                    wt.Write((i + 1).ToString() + ",");
+                    wt.WriteLine();
+                }
+                wt.Close();
+            }
+            string[] lines = File.ReadAllLines(path);
+            for (int i = 0; i < controllerScript.iterations; ++i)
+            {
+                int line = i + 2;
+                string currentLine = lines[line];
+                if(counts)
+                {
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        currentLine += controllerScript.FullCount[i][j].ToString() + ",";
+                    }
+                }
+                if (trans)
+                {
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        currentLine += controllerScript.FullTransitions[i][j].ToString() + ",";
+                    }
+                }
+                if (cIndex)
+                {
+                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    {
+                        currentLine += controllerScript.FullIndex[i][j].ToString() + ",";
+                    }
+                }
+                lines[line] = currentLine;
+            }
+            using (StreamWriter writer = new StreamWriter(path, false))
+            {
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    writer.Write(lines[i]);
+                    writer.WriteLine();
+                }
+                writer.Close();
+            }
+        }
+
         private void cellCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Check if the CA has been created yet. If not, obviously don't make this form
@@ -498,66 +585,6 @@ namespace Capstone_Application
             counterFormOpen = true;
         }
 
-        private void toolStripMenuItem5_CheckedChanged(object sender, EventArgs e)
-        {
-            if(setDataSave.Checked)
-            {
-                settingsScript.CountSave = true;
-            }
-            else
-            {
-                settingsScript.CountSave = false;
-            }
-        }
-
-        private void setImageSaveToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (setImageSaveToolStripMenuItem.Checked)
-            {
-                settingsScript.ImageSave = true;
-            }
-            else
-            {
-                settingsScript.ImageSave = false;
-            }
-        }
-
-        private void setAutoResetToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (setAutoResetToolStripMenuItem.Checked)
-            {
-                settingsScript.AutoReset = true;
-            }
-            else
-            {
-                settingsScript.AutoReset = false;
-            }
-        }
-
-        private void iterationCountToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (iterationCountToolStripMenuItem.Checked)
-            {
-                settingsScript.IterationReset = true;
-            }
-            else
-            {
-                settingsScript.IterationReset = false;
-            }
-        }
-
-        private void cellCountToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cellCountToolStripMenuItem.Checked)
-            {
-                settingsScript.CountReset = true;
-            }
-            else
-            {
-                settingsScript.CountReset = false;
-            }
-        }
-
         private void resetIterationTextBox_Leave(object sender, EventArgs e)
         {
             
@@ -565,7 +592,6 @@ namespace Capstone_Application
 
         private void countResetTextBox_TextChanged(object sender, EventArgs e)
         {
-            settingsScript.CountResetValues.Clear();
             List<int> cellCounts = new List<int>();
             for (int i = 0; i < controllerScript.amountOfCellTypes; i++)
             {
@@ -580,12 +606,10 @@ namespace Capstone_Application
                     cellCounts.Add(int.Parse(boxText));
                 }
             }
-            settingsScript.CountResetValues = cellCounts;
         }
 
         private void countPauseTextBox_TextChanged(object sender, EventArgs e)
         {
-            settingsScript.CountPauseValues.Clear();
             List<int> cellCounts = new List<int>();
             for (int i = 0; i < controllerScript.amountOfCellTypes; i++)
             {
@@ -600,7 +624,6 @@ namespace Capstone_Application
                     cellCounts.Add(int.Parse(boxText));
                 }
             }
-            settingsScript.CountPauseValues = cellCounts;
         }
 
         private void iterationCountCountSave_Leave(object sender, EventArgs e)
@@ -615,7 +638,6 @@ namespace Capstone_Application
 
         private void iterationCountCountSave_TextChanged(object sender, EventArgs e)
         {
-            settingsScript.CountSaveValues.Clear();
             if (string.IsNullOrWhiteSpace(iterationCountCountSave.Text))
             {
 
@@ -641,13 +663,11 @@ namespace Capstone_Application
                         countValueList.Add(int.Parse(iterationCountCountSave.Text));
                     }
                 }
-                settingsScript.CountSaveValues = countValueList;
             }
         }
 
         private void iterationCountImageSave_TextChanged(object sender, EventArgs e)
         {
-            settingsScript.ImageSaveValues.Clear();
             if (string.IsNullOrWhiteSpace(iterationCountImageSave.Text))
             {
 
@@ -673,7 +693,6 @@ namespace Capstone_Application
                         imageValueList.Add(int.Parse(iterationCountImageSave.Text));
                     }
                 }
-                settingsScript.ImageSaveValues = imageValueList;
             }
         }
 
@@ -681,11 +700,9 @@ namespace Capstone_Application
         {
             if (int.TryParse(resetIterationTextBox.Text, out int result))
             {
-                settingsScript.IterationResetValue = int.Parse(resetIterationTextBox.Text);
             }
             else
             {
-                settingsScript.IterationResetValue = -1;
             }
         }
 
@@ -885,11 +902,9 @@ namespace Capstone_Application
         {
             if (runCountMaxRuns.Checked)
             {
-                settingsScript.RunMax = true;
             }
             else
             {
-                settingsScript.RunMax = false;
             }
         }
 
@@ -902,11 +917,9 @@ namespace Capstone_Application
         {
             if (int.TryParse(toolStripTextBox1.Text, out int result))
             {
-                settingsScript.RunMaxValue = int.Parse(toolStripTextBox1.Text);
             }
             else
             {
-                settingsScript.RunMaxValue = -1;
             }
         }
 
@@ -914,11 +927,9 @@ namespace Capstone_Application
         {
             if (autoPauseCheck.Checked)
             {
-                settingsScript.AutoPause = true;
             }
             else
             {
-                settingsScript.AutoPause = false;
             }
         }
 
@@ -926,11 +937,9 @@ namespace Capstone_Application
         {
             if (autoPauseIterationCount.Checked)
             {
-                settingsScript.IterationPause = true;
             }
             else
             {
-                settingsScript.IterationPause = false;
             }
         }
 
@@ -938,11 +947,9 @@ namespace Capstone_Application
         {
             if (autoPauseCellCount.Checked)
             {
-                settingsScript.CountPause = true;
             }
             else
             {
-                settingsScript.CountPause = false;
             }
         }
 
@@ -950,17 +957,14 @@ namespace Capstone_Application
         {
             if (int.TryParse(autoPauseIterationCountTextBox.Text, out int result))
             {
-                settingsScript.IterationPauseValue = int.Parse(autoPauseIterationCountTextBox.Text);
             }
             else
             {
-                settingsScript.IterationPauseValue = -1;
             }
         }
 
         private void iterationCountPathSave_TextChanged(object sender, EventArgs e)
         {
-            settingsScript.PathSaveValues.Clear();
             if (string.IsNullOrWhiteSpace(iterationCountPathSave.Text))
             {
 
@@ -986,7 +990,6 @@ namespace Capstone_Application
                         pathValueList.Add(int.Parse(iterationCountPathSave.Text));
                     }
                 }
-                settingsScript.PathSaveValues = pathValueList;
             }
         }
 
@@ -994,11 +997,9 @@ namespace Capstone_Application
         {
             if (setPathSaveToolStripMenuItem.Checked)
             {
-                settingsScript.PathSave = true;
             }
             else
             {
-                settingsScript.PathSave = false;
             }
         }
 
@@ -1026,59 +1027,6 @@ namespace Capstone_Application
         {
 
         }
-
-        private void countToggle_Click(object sender, EventArgs e)
-        {
-            if(countToggle.Checked)
-            {
-                settingsScript.CountToggled = true;
-            }
-
-            else
-            {
-                settingsScript.CountToggled = false;
-            }
-        }
-
-        private void transToggle_Click(object sender, EventArgs e)
-        {
-            if (transToggle.Checked)
-            {
-                settingsScript.TransToggled = true;
-            }
-
-            else
-            {
-                settingsScript.TransToggled = false;
-            }
-        }
-
-        private void bIndexToggle_Click(object sender, EventArgs e)
-        {
-            if (bIndexToggle.Checked)
-            {
-                settingsScript.BIndexToggled = true;
-            }
-
-            else
-            {
-                settingsScript.BIndexToggled = false;
-            }
-        }
-
-        private void pathToggle_Click(object sender, EventArgs e)
-        {
-            if (pathToggle.Checked)
-            {
-                settingsScript.PathToggled = true;
-            }
-
-            else
-            {
-                settingsScript.PathToggled = false;
-            }
-        }
-
         private void dataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
@@ -1099,26 +1047,6 @@ namespace Capstone_Application
                     {
                         string cellTypeString = (j + 1).ToString();
                         wt.Write("Type " + cellTypeString);
-                        if (settingsScript.CountPossible && settingsScript.CountToggled)
-                        {
-                            wt.Write(" | Amount");
-                        }
-                        if (settingsScript.TransPossible && settingsScript.TransToggled)
-                        {
-                            for (int k = 0; k < controllerScript.amountOfCellTypes; k++)
-                            {
-                                if (k == j)
-                                {
-                                    continue;
-                                }
-                                int toType = k + 1;
-                                wt.Write(" | Transition (" + cellTypeString + " to " + toType + ")");
-                            }
-                        }
-                        if (settingsScript.BIndexPossible && settingsScript.BIndexToggled)
-                        {
-                            wt.Write(" | B Index |");
-                        }
                     }
                     wt.WriteLine();
                     for (int i = 0; i < controllerScript.iterations; ++i)
@@ -1135,25 +1063,6 @@ namespace Capstone_Application
                     string currentLine = lines[line];
                     for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                     {
-                        if (settingsScript.CountPossible && settingsScript.CountToggled)
-                        {
-                            // Argument out of range exception
-                            string newCurrentLine = currentLine + " | " + controllerScript.FullCount[i][j];
-                            currentLine = newCurrentLine;
-                        }
-                        if (settingsScript.TransPossible && settingsScript.TransToggled)
-                        {
-                            for (int k = 0; k < (controllerScript.amountOfCellTypes - 1); k++)
-                            {
-                                string newCurrentLine = currentLine + " | " + controllerScript.FullTransitions[i][(j * (controllerScript.amountOfCellTypes - 1)) + k];
-                                currentLine = newCurrentLine;
-                            }
-                        }
-                        if (settingsScript.BIndexPossible && settingsScript.BIndexToggled)
-                        {
-                            string newCurrentLine = currentLine + " | " + controllerScript.FullIndex[i][j];
-                            currentLine = newCurrentLine;
-                        }
                     }
                     lines[line] = currentLine;
                 }
@@ -1204,6 +1113,12 @@ namespace Capstone_Application
                 GroupingForm newGrouper = new GroupingForm(this);
                 newGrouper.ShowDialog();
             }
+        }
+
+        private void runSettingsButton_Click(object sender, EventArgs e)
+        {
+            saveDialog = new SaveDataDialog();
+            saveDialog.Show();
         }
     }
 }

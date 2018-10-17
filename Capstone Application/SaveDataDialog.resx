@@ -117,7 +117,39 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="colorDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+  <metadata name="saveTabsControl.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="imageIncLabel.Text" xml:space="preserve">
+    <value>Set the iterative increments you want. A value of 5 means that after every 5th itheration (5, 10, 15, etc.) the file will be stored. A value of -1 means the file will be stored when the run resets. Use multiple types by separating them with a comma.</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="messageNextButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4yMfEgaZUAAABfSURBVDhP7c5B
+        CoAwEEPRWXg1TyF4bcHLaCJ0IynT2uzqg78QOsGY2zWQtCD1OIt3VeogK6WOajVZkTpWNVPH77psSI2U
+        dtRNDZU+s46RfZCsY3Qgjp3Pl4nt736ZiBsyy2ZU6stBswAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="messagePrevButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4yMfEgaZUAAABYSURBVDhP7ZJB
+        CsAgDATzuR78/4NslQZK2Zht3WMGBhHcOWlFRL9PCcflCLZ5EzBi7jbPmCQqDaKY+wsUcj+DIm9p/Jsw
+        UqBhZAoaZS5Bg8wQ9Ji1kGF2AicQZHDY0ZtzAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="dataIncLabel.Text" xml:space="preserve">
+    <value>Set the iterative increments you want. A value of 5 means that after every 5th itheration (5, 10, 15, etc.) the file will be stored. A value of -1 means the file will be stored when the run resets. Use multiple types by separating them with a comma.</value>
+  </data>
+  <data name="pathsIncLabel.Text" xml:space="preserve">
+    <value>Set the iterative increments you want. A value of 5 means that after every 5th itheration (5, 10, 15, etc.) the file will be stored. A value of -1 means the file will be stored when the run resets. Use multiple types by separating them with a comma.</value>
+  </data>
+  <metadata name="folderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>47</value>
   </metadata>
 </root>

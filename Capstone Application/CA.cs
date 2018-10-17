@@ -17,7 +17,7 @@ public class CA
     List<AgentController> activeAgents = new List<AgentController>();
     List<List<AgentController>> separateAgents = new List<List<AgentController>>();
     //AgentController[] activeAgentsArray;
-    System.Object[,] objects;
+    //System.Object[,] objects;
     //private BlankGrid blankGrid;
     //AgentController agent;
     private CellState[] states;
@@ -26,7 +26,6 @@ public class CA
     public BlankGrid[,] grid;
     NType neighborType;
     BlankGrid[,] backup;
-    bool getCI = false;
     public int gridWidth;
     public int gridHeight;
     private int numStates;
@@ -43,7 +42,7 @@ public class CA
     List<double> cIndexes = new List<double>();
     public List<float> neighborAnalysis = new List<float>();
     private List<Tuple<int, int, int, int>> edges = new List<Tuple<int, int, int, int>>();
-    List<Tuple<int, int, int, int>> dataList;
+    //List<Tuple<int, int, int, int>> dataList;
 
     private StatePageInfo statePageInfo;
 
@@ -58,7 +57,7 @@ public class CA
     public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
     public List<List<AgentController>> SeparateAgents { get => separateAgents; set => separateAgents = value; }
 
-    public CA(int width, int height, int numStates, NType type, int incomingCAType, bool permitCI,  GridType gType = GridType.Box)
+    public CA(int width, int height, int numStates, NType type, int incomingCAType,  GridType gType = GridType.Box)
     {
         StateCount.Clear();
         Transitions.Clear();
@@ -73,7 +72,6 @@ public class CA
         neighborhood = new Neighborhood(type);
         states = new CellState[numStates];
         CaType = incomingCAType;
-        getCI = permitCI;
         for (int i = 0; i < numStates; ++i)
         {
             StateCount.Add(0);
@@ -308,7 +306,11 @@ public class CA
                 Transitions[(i * (numStates - 1)) + j] = 0;
             }
         }
-            
+        for (int i = 0; i < numStates; ++i)
+        {
+            Console.WriteLine("Statecount " + i + ": " + StateCount[i]);
+        }
+        
         if (CaType == 1) //1 = second order
         {
             for (int x = 0; x < ActiveAgents.Count; ++x)
@@ -352,13 +354,13 @@ public class CA
                 }
             }
         }
-
-        if(getCI)
+        for (int i = 0; i < numStates; ++i)
         {
-            for (int i = 0; i < numStates; i++)
-            {
-                GetCIndex(i);
-            }
+            Console.WriteLine("Statecount " + i + ": " + StateCount[i]);
+        }
+        for (int i = 0; i < numStates; i++)
+        {
+            GetCIndex(i);
         }
     }
 
@@ -559,7 +561,7 @@ public class CA
         {
             cIndex = (finalEdge / (double)maxEdges) * ((double)ConnectedVertices / amount);
         }
-        //Console.WriteLine(separateAgents[state].Count + "," + finalEdge + "," + maxEdges + "," + ConnectedVertices + "," + amount + "," +  cIndex);
+        Console.WriteLine(separateAgents[state].Count + "," + finalEdge + "," + maxEdges + "," + ConnectedVertices + "," + amount + "," +  cIndex);
         return cIndex;
         //CIndexes[state] = cIndex;
     }

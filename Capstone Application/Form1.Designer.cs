@@ -46,6 +46,8 @@
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dansNeighborAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.randomWalkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.mainWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,11 +55,6 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.userGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toggleSaveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.countToggle = new System.Windows.Forms.ToolStripMenuItem();
-            this.transToggle = new System.Windows.Forms.ToolStripMenuItem();
-            this.bIndexToggle = new System.Windows.Forms.ToolStripMenuItem();
-            this.pathToggle = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -97,11 +94,10 @@
             this.decrease = new System.Windows.Forms.ToolStripButton();
             this.increase = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.randomWalkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
+            this.runSettingsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -117,7 +113,7 @@
             this.analysisToolStripMenuItem,
             this.toolStripMenuItem3,
             this.toolStripMenuItem4,
-            this.toggleSaveToolStripMenuItem});
+            this.runSettingsButton});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(505, 24);
@@ -253,6 +249,19 @@
             this.dansNeighborAnalysisToolStripMenuItem.Text = "Dan\'s Neighbor Analysis (DNA)";
             this.dansNeighborAnalysisToolStripMenuItem.Click += new System.EventHandler(this.dansNeighborAnalysisToolStripMenuItem_Click);
             // 
+            // randomWalkToolStripMenuItem
+            // 
+            this.randomWalkToolStripMenuItem.Name = "randomWalkToolStripMenuItem";
+            this.randomWalkToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.randomWalkToolStripMenuItem.Text = "Random Walk";
+            // 
+            // groupingToolStripMenuItem
+            // 
+            this.groupingToolStripMenuItem.Name = "groupingToolStripMenuItem";
+            this.groupingToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.groupingToolStripMenuItem.Text = "Grouping";
+            this.groupingToolStripMenuItem.Click += new System.EventHandler(this.groupingToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -294,57 +303,14 @@
             // userGuideToolStripMenuItem
             // 
             this.userGuideToolStripMenuItem.Name = "userGuideToolStripMenuItem";
-            this.userGuideToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.userGuideToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.userGuideToolStripMenuItem.Text = "User Guide";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(131, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
-            // 
-            // toggleSaveToolStripMenuItem
-            // 
-            this.toggleSaveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.countToggle,
-            this.transToggle,
-            this.bIndexToggle,
-            this.pathToggle});
-            this.toggleSaveToolStripMenuItem.Name = "toggleSaveToolStripMenuItem";
-            this.toggleSaveToolStripMenuItem.Size = new System.Drawing.Size(82, 20);
-            this.toggleSaveToolStripMenuItem.Text = "Toggle Save";
-            // 
-            // countToggle
-            // 
-            this.countToggle.CheckOnClick = true;
-            this.countToggle.Name = "countToggle";
-            this.countToggle.Size = new System.Drawing.Size(131, 22);
-            this.countToggle.Text = "Count";
-            this.countToggle.Click += new System.EventHandler(this.countToggle_Click);
-            // 
-            // transToggle
-            // 
-            this.transToggle.CheckOnClick = true;
-            this.transToggle.Name = "transToggle";
-            this.transToggle.Size = new System.Drawing.Size(131, 22);
-            this.transToggle.Text = "Transitions";
-            this.transToggle.Click += new System.EventHandler(this.transToggle_Click);
-            // 
-            // bIndexToggle
-            // 
-            this.bIndexToggle.CheckOnClick = true;
-            this.bIndexToggle.Name = "bIndexToggle";
-            this.bIndexToggle.Size = new System.Drawing.Size(131, 22);
-            this.bIndexToggle.Text = "B Index";
-            this.bIndexToggle.Click += new System.EventHandler(this.bIndexToggle_Click);
-            // 
-            // pathToggle
-            // 
-            this.pathToggle.CheckOnClick = true;
-            this.pathToggle.Name = "pathToggle";
-            this.pathToggle.Size = new System.Drawing.Size(131, 22);
-            this.pathToggle.Text = "Path";
-            this.pathToggle.Click += new System.EventHandler(this.pathToggle_Click);
             // 
             // toolStrip1
             // 
@@ -508,7 +474,6 @@
             this.setDataSave.Size = new System.Drawing.Size(153, 22);
             this.setDataSave.Text = "Set Data Save";
             this.setDataSave.ToolTipText = resources.GetString("setDataSave.ToolTipText");
-            this.setDataSave.CheckedChanged += new System.EventHandler(this.toolStripMenuItem5_CheckedChanged);
             this.setDataSave.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
             // iterationCountCountSave
@@ -526,7 +491,6 @@
             this.setImageSaveToolStripMenuItem.Name = "setImageSaveToolStripMenuItem";
             this.setImageSaveToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.setImageSaveToolStripMenuItem.Text = "Set Image Save";
-            this.setImageSaveToolStripMenuItem.CheckedChanged += new System.EventHandler(this.setImageSaveToolStripMenuItem_CheckedChanged);
             this.setImageSaveToolStripMenuItem.Click += new System.EventHandler(this.setImageSaveToolStripMenuItem_Click);
             // 
             // iterationCountImageSave
@@ -562,7 +526,6 @@
             this.setAutoResetToolStripMenuItem.Name = "setAutoResetToolStripMenuItem";
             this.setAutoResetToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.setAutoResetToolStripMenuItem.Text = "Set Auto Reset";
-            this.setAutoResetToolStripMenuItem.CheckedChanged += new System.EventHandler(this.setAutoResetToolStripMenuItem_CheckedChanged);
             this.setAutoResetToolStripMenuItem.Click += new System.EventHandler(this.setAutoResetToolStripMenuItem_Click);
             // 
             // iterationCountToolStripMenuItem
@@ -573,7 +536,6 @@
             this.iterationCountToolStripMenuItem.Name = "iterationCountToolStripMenuItem";
             this.iterationCountToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.iterationCountToolStripMenuItem.Text = "Iteration Count";
-            this.iterationCountToolStripMenuItem.CheckedChanged += new System.EventHandler(this.iterationCountToolStripMenuItem_CheckedChanged);
             // 
             // resetIterationTextBox
             // 
@@ -588,7 +550,6 @@
             this.cellCountToolStripMenuItem.Name = "cellCountToolStripMenuItem";
             this.cellCountToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.cellCountToolStripMenuItem.Text = "Cell Count";
-            this.cellCountToolStripMenuItem.CheckedChanged += new System.EventHandler(this.cellCountToolStripMenuItem_CheckedChanged);
             this.cellCountToolStripMenuItem.Click += new System.EventHandler(this.cellCountToolStripMenuItem_Click);
             // 
             // autoPauseCheck
@@ -701,28 +662,6 @@
             this.panel1.Size = new System.Drawing.Size(505, 505);
             this.panel1.TabIndex = 4;
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
-            // saveFileDialog1
-            // 
-            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
-            // 
-            // randomWalkToolStripMenuItem
-            // 
-            this.randomWalkToolStripMenuItem.Name = "randomWalkToolStripMenuItem";
-            this.randomWalkToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.randomWalkToolStripMenuItem.Text = "Random Walk";
-            // 
-            // groupingToolStripMenuItem
-            // 
-            this.groupingToolStripMenuItem.Name = "groupingToolStripMenuItem";
-            this.groupingToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.groupingToolStripMenuItem.Text = "Grouping";
-            this.groupingToolStripMenuItem.Click += new System.EventHandler(this.groupingToolStripMenuItem_Click);
-            // 
             // innerPictureBox
             // 
             this.innerPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -744,6 +683,22 @@
             this.innerPictureBox.MouseHover += new System.EventHandler(this.innerPictureBox_MouseHover);
             this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
             this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
+            // runSettingsButton
+            // 
+            this.runSettingsButton.Name = "runSettingsButton";
+            this.runSettingsButton.Size = new System.Drawing.Size(85, 20);
+            this.runSettingsButton.Text = "Run Settings";
+            this.runSettingsButton.Click += new System.EventHandler(this.runSettingsButton_Click);
             // 
             // Form1
             // 
@@ -837,13 +792,9 @@
         private System.Windows.Forms.ToolStripMenuItem setAutoSaveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem countToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toggleSaveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem countToggle;
-        private System.Windows.Forms.ToolStripMenuItem transToggle;
-        private System.Windows.Forms.ToolStripMenuItem bIndexToggle;
-        private System.Windows.Forms.ToolStripMenuItem pathToggle;
         private System.Windows.Forms.ToolStripMenuItem randomWalkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem groupingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runSettingsButton;
     }
 }
 

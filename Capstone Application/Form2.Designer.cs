@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.gridTypeBox = new System.Windows.Forms.ComboBox();
@@ -49,15 +48,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.previousTab = new System.Windows.Forms.Button();
             this.nextTab = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.checkBoxCount = new System.Windows.Forms.CheckBox();
-            this.checkBoxTrans = new System.Windows.Forms.CheckBox();
-            this.checkBoxBIndex = new System.Windows.Forms.CheckBox();
-            this.checkBoxPath = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -73,15 +63,6 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.checkBoxPath);
-            this.tabPage1.Controls.Add(this.checkBoxBIndex);
-            this.tabPage1.Controls.Add(this.checkBoxTrans);
-            this.tabPage1.Controls.Add(this.checkBoxCount);
-            this.tabPage1.Controls.Add(this.label12);
-            this.tabPage1.Controls.Add(this.label11);
-            this.tabPage1.Controls.Add(this.label10);
-            this.tabPage1.Controls.Add(this.label9);
-            this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.gridTypeBox);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.gridSizeHori);
@@ -277,88 +258,6 @@
             this.nextTab.UseVisualStyleBackColor = true;
             this.nextTab.Click += new System.EventHandler(this.nextTab_Click);
             // 
-            // label8
-            // 
-            this.label8.Location = new System.Drawing.Point(9, 139);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(528, 40);
-            this.label8.TabIndex = 11;
-            this.label8.Text = resources.GetString("label8.Text");
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label8.Click += new System.EventHandler(this.label8_Click);
-            // 
-            // label9
-            // 
-            this.label9.Location = new System.Drawing.Point(9, 189);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(125, 20);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "Cell count";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label10
-            // 
-            this.label10.Location = new System.Drawing.Point(9, 209);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(125, 20);
-            this.label10.TabIndex = 13;
-            this.label10.Text = "Transitions";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label11
-            // 
-            this.label11.Location = new System.Drawing.Point(9, 229);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(125, 20);
-            this.label11.TabIndex = 14;
-            this.label11.Text = "B Index";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label12
-            // 
-            this.label12.Location = new System.Drawing.Point(9, 249);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(166, 20);
-            this.label12.TabIndex = 15;
-            this.label12.Text = "Path (mobile CA)";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // checkBoxCount
-            // 
-            this.checkBoxCount.AutoSize = true;
-            this.checkBoxCount.Location = new System.Drawing.Point(253, 189);
-            this.checkBoxCount.Name = "checkBoxCount";
-            this.checkBoxCount.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxCount.TabIndex = 16;
-            this.checkBoxCount.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxTrans
-            // 
-            this.checkBoxTrans.AutoSize = true;
-            this.checkBoxTrans.Location = new System.Drawing.Point(253, 212);
-            this.checkBoxTrans.Name = "checkBoxTrans";
-            this.checkBoxTrans.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxTrans.TabIndex = 17;
-            this.checkBoxTrans.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxBIndex
-            // 
-            this.checkBoxBIndex.AutoSize = true;
-            this.checkBoxBIndex.Location = new System.Drawing.Point(253, 232);
-            this.checkBoxBIndex.Name = "checkBoxBIndex";
-            this.checkBoxBIndex.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxBIndex.TabIndex = 18;
-            this.checkBoxBIndex.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxPath
-            // 
-            this.checkBoxPath.AutoSize = true;
-            this.checkBoxPath.Location = new System.Drawing.Point(253, 252);
-            this.checkBoxPath.Name = "checkBoxPath";
-            this.checkBoxPath.Size = new System.Drawing.Size(15, 14);
-            this.checkBoxPath.TabIndex = 19;
-            this.checkBoxPath.UseVisualStyleBackColor = true;
-            // 
             // Form2
             // 
             this.AccessibleName = "New Model Dialog";
@@ -403,14 +302,5 @@
         private System.Windows.Forms.Button previousTab;
         private System.Windows.Forms.Button nextTab;
         internal System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.CheckBox checkBoxPath;
-        private System.Windows.Forms.CheckBox checkBoxBIndex;
-        private System.Windows.Forms.CheckBox checkBoxTrans;
-        private System.Windows.Forms.CheckBox checkBoxCount;
     }
 }

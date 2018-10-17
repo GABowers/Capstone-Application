@@ -46,10 +46,6 @@ namespace Capstone_Application
             stateNumberBox.Enabled = false;
             gridSizeHori.Enabled = false;
             gridSizeVert.Enabled = false;
-            checkBoxCount.Enabled = false;
-            checkBoxTrans.Enabled = false;
-            checkBoxBIndex.Enabled = false;
-            checkBoxPath.Enabled = false;
             //lock advanced placement
             for (int i = 0; i < (tabControl1.TabPages.Count - 1); i++)
             {
@@ -208,38 +204,6 @@ namespace Capstone_Application
 
         void RetrieveValues()
         {
-            if(mainForm.settingsScript.CountPossible)
-            {
-                checkBoxCount.Checked = true;
-            }
-            else
-            {
-                checkBoxCount.Checked = false;
-            }
-            if (mainForm.settingsScript.TransPossible)
-            {
-                checkBoxTrans.Checked = true;
-            }
-            else
-            {
-                checkBoxTrans.Checked = false;
-            }
-            if (mainForm.settingsScript.BIndexPossible)
-            {
-                checkBoxBIndex.Checked = true;
-            }
-            else
-            {
-                checkBoxBIndex.Checked = false;
-            }
-            if (mainForm.settingsScript.PathPossible)
-            {
-                checkBoxPath.Checked = true;
-            }
-            else
-            {
-                checkBoxPath.Checked = false;
-            }
             int amountOfStates = int.Parse(stateNumberBox.Text);
             //for loop for each tab
             if (this.caTypeBox.SelectedIndex == 0)
@@ -277,39 +241,6 @@ namespace Capstone_Application
         private void UpdateAllValues()
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
-
-            if(checkBoxCount.Checked)
-            {
-                mainForm.settingsScript.CountPossible = true;
-            }
-            else
-            {
-                mainForm.settingsScript.CountPossible = false;
-            }
-            if (checkBoxTrans.Checked)
-            {
-                mainForm.settingsScript.TransPossible = true;
-            }
-            else
-            {
-                mainForm.settingsScript.TransPossible = false;
-            }
-            if (checkBoxBIndex.Checked)
-            {
-                mainForm.settingsScript.BIndexPossible = true;
-            }
-            else
-            {
-                mainForm.settingsScript.BIndexPossible = false;
-            }
-            if (checkBoxPath.Checked)
-            {
-                mainForm.settingsScript.PathPossible = true;
-            }
-            else
-            {
-                mainForm.settingsScript.PathPossible = false;
-            }
 
             //for loop for each tab
             if (this.caTypeBox.SelectedIndex == 0)
@@ -386,6 +317,7 @@ namespace Capstone_Application
 
         private void confirmTab_Click(object sender, EventArgs e)
         {
+            int amountOfStates = int.Parse(stateNumberBox.Text);
             //add code to save all tab data to new class
             UpdateAllValues();
             if (editForm == false)
@@ -393,6 +325,9 @@ namespace Capstone_Application
                 mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
                 mainForm.UpdateIterationPauseCell(int.Parse(stateNumberBox.Text));
             }
+
+            Form1.runSettings = new RunSettings(amountOfStates);
+            controllerScript.runSettings = Form1.runSettings;
             this.Close();
         }
 
