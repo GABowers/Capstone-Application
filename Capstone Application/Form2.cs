@@ -15,12 +15,8 @@ namespace Capstone_Application
         Form1 mainForm;
         ControllerScript controllerScript = Form1.controllerScript;
         MainPageController mainPageController;
-        GridType gridType;
-        NType neighborType;
 
         TabPage tabPage2;
-        int currentGridType = 0;
-        int neighborCount = 0;
         bool editForm;
         public Form2(string name, Form1 main, bool edit)
         {
@@ -31,7 +27,7 @@ namespace Capstone_Application
             mainPageController = new MainPageController();
             if (editForm)
             {
-                controllerScript.SetMainInfo(caTypeBox, neighborTypeBox, gridTypeBox, stateNumberBox, gridSizeHori, gridSizeVert);
+                controllerScript.SetMainInfo(stateNumberBox, gridSizeHori, gridSizeVert);
                 InstantiateNewTabs();
                 PreventChanges();
                 RetrieveValues();
@@ -40,9 +36,6 @@ namespace Capstone_Application
 
         void PreventChanges()
         {
-            caTypeBox.Enabled = false;
-            neighborTypeBox.Enabled = false;
-            gridTypeBox.Enabled = false;
             stateNumberBox.Enabled = false;
             gridSizeHori.Enabled = false;
             gridSizeVert.Enabled = false;
@@ -78,127 +71,15 @@ namespace Capstone_Application
             //Use this to add tabs
             for (int i = 0; i < amountOfStates; ++i)
             {
-                if (this.caTypeBox.SelectedIndex == 0)
-                {
-                    if (this.neighborTypeBox.SelectedIndex == 4)
-                    {
-                        UserControl2 uc2 = new UserControl2();
-                        tabPage2 = new TabPage();
-                        int j = i + 1;
-                        tabPage2.Text = "State " + j;
-                        uc2.UpdateProbFields(j, amountOfStates);
-                        //controllerScript.UpdateProbFields(uc, j);
-                        //uc.UpdateValues(j, amountOfStates, neighborCount);
-                        tabControl1.TabPages.Add(tabPage2);
-                        tabControl1.TabPages[j].Controls.Add(uc2);
-                        uc2.Name = "uc." + j;
-                    }
-                    else
-                    {
-                        UserControl1 uc = new UserControl1();
-                        tabPage2 = new TabPage();
-                        int j = i + 1;
-                        tabPage2.Text = "State " + j;
-                        uc.UpdateProbFields(j, amountOfStates, neighborCount);
-                        uc.FillForm();
-                        //controllerScript.UpdateProbFields(uc, j);
-                        //uc.UpdateValues(j, amountOfStates, neighborCount);
-                        tabControl1.TabPages.Add(tabPage2);
-                        tabControl1.TabPages[j].Controls.Add(uc);
-                        uc.Name = "uc." + j;
-                    }
-                }
-
-                else if(this.caTypeBox.SelectedIndex == 1)
-                {
-                    int j = i + 1;
-                    _2ndOrderTabs uc3 = new _2ndOrderTabs(mainForm, this, j, amountOfStates);
-                    tabPage2 = new TabPage();
-                    tabPage2.Text = "State " + j;
-                    //uc3.SetInfo(j, amountOfStates);
-                    //uc3.UpdateStickFields(j, amountOfStates);
-                    // uc3.UpdateProbFields(j, amountOfStates);
-                    // controllerScript.UpdateProbFields(uc, j);
-                    // uc.UpdateValues(j, amountOfStates, neighborCount);
-                    tabControl1.TabPages.Add(tabPage2);
-                    tabControl1.TabPages[j].Controls.Add(uc3);
-                    uc3.Name = "uc." + j;
-                }
+                UserControl2 uc2 = new UserControl2(amountOfStates, i);
+                tabPage2 = new TabPage();
+                int j = i + 1;
+                tabPage2.Text = "State " + j;
+                tabControl1.TabPages.Add(tabPage2);
+                tabControl1.TabPages[j].Controls.Add(uc2);
+                uc2.Name = "uc." + j;
                 
                 this.Show();
-            }
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void caType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch(caTypeBox.SelectedIndex)
-            {
-                case 0:
-                    break;
-
-                case 1:
-                    break;
-            }
-        }
-
-        private void neighborType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (neighborTypeBox.SelectedIndex)
-            {
-                case 0:
-                    neighborCount = 0;
-                    controllerScript.neighborhoodType = 0;
-                    neighborType = NType.None;
-                    break;
-
-                case 1:
-                    neighborCount = 4;
-                    controllerScript.neighborhoodType = 1;
-                    neighborType = NType.VonNeumann;
-                    break;
-
-                case 2:
-                    neighborCount = 8;
-                    controllerScript.neighborhoodType = 2;
-                    neighborType = NType.Moore;
-                    break;
-
-                case 3:
-                    neighborCount = 12;
-                    controllerScript.neighborhoodType = 3;
-                    neighborType = NType.Hybrid;
-                    break;
-                case 4:
-                    neighborCount = 0;
-                    controllerScript.neighborhoodType = 4;
-                    neighborType = NType.Advanced;
-                    break;
-            }
-        }
-
-        private void gridType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (gridTypeBox.SelectedIndex)
-            {
-                case 0:
-                    gridType = GridType.Box;
-                    break;
-
-                case 1:
-                    gridType = GridType.CylinderW;
-                    break;
-
-                case 2:
-                    gridType = GridType.CylinderH;
-                    break;
-
-                case 3:
-                    gridType = GridType.Torus;
-                    break;
             }
         }
 
@@ -206,35 +87,10 @@ namespace Capstone_Application
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
             //for loop for each tab
-            if (this.caTypeBox.SelectedIndex == 0)
+            for (int i = 1; i < tabControl1.TabPages.Count; ++i)
             {
-                if (this.neighborTypeBox.SelectedIndex == 4)
-                {
-                    // add check for each tab to see rows and columns
-                    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-                    {
-                        UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                        controllerScript.AdvancedRetrieveProbValues(newUC, i);
-                    }
-                }
-                else
-                {
-                    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-                    {
-                        UserControl1 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl1>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                        controllerScript.RetrieveProbValues(newUC, i);
-                    }
-                }
-            }
-            else if (this.caTypeBox.SelectedIndex == 1)
-            {
-                // add neighbor-specific stuff later
-
-                for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-                {
-                    _2ndOrderTabs newUC = tabControl1.TabPages[i].Controls.Cast<_2ndOrderTabs>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                    controllerScript.Retrieve2ndOrder(newUC, i);
-                }
+                UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
+                controllerScript.AdvancedRetrieveProbValues(newUC, i);
             }
         }
 
@@ -243,36 +99,12 @@ namespace Capstone_Application
             int amountOfStates = int.Parse(stateNumberBox.Text);
 
             //for loop for each tab
-            if (this.caTypeBox.SelectedIndex == 0)
+            for (int i = 1; i < tabControl1.TabPages.Count; ++i)
             {
-                if (this.neighborTypeBox.SelectedIndex == 4)
-                {
-                    // add check for each tab to see rows and columns
-                    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-                    {
-                        UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                        controllerScript.AdvancedUpdateProbValues(newUC, i);
-                    }
-                }
-                else
-                {
-                    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-                    {
-                        UserControl1 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl1>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                        controllerScript.UpdateProbValues(newUC, i);
-                    }
-                }
+                UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
+                controllerScript.AdvancedUpdateProbValues(newUC, i);
             }
-            else if(this.caTypeBox.SelectedIndex == 1)
-            {
-                // add neighbor-specific stuff later
-
-                for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-                {
-                    _2ndOrderTabs newUC = tabControl1.TabPages[i].Controls.Cast<_2ndOrderTabs>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                    controllerScript.Update2ndOrder(newUC, i);
-                }
-            }
+            
             if(editForm)
             {
                 controllerScript.EditCA();
@@ -292,20 +124,23 @@ namespace Capstone_Application
         {
             // Consider modifying so StatePageInfo class is added/edited when moving between pages with next/previous
             
-                //WHERE SHOULD THIS BEEEEEE
-                if (tabControl1.SelectedIndex == 0)
+            //WHERE SHOULD THIS BEEEEEE
+            if (tabControl1.SelectedIndex == 0)
+            {
+                if(int.TryParse(stateNumberBox.Text, out int result1) && int.TryParse(gridSizeHori.Text, out int result2) && int.TryParse(gridSizeVert.Text, out int result3))
                 {
-                    controllerScript.MainPageNext(gridType, neighborType, int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text), caTypeBox.SelectedIndex);
+                    controllerScript.MainPageNext(int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text));
                     InstantiateNewTabs();
                 }
-                else
-                {
-                    //UpdateAllValues();
-                }
-                int nextTab = tabControl1.SelectedIndex + 1;
-                if (nextTab > (tabControl1.TabCount - 1))
-                    nextTab = tabControl1.SelectedIndex;
-                tabControl1.SelectTab(nextTab);
+            }
+            else
+            {
+                //UpdateAllValues();
+            }
+            int nextTab = tabControl1.SelectedIndex + 1;
+            if (nextTab > (tabControl1.TabCount - 1))
+                nextTab = tabControl1.SelectedIndex;
+            tabControl1.SelectTab(nextTab);
         }
 
         private void cancelTab_Click(object sender, EventArgs e)

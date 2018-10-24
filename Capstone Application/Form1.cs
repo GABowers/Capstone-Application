@@ -778,43 +778,43 @@ namespace Capstone_Application
 
         private void pathToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (controllerScript.myCA.CaType == 1)
-            {
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.InitialDirectory = Application.StartupPath;
-                saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                saveFileDialog1.FilterIndex = 2;
-                saveFileDialog1.RestoreDirectory = true;
+            //    if (controllerScript.myCA.CaType == 1)
+            //    {
+            //        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            //        saveFileDialog1.InitialDirectory = Application.StartupPath;
+            //        saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            //        saveFileDialog1.FilterIndex = 2;
+            //        saveFileDialog1.RestoreDirectory = true;
 
-                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-                {
-                    string agent = "Agent ";
-                    using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
-                    {
-                        int maxLength = (controllerScript.myCA.gridWidth.ToString().Length * 2) + 4;
+            //        if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            //        {
+            //            string agent = "Agent ";
+            //            using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
+            //            {
+            //                int maxLength = (controllerScript.myCA.gridWidth.ToString().Length * 2) + 4;
 
-                        if ((controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6 > maxLength)
-                        {
-                            maxLength = (controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6;
-                        }
-                        for (int i = 0; i < controllerScript.myCA.ActiveAgents.Count; ++i)
-                        {
-                            wt.Write(agent.PadRight(maxLength - (i + 1).ToString().Length) + (i + 1) + "|");
-                        }
-                        wt.WriteLine();
-                        for (int i = 0; i < (controllerScript.iterations + 1); i++)
-                        {
-                            for (int j = 0; j < controllerScript.myCA.ActiveAgents.Count; j++)
-                            {
-                                wt.Write(controllerScript.myCA.ActiveAgents[j].History[i].ToString().PadRight(maxLength) + "|");
-                            }
-                            wt.WriteLine();
-                        }
+            //                if ((controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6 > maxLength)
+            //                {
+            //                    maxLength = (controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6;
+            //                }
+            //                for (int i = 0; i < controllerScript.myCA.ActiveAgents.Count; ++i)
+            //                {
+            //                    wt.Write(agent.PadRight(maxLength - (i + 1).ToString().Length) + (i + 1) + "|");
+            //                }
+            //                wt.WriteLine();
+            //                for (int i = 0; i < (controllerScript.iterations + 1); i++)
+            //                {
+            //                    for (int j = 0; j < controllerScript.myCA.ActiveAgents.Count; j++)
+            //                    {
+            //                        wt.Write(controllerScript.myCA.ActiveAgents[j].History[i].ToString().PadRight(maxLength) + "|");
+            //                    }
+            //                    wt.WriteLine();
+            //                }
 
-                        wt.Close();
-                    }
-                }
-            }
+            //                wt.Close();
+            //            }
+            //        }
+            //    }
         }
 
         private void visualizationToolStripMenuItem_Click(object sender, EventArgs e)

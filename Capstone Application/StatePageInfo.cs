@@ -10,34 +10,28 @@ namespace Capstone_Application
     public class StatePageInfo
     {
         public NType nType;
-        public int caType;
+        public GridType gridType;
         public int stateNum;
         public Color color;
         public int? startingAmount;
         //int neighborState;
         public double[,][,] advProbs;
-        public float[,,] probs; // [x,y] prob to go to state x with y neighbors
-        public List<string> locationCode;
-        public List<double> probValue;
-        public double[] walkProbs;
+        public List<List<List<double>>> probs; // [x,y] prob to go to state x with y neighbors
+        //public List<string> locationCode;
+        //public List<double> probValue;
+        public List<double> moveProbs;
         public List<double> stickingProbs = new List<double>();
         public bool sticking;
+        public bool mobile;
         public int mobileNeighborhood;
         public List<Tuple<int, int>> startingLocations;
+        public int neighbors;
 
-        public StatePageInfo(int totalStates, int neighbors, int currentState, NType neighborType, int caType)
+        public StatePageInfo(int currentState)
         {
-            nType = neighborType;
             stateNum = currentState;
             color = Color.White;
             startingAmount = 0;
-            advProbs = new double[totalStates, totalStates][,];
-            probs = new float[totalStates, totalStates, neighbors + 1];
-        }
-
-        public void SetWalkProbs(int count)
-        {
-            walkProbs = new double[count];
         }
 
         //public StatePageInfo(int totalStates, int neighbors, int currentState, int rows, int columns)

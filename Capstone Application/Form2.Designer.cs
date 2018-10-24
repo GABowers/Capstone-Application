@@ -30,18 +30,12 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.gridTypeBox = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.gridSizeHori = new System.Windows.Forms.TextBox();
             this.gridSizeVert = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.stateNumberBox = new System.Windows.Forms.TextBox();
-            this.neighborTypeBox = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.caTypeBox = new System.Windows.Forms.ComboBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.cancelTab = new System.Windows.Forms.Button();
             this.confirmTab = new System.Windows.Forms.Button();
@@ -63,18 +57,12 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.gridTypeBox);
-            this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.gridSizeHori);
             this.tabPage1.Controls.Add(this.gridSizeVert);
             this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.stateNumberBox);
-            this.tabPage1.Controls.Add(this.neighborTypeBox);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.caTypeBox);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -82,30 +70,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Setup";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // gridTypeBox
-            // 
-            this.gridTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gridTypeBox.FormattingEnabled = true;
-            this.gridTypeBox.Items.AddRange(new object[] {
-            "Box",
-            "Cylinder (Upright)",
-            "Cylinder (Sideways)",
-            "Torus"});
-            this.gridTypeBox.Location = new System.Drawing.Point(147, 48);
-            this.gridTypeBox.Name = "gridTypeBox";
-            this.gridTypeBox.Size = new System.Drawing.Size(121, 21);
-            this.gridTypeBox.TabIndex = 2;
-            this.gridTypeBox.SelectedIndexChanged += new System.EventHandler(this.gridType_SelectedIndexChanged);
-            // 
-            // label7
-            // 
-            this.label7.Location = new System.Drawing.Point(9, 48);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(125, 21);
-            this.label7.TabIndex = 10;
-            this.label7.Text = "Grid Type";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // gridSizeHori
             // 
@@ -155,55 +119,6 @@
             this.stateNumberBox.Name = "stateNumberBox";
             this.stateNumberBox.Size = new System.Drawing.Size(121, 20);
             this.stateNumberBox.TabIndex = 3;
-            this.stateNumberBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // neighborTypeBox
-            // 
-            this.neighborTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.neighborTypeBox.FormattingEnabled = true;
-            this.neighborTypeBox.Items.AddRange(new object[] {
-            "None",
-            "Von Neumann",
-            "Moore",
-            "Hybrid",
-            "Advanced"});
-            this.neighborTypeBox.Location = new System.Drawing.Point(147, 27);
-            this.neighborTypeBox.Name = "neighborTypeBox";
-            this.neighborTypeBox.Size = new System.Drawing.Size(121, 21);
-            this.neighborTypeBox.TabIndex = 1;
-            this.neighborTypeBox.SelectedIndexChanged += new System.EventHandler(this.neighborType_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(9, 27);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(125, 21);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Neighborhood Type";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(9, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 21);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "CA Type";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // caTypeBox
-            // 
-            this.caTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.caTypeBox.FormattingEnabled = true;
-            this.caTypeBox.Items.AddRange(new object[] {
-            "First Order",
-            "Second Order"});
-            this.caTypeBox.Location = new System.Drawing.Point(147, 6);
-            this.caTypeBox.Name = "caTypeBox";
-            this.caTypeBox.Size = new System.Drawing.Size(121, 21);
-            this.caTypeBox.TabIndex = 0;
-            this.caTypeBox.SelectedIndexChanged += new System.EventHandler(this.caType_SelectedIndexChanged);
             // 
             // colorDialog1
             // 
@@ -283,18 +198,12 @@
 
         #endregion
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox caTypeBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox stateNumberBox;
-        private System.Windows.Forms.ComboBox neighborTypeBox;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox gridSizeHori;
         private System.Windows.Forms.TextBox gridSizeVert;
-        private System.Windows.Forms.ComboBox gridTypeBox;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button cancelTab;
         private System.Windows.Forms.Button confirmTab;

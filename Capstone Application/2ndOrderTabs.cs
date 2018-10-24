@@ -56,7 +56,7 @@ namespace Capstone_Application
         private void PopulateList()
         {
             neighborhoodList.Clear();
-            switch(mobileNeighborHood.SelectedIndex)
+            switch (mobileNeighborHood.SelectedIndex)
             {
                 case 0:
                     neighborhoodList.Add("up");
@@ -123,7 +123,7 @@ namespace Capstone_Application
                 double eachWalk = (remaining / otherDirections);
                 for (int i = 0; i < neighborhoodList.Count; i++)
                 {
-                    if(neighborhoodList[i] == "down")
+                    if (neighborhoodList[i] == "down")
                     {
                         continue;
                     }
@@ -135,25 +135,25 @@ namespace Capstone_Application
 
         public void UpdateValues(StatePageInfo info, int currentState)
         {
-            colorBox.BackColor = info.color;
+            //colorBox.BackColor = info.color;
 
-            mobileNeighborHood.SelectedIndex = info.mobileNeighborhood;
+            //mobileNeighborHood.SelectedIndex = info.mobileNeighborhood;
 
-            agentCount.Text = info.startingAmount.ToString();
+            //agentCount.Text = info.startingAmount.ToString();
 
-            for (int i = 0; i < neighborhoodList.Count; i++)
-            {
-                TextBox tempBox = this.Controls["RandWalkBox" + neighborhoodList[i]] as TextBox;
-                tempBox.Text = info.walkProbs[i].ToString(); ;
-            }
+            //for (int i = 0; i < neighborhoodList.Count; i++)
+            //{
+            //    TextBox tempBox = this.Controls["RandWalkBox" + neighborhoodList[i]] as TextBox;
+            //    tempBox.Text = info.walkProbs[i].ToString(); ;
+            //}
 
-            //FIX
-                for (int i = 0; i < info.probs.GetLength(0); i++)
-                {
-                    string name = currentState + "." + i;
-                    //info.stickingProbs[i] = double.Parse(this.Controls[name].Text);
-                    this.Controls[name].Text = info.stickingProbs[i].ToString();
-                }
+            ////FIX
+            //for (int i = 0; i < info.probs.GetLength(0); i++)
+            //{
+            //    string name = currentState + "." + i;
+            //    //info.stickingProbs[i] = double.Parse(this.Controls[name].Text);
+            //    this.Controls[name].Text = info.stickingProbs[i].ToString();
+            //}
         }
 
         private void UpdateStickFields()
@@ -167,60 +167,60 @@ namespace Capstone_Application
                 Controls.Add(qweLabel);
                 Controls.Add(textBox);
                 yPosition += 30;
-                }
+            }
         }
 
         public void SetValues(StatePageInfo info, int currentState)
         {
-            info.caType = 1;
-            info.color = colorBox.BackColor;
-            info.mobileNeighborhood = this.mobileNeighborHood.SelectedIndex;
-            if (string.IsNullOrWhiteSpace(agentCount.Text))
-            {
-                info.startingAmount = 0;
-            }
-            else
-            {
-                info.startingAmount = int.Parse(agentCount.Text);
-            }
+            //info.caType = 1;
+            //info.color = colorBox.BackColor;
+            //info.mobileNeighborhood = this.mobileNeighborHood.SelectedIndex;
+            //if (string.IsNullOrWhiteSpace(agentCount.Text))
+            //{
+            //    info.startingAmount = 0;
+            //}
+            //else
+            //{
+            //    info.startingAmount = int.Parse(agentCount.Text);
+            //}
 
-            info.SetWalkProbs(neighborhoodList.Count);
+            //info.SetWalkProbs(neighborhoodList.Count);
 
-            for (int i = 0; i < neighborhoodList.Count; i++)
-            {
-                TextBox tempBox = this.Controls["RandWalkBox" + neighborhoodList[i]] as TextBox;
-                if (double.TryParse(tempBox.Text, out double result))
-                {
-                    info.walkProbs[i] = double.Parse(tempBox.Text);
-                }
-                else
-                {
-                    info.walkProbs[i] = 0;
-                }
-            }
+            //for (int i = 0; i < neighborhoodList.Count; i++)
+            //{
+            //    TextBox tempBox = this.Controls["RandWalkBox" + neighborhoodList[i]] as TextBox;
+            //    if (double.TryParse(tempBox.Text, out double result))
+            //    {
+            //        info.walkProbs[i] = double.Parse(tempBox.Text);
+            //    }
+            //    else
+            //    {
+            //        info.walkProbs[i] = 0;
+            //    }
+            //}
 
-            for (int i = 0; i < info.probs.GetLength(0); i++)
-            {
-                string name = currentState + "." + (i+1).ToString();
-                TextBox currentControl = this.Controls[name] as TextBox;
-                if (string.IsNullOrWhiteSpace(currentControl.Text))
-                {
-                    info.stickingProbs.Add(0);
-                }
-                else
-                {
-                    if (double.TryParse(currentControl.Text, out double result5))
-                    {
-                        info.sticking = true;
-                        info.stickingProbs.Add(double.Parse(currentControl.Text));
-                    }
-                }
-            }
+            //for (int i = 0; i < info.probs.GetLength(0); i++)
+            //{
+            //    string name = currentState + "." + (i + 1).ToString();
+            //    TextBox currentControl = this.Controls[name] as TextBox;
+            //    if (string.IsNullOrWhiteSpace(currentControl.Text))
+            //    {
+            //        info.stickingProbs.Add(0);
+            //    }
+            //    else
+            //    {
+            //        if (double.TryParse(currentControl.Text, out double result5))
+            //        {
+            //            info.sticking = true;
+            //            info.stickingProbs.Add(double.Parse(currentControl.Text));
+            //        }
+            //    }
+            //}
         }
 
         private void mobileNeighborHood_SelectedValueChanged(object sender, EventArgs e)
         {
-            
+
             yPosition = originalY;
             for (int i = 0; i < neighborhoodList.Count; i++)
             {
@@ -244,7 +244,7 @@ namespace Capstone_Application
         private void advancedAmountButton_Click(object sender, EventArgs e)
         {
             int count;
-            if(int.TryParse(agentCount.Text, out int result))
+            if (int.TryParse(agentCount.Text, out int result))
             {
                 count = int.Parse(agentCount.Text);
             }
