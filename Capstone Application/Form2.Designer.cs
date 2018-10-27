@@ -42,6 +42,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.previousTab = new System.Windows.Forms.Button();
             this.nextTab = new System.Windows.Forms.Button();
+            this.templateBoxLabel = new System.Windows.Forms.Label();
+            this.templateBox = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -57,6 +59,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.templateBox);
+            this.tabPage1.Controls.Add(this.templateBoxLabel);
             this.tabPage1.Controls.Add(this.gridSizeHori);
             this.tabPage1.Controls.Add(this.gridSizeVert);
             this.tabPage1.Controls.Add(this.label5);
@@ -173,6 +177,29 @@
             this.nextTab.UseVisualStyleBackColor = true;
             this.nextTab.Click += new System.EventHandler(this.nextTab_Click);
             // 
+            // templateBoxLabel
+            // 
+            this.templateBoxLabel.Location = new System.Drawing.Point(9, 9);
+            this.templateBoxLabel.Name = "templateBoxLabel";
+            this.templateBoxLabel.Size = new System.Drawing.Size(125, 20);
+            this.templateBoxLabel.TabIndex = 8;
+            this.templateBoxLabel.Text = "Template";
+            this.templateBoxLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // templateBox
+            // 
+            this.templateBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.templateBox.FormattingEnabled = true;
+            this.templateBox.Items.AddRange(new object[] {
+            "None",
+            "Random Walk",
+            "DLA"});
+            this.templateBox.Location = new System.Drawing.Point(147, 9);
+            this.templateBox.Name = "templateBox";
+            this.templateBox.Size = new System.Drawing.Size(121, 21);
+            this.templateBox.TabIndex = 9;
+            this.templateBox.SelectedIndexChanged += new System.EventHandler(this.templateBox_SelectedIndexChanged);
+            // 
             // Form2
             // 
             this.AccessibleName = "New Model Dialog";
@@ -211,5 +238,7 @@
         private System.Windows.Forms.Button previousTab;
         private System.Windows.Forms.Button nextTab;
         internal System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.ComboBox templateBox;
+        private System.Windows.Forms.Label templateBoxLabel;
     }
 }

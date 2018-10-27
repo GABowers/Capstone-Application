@@ -45,8 +45,14 @@
             this.neighborhoodPanel = new System.Windows.Forms.Panel();
             this.mobilityButtonsPanel = new System.Windows.Forms.Panel();
             this.mobilityInputPanel = new System.Windows.Forms.Panel();
+            this.extraPanel = new System.Windows.Forms.Panel();
+            this.extraButtonPanel = new System.Windows.Forms.Panel();
+            this.extraInputPanel = new System.Windows.Forms.Panel();
+            this.extraLabel = new System.Windows.Forms.Label();
+            this.extraBox = new System.Windows.Forms.ComboBox();
             this.inputPanel.SuspendLayout();
             this.mobilityPanel.SuspendLayout();
+            this.extraPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // agentCount
@@ -96,9 +102,10 @@
             this.inputPanel.AutoScroll = true;
             this.inputPanel.AutoSize = true;
             this.inputPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.inputPanel.Controls.Add(this.extraPanel);
             this.inputPanel.Controls.Add(this.neighborhoodPanel);
             this.inputPanel.Controls.Add(this.mobilityPanel);
-            this.inputPanel.Location = new System.Drawing.Point(0, 128);
+            this.inputPanel.Location = new System.Drawing.Point(0, 154);
             this.inputPanel.Name = "inputPanel";
             this.inputPanel.Size = new System.Drawing.Size(0, 0);
             this.inputPanel.TabIndex = 26;
@@ -217,11 +224,66 @@
             this.mobilityInputPanel.Size = new System.Drawing.Size(0, 0);
             this.mobilityInputPanel.TabIndex = 1;
             // 
+            // extraPanel
+            // 
+            this.extraPanel.AutoScroll = true;
+            this.extraPanel.AutoSize = true;
+            this.extraPanel.Controls.Add(this.extraInputPanel);
+            this.extraPanel.Controls.Add(this.extraButtonPanel);
+            this.extraPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.extraPanel.Location = new System.Drawing.Point(0, 0);
+            this.extraPanel.Name = "extraPanel";
+            this.extraPanel.Size = new System.Drawing.Size(0, 0);
+            this.extraPanel.TabIndex = 2;
+            // 
+            // extraButtonPanel
+            // 
+            this.extraButtonPanel.AutoSize = true;
+            this.extraButtonPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.extraButtonPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.extraButtonPanel.Location = new System.Drawing.Point(0, 0);
+            this.extraButtonPanel.Name = "extraButtonPanel";
+            this.extraButtonPanel.Size = new System.Drawing.Size(0, 0);
+            this.extraButtonPanel.TabIndex = 0;
+            // 
+            // extraInputPanel
+            // 
+            this.extraInputPanel.AutoSize = true;
+            this.extraInputPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.extraInputPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.extraInputPanel.Location = new System.Drawing.Point(0, 0);
+            this.extraInputPanel.Name = "extraInputPanel";
+            this.extraInputPanel.Size = new System.Drawing.Size(0, 0);
+            this.extraInputPanel.TabIndex = 1;
+            // 
+            // extraLabel
+            // 
+            this.extraLabel.Location = new System.Drawing.Point(3, 133);
+            this.extraLabel.Name = "extraLabel";
+            this.extraLabel.Size = new System.Drawing.Size(450, 21);
+            this.extraLabel.TabIndex = 33;
+            this.extraLabel.Text = "Advanced settings - AI search algorithm, growth mechanic, etc.";
+            this.extraLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // extraBox
+            // 
+            this.extraBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.extraBox.FormattingEnabled = true;
+            this.extraBox.Items.AddRange(new object[] {
+            "Disabled",
+            "Enabled"});
+            this.extraBox.Location = new System.Drawing.Point(439, 133);
+            this.extraBox.Name = "extraBox";
+            this.extraBox.Size = new System.Drawing.Size(121, 21);
+            this.extraBox.TabIndex = 34;
+            // 
             // UserControl2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.Controls.Add(this.extraBox);
+            this.Controls.Add(this.extraLabel);
             this.Controls.Add(this.edgeBox);
             this.Controls.Add(this.mobilityBox);
             this.Controls.Add(this.neighborBox);
@@ -239,6 +301,8 @@
             this.inputPanel.PerformLayout();
             this.mobilityPanel.ResumeLayout(false);
             this.mobilityPanel.PerformLayout();
+            this.extraPanel.ResumeLayout(false);
+            this.extraPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -262,5 +326,10 @@
         private System.Windows.Forms.Panel mobilityPanel;
         private System.Windows.Forms.Panel mobilityInputPanel;
         private System.Windows.Forms.Panel mobilityButtonsPanel;
+        private System.Windows.Forms.Panel extraPanel;
+        private System.Windows.Forms.Panel extraInputPanel;
+        private System.Windows.Forms.Panel extraButtonPanel;
+        private System.Windows.Forms.Label extraLabel;
+        private System.Windows.Forms.ComboBox extraBox;
     }
 }

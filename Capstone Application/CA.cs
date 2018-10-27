@@ -12,6 +12,8 @@ public class CA
 {
 
     RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+    ControllerScript controller;
+    Template template;
     public static MobileCA mobileCA = new MobileCA();
     //int caType = 0;
     List<AgentController> activeAgents = new List<AgentController>();
@@ -46,6 +48,7 @@ public class CA
     //List<Tuple<int, int, int, int>> dataList;
 
     private List<StatePageInfo> infos;
+    private List<object> generic = new List<object>();
 
     //public int CaType { get => caType; set => caType = value; }
     //public AgentController[] ActiveAgentsArray { get => activeAgentsArray; set => activeAgentsArray = value; }
@@ -56,10 +59,12 @@ public class CA
     public List<int> StateCount { get => stateCount; set => stateCount = value; }
     public List<int> Transitions { get => transitions; set => transitions = value; }
     public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
-    public List<List<AgentController>> SeparateAgents { get => separateAgents; set => separateAgents = value; }
+    private List<List<AgentController>> SeparateAgents { get => separateAgents; set => separateAgents = value; }
 
-    public CA(int width, int height, int numStates, List<NType> types, List<GridType> incGrids, List<StatePageInfo> info)
+    public CA(ControllerScript control, int width, int height, int numStates, List<NType> types, List<GridType> incGrids, List<StatePageInfo> info, Template incTemplate)
     {
+        controller = control;
+        template = incTemplate;
         StateCount.Clear();
         Transitions.Clear();
         CIndexes.Clear();
@@ -86,6 +91,20 @@ public class CA
                 Transitions.Add(0);
             }
         }
+
+        double a = (double)width / 2;
+        double b = (double)height / 2;
+        List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
+        for (int i = 0; i < 1000; i++)
+        {
+            double val = 360 / (i + 1);
+            double x = a * Math.Cos(val);
+            double y = b * Math.Sin(val);
+            Tuple<int, int> loc = new Tuple<int, int>((int)(x + a), (int)(y + b));
+            locations.Add(loc);
+        }
+        var result = locations.Distinct(new UnorderedTupleComparer<int>()).ToList();
+        generic.Add(result);
     }
 
     //public void ChangeCell(int i, int j)
@@ -151,7 +170,7 @@ public class CA
                         int y = states[i].startingLocations[j].Item2;
                         int combination = (x * gridWidth) + y;
                         grid[x, y] = new BlankGrid();
-                        grid[x, y].AddAgent(x, y, new AgentController(x, y));
+                        grid[x, y].AddAgent(x, y, new AgentController(x, y, i));
                         grid[x, y].ContainsAgent = true;
                         grid[x, y].agent.currentState = i;
                         grid[x, y].agent.xLocation = x;
@@ -188,7 +207,7 @@ public class CA
             int yValue = (increment % gridWidth);
             
             grid[xValue, yValue] = new BlankGrid();
-            grid[xValue, yValue].AddAgent(xValue, yValue, new AgentController(xValue, yValue));
+            grid[xValue, yValue].AddAgent(xValue, yValue, new AgentController(xValue, yValue, state));
             grid[xValue, yValue].ContainsAgent = true;
             grid[xValue, yValue].agent.currentState = state;
             grid[xValue, yValue].agent.xLocation = xValue;
@@ -293,39 +312,105 @@ public class CA
                 Transitions[(i * (numStates - 1)) + j] = 0;
             }
         }
-
-        for (int x = 0; x < ActiveAgents.Count; ++x)
+        if (template == Template.None)
         {
-            if(states[ActiveAgents[x].currentState].mobile)
+            for (int x = 0; x < ActiveAgents.Count; ++x)
             {
-                if (CheckForMovement(ActiveAgents[x]))
+                if (states[ActiveAgents[x].currentState].mobile)
                 {
-                    AgentMove(ActiveAgents[x], x);
-                }
-                ActiveAgents[x].AddHistory();
-            }
-            else
-            {
-                int oldState = ActiveAgents[x].currentState;
-                int xLoc = ActiveAgents[x].xLocation;
-                int yLoc = ActiveAgents[x].yLocation;
-                if (neighborTypes[oldState] == NType.Advanced)
-                {
-                    double[] probChances = AdvancedGetProbChances(oldState, xLoc, yLoc);
-                    ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                    if (CheckForMovement(ActiveAgents[x]))
+                    {
+                        AgentMove(ActiveAgents[x], x);
+                    }
+                    ActiveAgents[x].AddHistory();
                 }
                 else
                 {
-                    List<int> neighborStateCount = GetNeighborCount(xLoc, yLoc, oldState);
-                    double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-                    ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                    int oldState = ActiveAgents[x].currentState;
+                    int xLoc = ActiveAgents[x].xLocation;
+                    int yLoc = ActiveAgents[x].yLocation;
+                    if (neighborTypes[oldState] == NType.Advanced)
+                    {
+                        double[] probChances = AdvancedGetProbChances(oldState, xLoc, yLoc);
+                        ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                    }
+                    else
+                    {
+                        List<int> neighborStateCount = GetNeighborCount(xLoc, yLoc, oldState);
+                        double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+                        ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                    }
+                    int newState = ActiveAgents[x].currentState;
+                    separateAgents[newState].Add(ActiveAgents[x]);
+                    CheckTransitions(oldState, newState);
+                    StateCount[newState] += 1;
                 }
-                int newState = ActiveAgents[x].currentState;
-                separateAgents[newState].Add(ActiveAgents[x]);
-                CheckTransitions(oldState, newState);
-                StateCount[newState] += 1;
+            }
+            for (int i = 0; i < numStates; i++)
+            {
+                GetCIndex(i);
             }
         }
+
+        else if(template == Template.DLA)
+        {
+            DLARoutine();
+        }
+    }
+
+    void DLARoutine()
+    {
+        for (int i = 0; i < ActiveAgents.Count - 1; i++)
+        {
+            StateCount[ActiveAgents[i].currentState] += 1;
+            ActiveAgents[i].HistoryChange = false;
+        }
+        AgentController cur = ActiveAgents[ActiveAgents.Count - 1];
+        List<Tuple<int, int>> locations = (List<Tuple<int, int>>)generic[0];
+        if (cur.currentState == 0)
+        {
+            locations.Shuffle();
+            int x = locations[0].Item1;
+            int y = locations[0].Item2;
+            grid[x, y].AddAgent(x, y, new AgentController(x, y, 1));
+            grid[x, y].ContainsAgent = true;
+            grid[x, y].agent.currentState = 1;
+            grid[x, y].agent.xLocation = x;
+            grid[x, y].agent.yLocation = y;
+            AddAgent(grid[x, y].agent);
+        }
+        else if (cur.currentState == 1)
+        {
+            if (CheckForMovement(cur))
+            {
+                AgentMove(cur, ActiveAgents.Count - 1);
+            }
+            cur.AddHistory();
+            int oldState = cur.currentState;
+            int xLoc = cur.xLocation;
+            int yLoc = cur.yLocation;
+            List<int> neighborStateCount = GetNeighborCount(xLoc, yLoc, oldState);
+            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+            cur.currentState = GetStateFromProbability(probChances);
+            int newState = cur.currentState;
+            //separateAgents[newState].Add(ActiveAgents[x]);
+            CheckTransitions(oldState, newState);
+            StateCount[newState] += 1;
+
+            if((oldState == newState) == false)
+            {
+                var found_locs = locations.Where(v => v.Item1 == cur.xLocation).ToList();
+                if (found_locs.Count > 0)
+                {
+                    bool found = found_locs.Any(x => x.Item2 == cur.yLocation);
+                    if (found)
+                    {
+                        controller.Pause();
+                    }
+                }
+            }
+        }
+
         for (int i = 0; i < numStates; i++)
         {
             GetCIndex(i);
@@ -529,7 +614,7 @@ public class CA
         {
             cIndex = (finalEdge / (double)maxEdges) * ((double)ConnectedVertices / amount);
         }
-        Console.WriteLine(separateAgents[state].Count + "," + finalEdge + "," + maxEdges + "," + ConnectedVertices + "," + amount + "," +  cIndex);
+        //Console.WriteLine(separateAgents[state].Count + "," + finalEdge + "," + maxEdges + "," + ConnectedVertices + "," + amount + "," +  cIndex);
         return cIndex;
         //CIndexes[state] = cIndex;
     }
@@ -1128,6 +1213,26 @@ static class MyExtensions
             list[k] = list[n];
             list[n] = value;
         }
+    }
+}
+
+public class UnorderedTupleComparer<T> : IEqualityComparer<Tuple<T, T>>
+{
+    private IEqualityComparer<T> comparer;
+    public UnorderedTupleComparer(IEqualityComparer<T> comparer = null)
+    {
+        this.comparer = comparer ?? EqualityComparer<T>.Default;
+    }
+
+    public bool Equals(Tuple<T, T> x, Tuple<T, T> y)
+    {
+        return comparer.Equals(x.Item1, y.Item1) && comparer.Equals(x.Item2, y.Item2) ||
+            comparer.Equals(x.Item1, y.Item2) && comparer.Equals(x.Item2, y.Item1);
+    }
+
+    public int GetHashCode(Tuple<T, T> obj)
+    {
+        return comparer.GetHashCode(obj.Item1) ^ comparer.GetHashCode(obj.Item2);
     }
 }
 // Had to comment this out?? Not sure what's to blame.

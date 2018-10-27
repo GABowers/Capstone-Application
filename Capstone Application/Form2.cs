@@ -15,7 +15,7 @@ namespace Capstone_Application
         Form1 mainForm;
         ControllerScript controllerScript = Form1.controllerScript;
         MainPageController mainPageController;
-
+        Template template;
         TabPage tabPage2;
         bool editForm;
         public Form2(string name, Form1 main, bool edit)
@@ -30,8 +30,9 @@ namespace Capstone_Application
                 controllerScript.SetMainInfo(stateNumberBox, gridSizeHori, gridSizeVert);
                 InstantiateNewTabs();
                 PreventChanges();
-                RetrieveValues();
+                //RetrieveValues();
             }
+            templateBox.SelectedIndex = 0;
         }
 
         void PreventChanges()
@@ -83,16 +84,16 @@ namespace Capstone_Application
             }
         }
 
-        void RetrieveValues()
-        {
-            int amountOfStates = int.Parse(stateNumberBox.Text);
-            //for loop for each tab
-            for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-            {
-                UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-                controllerScript.AdvancedRetrieveProbValues(newUC, i);
-            }
-        }
+        //void RetrieveValues()
+        //{
+        //    int amountOfStates = int.Parse(stateNumberBox.Text);
+        //    //for loop for each tab
+        //    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
+        //    {
+        //        UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
+        //        controllerScript.AdvancedRetrieveProbValues(newUC, i);
+        //    }
+        //}
 
         private void UpdateAllValues()
         {
@@ -129,7 +130,7 @@ namespace Capstone_Application
             {
                 if(int.TryParse(stateNumberBox.Text, out int result1) && int.TryParse(gridSizeHori.Text, out int result2) && int.TryParse(gridSizeVert.Text, out int result3))
                 {
-                    controllerScript.MainPageNext(int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text));
+                    controllerScript.MainPageNext(int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text), Template.None);
                     InstantiateNewTabs();
                 }
             }
@@ -150,11 +151,73 @@ namespace Capstone_Application
             //NOTE: currently all data is re-saved when a new tab is tabbed. It should be saved as a copy of original data, so if the user presses cancel the old data is retained.
         }
 
+        private void RunTemplates()
+        {
+            switch (template)
+            {
+                case Template.None:
+                    UpdateAllValues();
+                    break;
+                case Template.DLA:
+                    int hori = 101;
+                    if(int.TryParse(gridSizeHori.Text, out int result1))
+                    {
+                        hori = result1;
+                    }
+                    int vert = 101;
+                    if(int.TryParse(gridSizeVert.Text, out int result2))
+                    {
+                        vert = result2;
+                    }
+                    controllerScript.MainPageNext(2, hori, vert, Template.DLA);
+                    int halfHori = (int)((double)hori / 2);
+                    List<double> moveProbs = new List<double>() { 0.25, 0.25, 0.25, 0.25};
+                    List<double> stickingProbs = new List<double>() { 1};
+                    controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.Gray,
+                        new List<Tuple<int, int>>() { new Tuple<int, int>((int)((double)hori / 2), (int)((double)vert / 2)) },
+                        0, 1, new List<List<List<double>>>(), false, 0, new List<double>(), false, new List<double>(),
+                        false, false, false, new List<Tuple<string, double>>());
+                    List<List<List<double>>> tempProbs = new List<List<List<double>>>();
+                    for (int i = 0; i < 2; i++)
+                    {
+                        tempProbs.Add(new List<List<double>>());
+                        for (int j = 0; j < 2; j++)
+                        {
+                            tempProbs[i].Add(new List<double>());
+                            
+                            for (int l = 0; l < 4 + 1; l++)
+                            {
+                                tempProbs[i][j].Add(0);
+                                // add labels and text fields
+                            }
+                        }
+                    }
+                    tempProbs[0][0][0] = 0;
+                    tempProbs[0][0][1] = 1;
+                    tempProbs[0][0][2] = 1;
+                    tempProbs[0][0][3] = 1;
+                    tempProbs[0][0][4] = 1;
+                    controllerScript.StateInfoDirectEdit(1, NType.VonNeumann, GridType.Box, Color.White,
+                        new List<Tuple<int, int>>(), 4, 0, tempProbs, true, 0, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
+                        true, new List<double>() { 1, 0}, false, false, false, new List<Tuple<string, double>>());
+                    break;
+                case Template.Isle_Royale:
+                    break;
+                case Template.Ant_Sim:
+                    break;
+                default:
+                    UpdateAllValues();
+                    break;
+            }
+        }
+
         private void confirmTab_Click(object sender, EventArgs e)
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
+            RunTemplates();
+            
             //add code to save all tab data to new class
-            UpdateAllValues();
+            
             if (editForm == false)
             {
                 mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
@@ -179,6 +242,38 @@ namespace Capstone_Application
         {
 
         }
+
+        private void templateBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch(templateBox.SelectedIndex)
+            {
+                case 0:
+                    stateNumberBox.Enabled = true;
+                    template = Template.None;
+                    break;
+                case 1:
+                    stateNumberBox.Enabled = false;
+                    stateNumberBox.Text = 2.ToString();
+                    template = Template.Random_Walk;
+                    break;
+                case 2:
+                    stateNumberBox.Enabled = false;
+                    stateNumberBox.Text = 2.ToString();
+                    template = Template.DLA;
+                    break;
+                case 3:
+                    stateNumberBox.Enabled = false;
+                    template = Template.Isle_Royale;
+                    break;
+                case 4:
+                    stateNumberBox.Enabled = false;
+                    template = Template.Ant_Sim;
+                    break;
+                default:
+                    template = Template.None;
+                    break;
+            }
+        }
     }
 }
 public enum GridType
@@ -187,4 +282,13 @@ public enum GridType
     CylinderW,
     CylinderH,
     Torus
+}
+
+public enum Template
+{
+    None,
+    Random_Walk,
+    DLA,
+    Isle_Royale,
+    Ant_Sim
 }

@@ -13,19 +13,22 @@ namespace Capstone_Application
         public int currentState;
         public int xLocation;
         public int yLocation;
-        List<Tuple<int, int>> history = new List<Tuple<int, int>>();
+        private bool historyChange = false;
+        List<Tuple<int, int, int>> history = new List<Tuple<int, int, int>>();
         List<Tuple<int, int>> neighborhood = new List<Tuple<int, int>>();
 
-        public List<Tuple<int, int>> History { get => history; set => history = value; }
+        public List<Tuple<int, int, int>> History { get => history; set => history = value; }
+        public bool HistoryChange { get => historyChange; set => historyChange = value; }
 
-        public AgentController(int agentX, int agentY)
+        public AgentController(int agentX, int agentY, int state)
         {
-            History.Add(Tuple.Create(agentX, agentY));
+            History.Add(Tuple.Create(agentX, agentY, state));
         }
 
         public void AddHistory()
         {
-            History.Add(Tuple.Create(xLocation, yLocation));
+            History.Add(Tuple.Create(xLocation, yLocation, currentState));
+            HistoryChange = true;
         }
 
         public void TransitionCheck()

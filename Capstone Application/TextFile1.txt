@@ -36,3 +36,7 @@ For path saving, might have an option to save path over multiple runs.
 
 THE STATES INCREMENTER IN THE CA SCRIPT NEEDS WORK. If it's anything other than 0, that group gets removed, but it will still be selected
 by the following spawner.
+
+Add element to agent types that can grow or decrease over time. Example, tree or food on the ground, with "biomass" or something.
+Add arbitrary number of these. Other agents can search for them (so need an AI search algorithm, A*?).
+Reproduction mechanism

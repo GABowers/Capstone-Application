@@ -11,5 +11,6 @@ namespace Capstone_Application
         public int numStates;
         public int gridWidth;
         public int gridHeight;
+        public Template template;
     }
 }

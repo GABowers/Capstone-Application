@@ -38,6 +38,7 @@ namespace Capstone_Application
         public int amountOfCellTypes;
         double iterationSpeed = 0;
         Bitmap bmp;
+        Form1 local_form;
 
         public MainPageInfo MainPageInfo
         {
@@ -67,9 +68,9 @@ namespace Capstone_Application
             gridSizeVert.Text = mainPageInfo.gridHeight.ToString();
         }
 
-        public void MainPageNext(int numStates, int gridWidth, int gridHeight)
+        public void MainPageNext(int numStates, int gridWidth, int gridHeight, Template template)
         {
-            UpdateMainValues(numStates, gridWidth, gridHeight);
+            UpdateMainValues(numStates, gridWidth, gridHeight, template);
             if (CheckMainPageInfo() == false)
             {
                 return;
@@ -118,11 +119,35 @@ namespace Capstone_Application
             }
         }
 
-        public void UpdateMainValues(int newnumStates, int newgridWidth, int newgridHeight)
+        public void StateInfoDirectEdit(int infoState, NType nType, GridType gridType, Color color,
+            List<Tuple<int, int>> startingLocations, int neighbors,  int startingAmount, List<List<List<double>>> probs,
+            bool mobile, int mobileN, List<double> moveProbs, bool sticking,List<double> stickingProbs, bool storage,
+            bool ai, bool growth, List<Tuple<string, double>> storageObjects)
+        {
+            statePageInfo[infoState].nType = nType;
+            statePageInfo[infoState].gridType = gridType;
+            statePageInfo[infoState].color = color;
+            statePageInfo[infoState].startingLocations = startingLocations;
+            statePageInfo[infoState].neighbors = neighbors;
+            statePageInfo[infoState].startingAmount = startingAmount;
+            statePageInfo[infoState].probs = probs;
+            statePageInfo[infoState].mobile = mobile;
+            statePageInfo[infoState].mobileNeighborhood = mobileN;
+            statePageInfo[infoState].moveProbs = moveProbs;
+            statePageInfo[infoState].sticking = sticking;
+            statePageInfo[infoState].stickingProbs = stickingProbs;
+            statePageInfo[infoState].storage = storage;
+            statePageInfo[infoState].ai = ai;
+            statePageInfo[infoState].growth = growth;
+            statePageInfo[infoState].storageObjects = storageObjects;
+        }
+
+        public void UpdateMainValues(int newnumStates, int newgridWidth, int newgridHeight, Template newTemplate)
         {
             mainPageInfo.numStates = newnumStates;
             mainPageInfo.gridWidth = newgridWidth;
             mainPageInfo.gridHeight = newgridHeight;
+            mainPageInfo.template = newTemplate;
         }
 
         //public void UpdateProbValues(UserControl1 newUC, int currentState)
@@ -142,10 +167,10 @@ namespace Capstone_Application
             newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
 
-        public void AdvancedRetrieveProbValues(UserControl2 newUC, int currentState)
-        {
-            newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
-        }
+        //public void AdvancedRetrieveProbValues(UserControl2 newUC, int currentState)
+        //{
+        //    newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
+        //}
 
         //public void Update2ndOrder(_2ndOrderTabs newUC, int currentState)
         //{
@@ -167,6 +192,7 @@ namespace Capstone_Application
 
         public void OneIteration(Form1 currentForm)
         {
+            Console.WriteLine("---------");
             running = true;
             myCA.OneIteration();
             iterations++;
@@ -186,11 +212,13 @@ namespace Capstone_Application
 
         public void CreateCA(Form1 form)
         {
+            local_form = form;
             if (CreatedCA == false)
             {
                 iterations = 0;
                 editModeOn = false;
                 amountOfCellTypes = mainPageInfo.numStates;
+                Template template = mainPageInfo.template;
                 nTypes = new List<NType>();
                 for (int i = 0; i < statePageInfo.Count; i++)
                 {
@@ -203,7 +231,7 @@ namespace Capstone_Application
                 }
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
-                myCA = new CA(localGridWidth, localGridHeight, amountOfCellTypes, nTypes, grids, statePageInfo);
+                myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, grids, statePageInfo, template);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
                     ratios.Add(statePageInfo[h].startingAmount.Value);
@@ -213,6 +241,11 @@ namespace Capstone_Application
                 myCA.InitializeGrid(cellAmounts);
                 CreatedCA = true;
             }
+        }
+
+        public void Pause()
+        {
+            local_form.PauseUnpauseCA();
         }
 
         public void EditCA()
@@ -229,6 +262,7 @@ namespace Capstone_Application
             if (AlreadyCA == false)
             {
                 iterations = 0;
+                Console.WriteLine(localGridWidth + "," +  localGridHeight);
                 bmp = new Bitmap(localGridWidth, localGridHeight);
                 UpdateBoard(currentForm);
                 AlreadyCA = true;
@@ -238,55 +272,119 @@ namespace Capstone_Application
         public void UpdateBoard(Form1 currentForm)
         {
             Color tileColor;
-            for (int i = 0; i < localGridWidth; ++i)
+            if (iterations == 0)
             {
-                for (int j = 0; j < localGridHeight; ++j)
+                for (int i = 0; i < localGridWidth; ++i)
                 {
-                    if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                    for (int j = 0; j < localGridHeight; ++j)
                     {
-                        tileColor = colors[myCA.GetCellState(i, j)];
-                        bmp.SetPixel(i, j, tileColor);
-                    }
-                    else
-                    {
-                        tileColor = Color.Black;
-                        bmp.SetPixel(i, j, tileColor);
+                        if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                        {
+                            tileColor = colors[myCA.GetCellState(i, j)];
+                            bmp.SetPixel(i, j, tileColor);
+                        }
+                        else
+                        {
+                            tileColor = Color.Black;
+                            bmp.SetPixel(i, j, tileColor);
+                        }
                     }
                 }
             }
             for (int i = 0; i < myCA.ActiveAgents.Count; i++)
             {
-                if (statePageInfo[myCA.ActiveAgents[i].currentState].mobile)
+                AgentController curAgent = myCA.ActiveAgents[i];
+                int oldX;
+                int oldY;
+                if (curAgent.History.Count > 1)
                 {
-                    AgentController curAgent = myCA.ActiveAgents[i];
-                    int oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
-                    int oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
-                    int newX = curAgent.History[myCA.ActiveAgents[i].History.Count - 1].Item1;
-                    int newY = curAgent.History[myCA.ActiveAgents[i].History.Count - 1].Item2;
-
-                    //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
-
-                    if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
+                    if (curAgent.HistoryChange)
                     {
-                        tileColor = colors[myCA.GetCellState(oldX, oldY)];
-                        bmp.SetPixel(oldX, oldY, tileColor);
-                    }
-                    else
-                    {
-                        tileColor = Color.Black;
-                        bmp.SetPixel(oldX, oldY, tileColor);
-                    }
-                    if (myCA.grid[newX, newY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[newX, newY].agent, null) == false))
-                    {
-                        tileColor = colors[myCA.GetCellState(newX, newY)];
-                        bmp.SetPixel(newX, newY, tileColor);
-                    }
-                    else
-                    {
-                        tileColor = Color.Black;
-                        bmp.SetPixel(newX, newY, tileColor);
+                        oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
+                        oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
+                        if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
+                        {
+                            tileColor = colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3];
+                            bmp.SetPixel(oldX, oldY, tileColor);
+                        }
+                        else
+                        {
+                            tileColor = Color.Black;
+                            bmp.SetPixel(oldX, oldY, tileColor);
+                        }
                     }
                 }
+
+                int newX = curAgent.xLocation;
+                int newY = curAgent.yLocation;
+
+                //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
+
+                tileColor = colors[curAgent.currentState];
+                bmp.SetPixel(newX, newY, tileColor);
+
+                //if (statePageInfo[myCA.ActiveAgents[i].currentState].mobile)
+                //{
+                //    int oldX;
+                //    int oldY;
+                //    if(curAgent.History.Count > 1)
+                //    {
+                //        if(curAgent.HistoryChange)
+                //        {
+                //            oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
+                //            oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
+                //            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
+                //            {
+                //                tileColor = colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3];
+                //                bmp.SetPixel(oldX, oldY, tileColor);
+                //            }
+                //            else
+                //            {
+                //                tileColor = Color.Black;
+                //                bmp.SetPixel(oldX, oldY, tileColor);
+                //            }
+                //        }
+                //    }
+
+                //    int newX = curAgent.xLocation;
+                //    int newY = curAgent.yLocation;
+
+                //    //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
+
+                //    tileColor = colors[curAgent.currentState];
+                //    bmp.SetPixel(newX, newY, tileColor);
+                //    //if (myCA.grid[newX, newY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[newX, newY].agent, null) == false))
+                //    //{
+                //    //    tileColor = colors[myCA.GetCellState(newX, newY)];
+                //    //    bmp.SetPixel(newX, newY, tileColor);
+                //    //}
+                //    //else
+                //    //{
+                //    //    tileColor = Color.Black;
+                //    //    bmp.SetPixel(newX, newY, tileColor);
+                //    //}
+                //}
+                //else
+                //{
+                //    int newX = curAgent.xLocation;
+                //    int newY = curAgent.yLocation;
+
+                //    //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
+
+                //    tileColor = colors[curAgent.currentState];
+                //    bmp.SetPixel(newX, newY, tileColor);
+
+                //    //if (myCA.grid[newX, newY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[newX, newY].agent, null) == false))
+                //    //{
+                //    //    tileColor = colors[myCA.GetCellState(newX, newY)];
+                //    //    bmp.SetPixel(newX, newY, tileColor);
+                //    //}
+                //    //else
+                //    //{
+                //    //    tileColor = Color.Black;
+                //    //    bmp.SetPixel(newX, newY, tileColor);
+                //    //}
+                //}
             }
             currentForm.innerPictureBox.Image = bmp;
         }
@@ -360,7 +458,7 @@ namespace Capstone_Application
                     }
                     else if(myCA.grid[xProper, yProper].ContainsAgent == false)
                     {
-                        myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper));
+                        myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper, state));
                         myCA.grid[xProper, yProper].ContainsAgent = true;
                         myCA.grid[xProper, yProper].agent.currentState = state;
                         myCA.grid[xProper, yProper].agent.xLocation = xProper;
@@ -404,7 +502,7 @@ namespace Capstone_Application
                             }
                             else if (myCA.grid[xProper, yProper].ContainsAgent == false)
                             {
-                                myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper));
+                                myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper, state));
                                 myCA.grid[xProper, yProper].ContainsAgent = true;
                                 myCA.grid[xProper, yProper].agent.currentState = state;
                                 myCA.grid[xProper, yProper].agent.xLocation = xProper;
