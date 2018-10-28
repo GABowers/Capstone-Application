@@ -94,16 +94,22 @@ public class CA
 
         double a = (double)width / 2;
         double b = (double)height / 2;
+        double a_floor = Math.Floor(a);
+        double b_floor = Math.Floor(b);
         List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
-        for (int i = 0; i < 1000; i++)
+        int total = width * height;
+        double val = 360.0 / total;
+        for (int i = 0; i < total; i++)
         {
-            double val = 360 / (i + 1);
-            double x = a * Math.Cos(val);
-            double y = b * Math.Sin(val);
-            Tuple<int, int> loc = new Tuple<int, int>((int)(x + a), (int)(y + b));
+            double use = val * i;
+            double rad = (use * Math.PI) / 180.0;
+            double x = a_floor * Math.Cos(rad);
+            double y = b_floor * Math.Sin(rad);
+            
+            Tuple<int, int> loc = new Tuple<int, int>((int)(Math.Floor(x) + a_floor), (int)(Math.Floor(y) + b_floor));
             locations.Add(loc);
         }
-        var result = locations.Distinct(new UnorderedTupleComparer<int>()).ToList();
+        var result = locations.Distinct().ToList();
         generic.Add(result);
     }
 
