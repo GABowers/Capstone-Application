@@ -150,6 +150,11 @@ namespace Capstone_Application
             mainPageInfo.template = newTemplate;
         }
 
+        public void UpdateMainTemplateInfo(bool reset)
+        {
+            mainPageInfo.template_reset = reset;
+        }
+
         //public void UpdateProbValues(UserControl1 newUC, int currentState)
         //{
         //    // Do these need to be here? Seems a little like excessive OOP.
@@ -300,6 +305,11 @@ namespace Capstone_Application
                 editModeOn = false;
                 amountOfCellTypes = mainPageInfo.numStates;
                 Template template = mainPageInfo.template;
+                bool reset = false;
+                if(mainPageInfo.template_reset.HasValue)
+                {
+                    reset = mainPageInfo.template_reset.Value;
+                }
                 nTypes = new List<NType>();
                 for (int i = 0; i < statePageInfo.Count; i++)
                 {
@@ -312,7 +322,7 @@ namespace Capstone_Application
                 }
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
-                myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, grids, statePageInfo, template);
+                myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, grids, statePageInfo, template, reset);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
                     ratios.Add(statePageInfo[h].startingAmount.Value);

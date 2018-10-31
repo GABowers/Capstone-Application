@@ -12,5 +12,6 @@ namespace Capstone_Application
         public int gridWidth;
         public int gridHeight;
         public Template template;
+        public bool? template_reset;
     }
 }

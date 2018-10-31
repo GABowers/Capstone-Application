@@ -18,6 +18,7 @@ namespace Capstone_Application
         Template template;
         TabPage tabPage2;
         bool editForm;
+        bool template_reset = false;
         public Form2(string name, Form1 main, bool edit)
         {
             editForm = edit;
@@ -33,6 +34,7 @@ namespace Capstone_Application
                 //RetrieveValues();
             }
             templateBox.SelectedIndex = 0;
+            DisableTemplateResetInfo();
         }
 
         void PreventChanges()
@@ -159,6 +161,7 @@ namespace Capstone_Application
                     UpdateAllValues();
                     break;
                 case Template.DLA:
+                    controllerScript.UpdateMainTemplateInfo(template_reset);
                     int hori = 101;
                     if(int.TryParse(gridSizeHori.Text, out int result1))
                     {
@@ -250,6 +253,7 @@ namespace Capstone_Application
                 case 0:
                     stateNumberBox.Enabled = true;
                     template = Template.None;
+                    DisableTemplateResetInfo();
                     break;
                 case 1:
                     stateNumberBox.Enabled = false;
@@ -260,6 +264,7 @@ namespace Capstone_Application
                     stateNumberBox.Enabled = false;
                     stateNumberBox.Text = 2.ToString();
                     template = Template.DLA;
+                    EnableTemplateResetInfo();
                     break;
                 case 3:
                     stateNumberBox.Enabled = false;
@@ -272,6 +277,32 @@ namespace Capstone_Application
                 default:
                     template = Template.None;
                     break;
+            }
+        }
+
+        private void EnableTemplateResetInfo()
+        {
+            template_reset_label.Visible = true;
+            template_reset_checkbox.Visible = true;
+            template_reset_explanation.Visible = true;
+        }
+
+        private void DisableTemplateResetInfo()
+        {
+            template_reset_label.Visible = false;
+            template_reset_checkbox.Visible = false;
+            template_reset_explanation.Visible = false;
+        }
+
+        private void template_reset_checkbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if(template_reset_checkbox.Checked)
+            {
+                template_reset = true;
+            }
+            else
+            {
+                template_reset = false;
             }
         }
     }
