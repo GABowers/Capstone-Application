@@ -402,7 +402,8 @@ namespace Capstone_Application
             {
                 info.startingAmount = 0;
             }
-            info.probs = probs;
+
+            info.probs = probs.Select(a => a.Select(b => b.ToArray()).ToArray()).ToArray();
             info.stickingProbs = stickingProbs;
             info.sticking = sticking;
             info.moveProbs = moveProbs;

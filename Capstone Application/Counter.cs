@@ -35,8 +35,8 @@ namespace Capstone_Application
         }
         private void AddInfo()
         {
-            string misc = "Misc.";
-            string ci = "CI: ";
+            //string misc = "Misc.";
+            //string ci = "CI: ";
             if(controllerScript.CreatedCA == true)
             {
                 states = controllerScript.amountOfCellTypes;

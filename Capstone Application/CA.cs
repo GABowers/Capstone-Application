@@ -14,6 +14,7 @@ public class CA
     RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
     ControllerScript controller;
     Template template;
+    bool template_reset = false;
     public static MobileCA mobileCA = new MobileCA();
     //int caType = 0;
     List<AgentController> activeAgents = new List<AgentController>();
@@ -61,10 +62,11 @@ public class CA
     public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
     private List<List<AgentController>> SeparateAgents { get => separateAgents; set => separateAgents = value; }
 
-    public CA(ControllerScript control, int width, int height, int numStates, List<NType> types, List<GridType> incGrids, List<StatePageInfo> info, Template incTemplate)
+    public CA(ControllerScript control, int width, int height, int numStates, List<NType> types, List<GridType> incGrids, List<StatePageInfo> info, Template incTemplate, bool templateReset = false)
     {
         controller = control;
         template = incTemplate;
+        template_reset = templateReset;
         StateCount.Clear();
         Transitions.Clear();
         CIndexes.Clear();
@@ -366,15 +368,16 @@ public class CA
 
     void DLARoutine()
     {
-        for (int i = 0; i < ActiveAgents.Count - 1; i++)
-        {
-            StateCount[ActiveAgents[i].currentState] += 1;
-            ActiveAgents[i].HistoryChange = false;
-        }
+        
         AgentController cur = ActiveAgents[ActiveAgents.Count - 1];
         List<Tuple<int, int>> locations = (List<Tuple<int, int>>)generic[0];
         if (cur.currentState == 0)
         {
+            for (int i = 0; i < ActiveAgents.Count; i++)
+            {
+                StateCount[ActiveAgents[i].currentState] += 1;
+                ActiveAgents[i].HistoryChange = false;
+            }
             locations.Shuffle();
             int x = locations[0].Item1;
             int y = locations[0].Item2;
@@ -384,14 +387,20 @@ public class CA
             grid[x, y].agent.xLocation = x;
             grid[x, y].agent.yLocation = y;
             AddAgent(grid[x, y].agent);
+            StateCount[ActiveAgents.Last().currentState] += 1;
         }
         else if (cur.currentState == 1)
         {
+            for (int i = 0; i < ActiveAgents.Count - 1; i++)
+            {
+                StateCount[ActiveAgents[i].currentState] += 1;
+                ActiveAgents[i].HistoryChange = false;
+            }
             if (CheckForMovement(cur))
             {
                 AgentMove(cur, ActiveAgents.Count - 1);
             }
-            cur.AddHistory();
+            cur.AddDLAHistory();
             int oldState = cur.currentState;
             int xLoc = cur.xLocation;
             int yLoc = cur.yLocation;
@@ -412,6 +421,10 @@ public class CA
                     if (found)
                     {
                         controller.Pause();
+                        if(template_reset)
+                        {
+                            controller.local_form.AutoReset();
+                        }
                     }
                 }
             }
@@ -1101,7 +1114,7 @@ public class CA
                     //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
-                break;
+                //break;
             case GridType.CylinderW:
                 if(y < 0 || y >= gridHeight)
                 {
@@ -1120,7 +1133,7 @@ public class CA
                     //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
-                break;
+                //break;
             case GridType.CylinderH:
                 if (x < 0 || x >= gridWidth)
                 {
@@ -1139,7 +1152,7 @@ public class CA
                     //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
-                break;
+                //break;
             case GridType.Torus:
                 {
                     if(x < 0)
@@ -1161,7 +1174,7 @@ public class CA
                     //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
-                break;
+                //break;
         }
         return new Tuple<bool, int, int>(false, x, y);
     }

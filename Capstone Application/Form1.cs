@@ -72,7 +72,6 @@ namespace Capstone_Application
             controllerScript.CreateCA((this));
             controllerScript.StartCA(this);
             UpdateRunBox();
-            UpdateIterationBox();
             UpdateImage();
         }
 
@@ -187,13 +186,6 @@ namespace Capstone_Application
             editModelDialog.ShowDialog(this);
         }
 
-        private void toolStripLabel3_Click(object sender, EventArgs e)
-        {
-            controllerScript.ResetGrid(this);
-            UpdateRunBox();
-            UpdateIterationBox();
-        }
-
         public void AutoReset()
         {
             controllerScript.ResetGrid(this);
@@ -201,7 +193,6 @@ namespace Capstone_Application
             controllerScript.StartCA(this);
             controllerScript.CheckMaxRuns(this);
             Invoke(new Action(() => UpdateRunBox()));
-            Invoke(new Action(() => UpdateIterationBox()));
             Invoke(new Action(() => UpdateImage()));
         }
 
@@ -312,9 +303,7 @@ namespace Capstone_Application
                 ToolStripTextBox textBox = new ToolStripTextBox(newname);
                 ToolStripMenuItem stateSelect = new ToolStripMenuItem(otherName);
                 stateSelect.Text = otherName;
-                textBox.TextChanged += new System.EventHandler(countResetTextBox_TextChanged);
                 stateSelect.Click += new System.EventHandler(stateSelect_Click);
-                this.cellCountToolStripMenuItem.DropDownItems.Add(textBox);
                 this.editGridButton.DropDownItems.Add(stateSelect);
             }
         }
@@ -325,8 +314,6 @@ namespace Capstone_Application
             {
                 string newname = "CellBox" + i.ToString();
                 ToolStripTextBox textBox = new ToolStripTextBox(newname);
-                textBox.TextChanged += new System.EventHandler(countPauseTextBox_TextChanged);
-                this.autoPauseCellCount.DropDownItems.Add(textBox);
             }
         }
 
@@ -356,55 +343,15 @@ namespace Capstone_Application
             // selectedMenuItem.Owner.Show();
         }
 
-        string GetCountResetText(string controlName)
-        {
-            return this.cellCountToolStripMenuItem.DropDownItems[controlName].Text;
-        }
+        //string GetCountResetText(string controlName)
+        //{
+        //    return this.cellCountToolStripMenuItem.DropDownItems[controlName].Text;
+        //}
 
-        string GetCountPauseText(string controlName)
-        {
-            return this.autoPauseCellCount.DropDownItems[controlName].Text;
-        }
-
-        private void setImageSaveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if(setImageSaveToolStripMenuItem.Checked == true)
-            {
-                using (var fbd = new FolderBrowserDialog())
-                {
-                    DialogResult result = fbd.ShowDialog();
-
-                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                    {
-                        imageSaveFolder = fbd.SelectedPath;
-                    }
-                    else
-                    {
-                        setImageSaveToolStripMenuItem.Checked = false;
-                    }
-                }
-            }
-        }
-
-        private void toolStripMenuItem5_Click(object sender, EventArgs e)
-        {
-            if(setDataSave.Checked == true)
-            {
-                using (var fbd = new FolderBrowserDialog())
-                {
-                    DialogResult result = fbd.ShowDialog();
-
-                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                    {
-                        countSaveFolder = fbd.SelectedPath;
-                    }
-                    else
-                    {
-                        setDataSave.Checked = false;
-                    }
-                }
-            }
-        }
+        //string GetCountPauseText(string controlName)
+        //{
+        //    return this.autoPauseCellCount.DropDownItems[controlName].Text;
+        //}
 
         public void InvokeImageSave(string time)
         {
@@ -418,26 +365,26 @@ namespace Capstone_Application
             innerPictureBox.Image.Save(fileName);
         }
 
-        public void SaveCounts(string time)
-        {
-            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count.txt";
-            string fileName = (countSaveFolder + "/" + countName);
-            using (StreamWriter wt = new StreamWriter(fileName))
-            {
+        //public void SaveCounts(string time)
+        //{
+        //    string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count.txt";
+        //    string fileName = (countSaveFolder + "/" + countName);
+        //    using (StreamWriter wt = new StreamWriter(fileName))
+        //    {
 
-                for (int i = 0; i < controllerScript.FullCount.Count; ++i)
-                {
-                    wt.Write("Iteration: " + (i + 1).ToString());
-                    for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
-                    {
-                        string cellTypeString = (j + 1).ToString();
-                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
-                    }
-                    wt.WriteLine();
-                }
-                wt.Close();
-            }
-        }
+        //        for (int i = 0; i < controllerScript.FullCount.Count; ++i)
+        //        {
+        //            wt.Write("Iteration: " + (i + 1).ToString());
+        //            for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
+        //            {
+        //                string cellTypeString = (j + 1).ToString();
+        //                wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
+        //            }
+        //            wt.WriteLine();
+        //        }
+        //        wt.Close();
+        //    }
+        //}
 
         public void AutoPathSave(string time)
         {
@@ -470,29 +417,29 @@ namespace Capstone_Application
             }
         }
 
-        public void SaveCount()
-        {
-            string countName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                controllerScript.caRuns + " Iteration " + controllerScript.iterations;
-            string fileName = (countSaveFolder + "/" + countName);
+        //public void SaveCount()
+        //{
+        //    string countName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+        //        DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
+        //        controllerScript.caRuns + " Iteration " + controllerScript.iterations;
+        //    string fileName = (countSaveFolder + "/" + countName);
 
-            using (StreamWriter wt = new StreamWriter(fileName))
-            {
+        //    using (StreamWriter wt = new StreamWriter(fileName))
+        //    {
 
-                for (int i = 0; i < controllerScript.FullCount.Count; ++i)
-                {
-                    wt.Write("Iteration: " + (i + 1).ToString());
-                    for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
-                    {
-                        string cellTypeString = (j + 1).ToString();
-                        wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
-                    }
-                    wt.WriteLine();
-                }
-                wt.Close();
-            }
-        }
+        //        for (int i = 0; i < controllerScript.FullCount.Count; ++i)
+        //        {
+        //            wt.Write("Iteration: " + (i + 1).ToString());
+        //            for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
+        //            {
+        //                string cellTypeString = (j + 1).ToString();
+        //                wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
+        //            }
+        //            wt.WriteLine();
+        //        }
+        //        wt.Close();
+        //    }
+        //}
 
         public void SaveData(string time, bool counts, bool trans, bool cIndex, string path)
         {
@@ -538,29 +485,66 @@ namespace Capstone_Application
                 wt.Close();
             }
             string[] lines = File.ReadAllLines(path);
+            int count_val = 0;
+            int trans_val = 0;
+            int index_val = 0;
             for (int i = 0; i < controllerScript.iterations; ++i)
             {
                 int line = i + 2;
                 string currentLine = lines[line];
-                if(counts)
+                
+                if (counts)
                 {
-                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    if ((i + 1) == controllerScript.FullCount[count_val].Item1)
                     {
-                        currentLine += controllerScript.FullCount[i][j].ToString() + ",";
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        {
+                            currentLine += controllerScript.FullCount[count_val].Item2[j].ToString() + ",";
+                        }
+                        count_val += 1;
+                    }
+                    else
+                    {
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        {
+                            currentLine += controllerScript.FullCount[count_val - 1].Item2[j].ToString() + ",";
+                        }
                     }
                 }
                 if (trans)
                 {
-                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    if ((i + 1) == controllerScript.FullTransitions[trans_val].Item1)
                     {
-                        currentLine += controllerScript.FullTransitions[i][j].ToString() + ",";
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        {
+                            currentLine += controllerScript.FullTransitions[trans_val].Item2[j].ToString() + ",";
+                        }
+                        trans_val += 1;
+                    }
+                    else
+                    {
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        {
+                            currentLine += controllerScript.FullTransitions[trans_val - 1].Item2[j].ToString() + ",";
+                        }
                     }
                 }
                 if (cIndex)
                 {
-                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                    if ((i + 1) == controllerScript.FullIndex[index_val].Item1)
                     {
-                        currentLine += controllerScript.FullIndex[i][j].ToString() + ",";
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        {
+                            currentLine += controllerScript.FullIndex[index_val].Item2[j].ToString() + ",";
+                        }
+                        index_val += 1;
+                    }
+                    else
+                    {
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        {
+                            currentLine += controllerScript.FullIndex[index_val - 1].Item2[j].ToString() + ",";
+                        }
                     }
                 }
                 lines[line] = currentLine;
@@ -590,42 +574,6 @@ namespace Capstone_Application
             
         }
 
-        private void countResetTextBox_TextChanged(object sender, EventArgs e)
-        {
-            List<int> cellCounts = new List<int>();
-            for (int i = 0; i < controllerScript.amountOfCellTypes; i++)
-            {
-                string currentName = "CellBox" + i.ToString();
-                string boxText = GetCountResetText(currentName);
-                if (string.IsNullOrWhiteSpace(boxText))
-                {
-                    cellCounts.Add(-1);
-                }
-                else
-                {
-                    cellCounts.Add(int.Parse(boxText));
-                }
-            }
-        }
-
-        private void countPauseTextBox_TextChanged(object sender, EventArgs e)
-        {
-            List<int> cellCounts = new List<int>();
-            for (int i = 0; i < controllerScript.amountOfCellTypes; i++)
-            {
-                string currentName = "CellBox" + i.ToString();
-                string boxText = GetCountPauseText(currentName);
-                if (string.IsNullOrWhiteSpace(boxText))
-                {
-                    cellCounts.Add(-1);
-                }
-                else
-                {
-                    cellCounts.Add(int.Parse(boxText));
-                }
-            }
-        }
-
         private void iterationCountCountSave_Leave(object sender, EventArgs e)
         {
             
@@ -636,131 +584,33 @@ namespace Capstone_Application
             
         }
 
-        private void iterationCountCountSave_TextChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(iterationCountCountSave.Text))
-            {
-
-            }
-            else
-            {
-                List<int> countValueList = new List<int>();
-                if (iterationCountCountSave.Text.Contains(","))
-                {
-                    string[] countValues = iterationCountCountSave.Text.Split(',');
-                    for (int i = 0; i < countValues.Length; i++)
-                    {
-                        if (int.TryParse(countValues[i], out int result))
-                        {
-                            countValueList.Add(int.Parse(countValues[i]));
-                        }
-                    }
-                }
-                else
-                {
-                    if (int.TryParse(iterationCountCountSave.Text, out int result))
-                    {
-                        countValueList.Add(int.Parse(iterationCountCountSave.Text));
-                    }
-                }
-            }
-        }
-
-        private void iterationCountImageSave_TextChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(iterationCountImageSave.Text))
-            {
-
-            }
-            else
-            {
-                List<int> imageValueList = new List<int>();
-                if (iterationCountImageSave.Text.Contains(","))
-                {
-                    string[] imageValues = iterationCountImageSave.Text.Split(',');
-                    for (int i = 0; i < imageValues.Length; i++)
-                    {
-                        if (int.TryParse(imageValues[i], out int result))
-                        {
-                            imageValueList.Add(int.Parse(imageValues[i]));
-                        }
-                    }
-                }
-                else
-                {
-                    if (int.TryParse(iterationCountImageSave.Text, out int result))
-                    {
-                        imageValueList.Add(int.Parse(iterationCountImageSave.Text));
-                    }
-                }
-            }
-        }
-
-        private void resetIterationTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (int.TryParse(resetIterationTextBox.Text, out int result))
-            {
-            }
-            else
-            {
-            }
-        }
-
         private void cellCountToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            //saveFileDialog1.InitialDirectory = Application.StartupPath;
-            saveFileDialog1.Filter = "(*.txt)|*.txt|(*.*)|*.*";
-            saveFileDialog1.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-                controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count";
-            //saveFileDialog1.RestoreDirectory = true;
+            //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            ////saveFileDialog1.InitialDirectory = Application.StartupPath;
+            //saveFileDialog1.Filter = "(*.txt)|*.txt|(*.*)|*.*";
+            //saveFileDialog1.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
+            //    DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
+            //    controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count";
+            ////saveFileDialog1.RestoreDirectory = true;
 
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
-                {
-                    for (int i = 0; i < controllerScript.FullCount.Count; ++i)
-                    {
-                        wt.Write("Iteration: " + (i+1).ToString());
-                        for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
-                        {
-                            string cellTypeString = (j + 1).ToString();
-                            wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
-                        }
-                        wt.WriteLine();
-                    }
-                    wt.Close();
-                }
-            }
-        }
-
-        private void transitionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.InitialDirectory = Application.StartupPath;
-            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 2;
-            saveFileDialog1.RestoreDirectory = true;
-
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
-                {
-
-                    for (int i = 0; i < controllerScript.FullTransitions.Count; ++i)
-                    {
-                        wt.Write("Iteration: " + (i + 1).ToString());
-                        for (int j = 0; j < controllerScript.FullTransitions[i].Count; ++j)
-                        {
-                            string cellTypeString = (j + 1).ToString();
-                            wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullTransitions[i][j]);
-                        }
-                        wt.WriteLine();
-                    }
-                    wt.Close();
-                }
-            }
+            //if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            //{
+            //    using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
+            //    {
+            //        for (int i = 0; i < controllerScript.FullCount.Count; ++i)
+            //        {
+            //            wt.Write("Iteration: " + (i+1).ToString());
+            //            for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
+            //            {
+            //                string cellTypeString = (j + 1).ToString();
+            //                wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
+            //            }
+            //            wt.WriteLine();
+            //        }
+            //        wt.Close();
+            //    }
+            //}
         }
 
         private void imageToolStripMenuItem_Click(object sender, EventArgs e)
@@ -923,105 +773,7 @@ namespace Capstone_Application
             }
         }
 
-        private void autoPauseCheck_CheckedChanged(object sender, EventArgs e)
-        {
-            if (autoPauseCheck.Checked)
-            {
-            }
-            else
-            {
-            }
-        }
 
-        private void autoPauseIterationCount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (autoPauseIterationCount.Checked)
-            {
-            }
-            else
-            {
-            }
-        }
-
-        private void autoPauseCellCount_CheckedChanged(object sender, EventArgs e)
-        {
-            if (autoPauseCellCount.Checked)
-            {
-            }
-            else
-            {
-            }
-        }
-
-        private void autoPauseIterationCountTextBox_TextChanged(object sender, EventArgs e)
-        {
-            if (int.TryParse(autoPauseIterationCountTextBox.Text, out int result))
-            {
-            }
-            else
-            {
-            }
-        }
-
-        private void iterationCountPathSave_TextChanged(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(iterationCountPathSave.Text))
-            {
-
-            }
-            else
-            {
-                List<int> pathValueList = new List<int>();
-                if (iterationCountPathSave.Text.Contains(","))
-                {
-                    string[] pathValues = iterationCountPathSave.Text.Split(',');
-                    for (int i = 0; i < pathValues.Length; i++)
-                    {
-                        if (int.TryParse(pathValues[i], out int result))
-                        {
-                            pathValueList.Add(int.Parse(pathValues[i]));
-                        }
-                    }
-                }
-                else
-                {
-                    if (int.TryParse(iterationCountPathSave.Text, out int result))
-                    {
-                        pathValueList.Add(int.Parse(iterationCountPathSave.Text));
-                    }
-                }
-            }
-        }
-
-        private void setPathSaveToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (setPathSaveToolStripMenuItem.Checked)
-            {
-            }
-            else
-            {
-            }
-        }
-
-        private void setPathSaveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (setPathSaveToolStripMenuItem.Checked == true)
-            {
-                using (var fbd = new FolderBrowserDialog())
-                {
-                    DialogResult result = fbd.ShowDialog();
-
-                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                    {
-                        pathSaveFolder = fbd.SelectedPath;
-                    }
-                    else
-                    {
-                        setPathSaveToolStripMenuItem.Checked = false;
-                    }
-                }
-            }
-        }
 
         private void autoPauseIterationCount_Click(object sender, EventArgs e)
         {
@@ -1119,6 +871,18 @@ namespace Capstone_Application
         {
             saveDialog = new SaveDataDialog();
             saveDialog.Show();
+        }
+
+        private void resetButton_Click(object sender, EventArgs e)
+        {
+            ResetCA();
+        }
+
+        private void ResetCA()
+        {
+            controllerScript.ResetGrid(this);
+            UpdateRunBox();
+            UpdateImage();
         }
     }
 }

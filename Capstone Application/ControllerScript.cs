@@ -22,23 +22,23 @@ namespace Capstone_Application
         List<Color> colors = new List<Color>();
         List<float> ratios = new List<float>();
         List<int> cellAmounts = new List<int>();
-        List<List<int>> fullCount = new List<List<int>>();
-        List<List<int>> fullTransitions = new List<List<int>>();
-        List<List<double>> fullIndex = new List<List<double>>();
+        List<Tuple<int, List<int>>> fullCount = new List<Tuple<int, List<int>>>();
+        List<Tuple<int, List<int>>> fullTransitions = new List<Tuple<int, List<int>>>();
+        List<Tuple<int, List<double>>> fullIndex = new List<Tuple<int, List<double>>>();
 
         public bool editModeOn = false;
         bool createdCA = false;
         bool alreadyCA = false;
-        bool running = false;
+        //bool running;
         public int iterations = 0;
         public int caRuns = 1;
         public int neighborhoodType;
         int localGridWidth;
         int localGridHeight;
         public int amountOfCellTypes;
-        double iterationSpeed = 0;
+        //double iterationSpeed;
         Bitmap bmp;
-        Form1 local_form;
+        public Form1 local_form;
 
         public MainPageInfo MainPageInfo
         {
@@ -46,9 +46,9 @@ namespace Capstone_Application
             set { mainPageInfo = value; }
         }
 
-        public List<List<int>> FullCount { get => fullCount; set => fullCount = value; }
-        public List<List<int>> FullTransitions { get => fullTransitions; set => fullTransitions = value; }
-        public List<List<double>> FullIndex { get => fullIndex; set => fullIndex = value; }
+        public List<Tuple<int, List<int>>> FullCount { get => fullCount; set => fullCount = value; }
+        public List<Tuple<int, List<int>>> FullTransitions { get => fullTransitions; set => fullTransitions = value; }
+        public List<Tuple<int, List<double>>> FullIndex { get => fullIndex; set => fullIndex = value; }
         public bool CreatedCA { get => createdCA; set => createdCA = value; }
         public bool AlreadyCA { get => alreadyCA; set => alreadyCA = value; }
 
@@ -107,7 +107,7 @@ namespace Capstone_Application
         {
             // Clear out old state pages
             statePageInfo.Clear();
-            int neighbors;
+            //int neighbors;
             for (int i = 0; i < mainPageInfo.numStates; ++i)
             {
                 // Needs to be different based on which type of neighborhood we're using.
@@ -130,7 +130,7 @@ namespace Capstone_Application
             statePageInfo[infoState].startingLocations = startingLocations;
             statePageInfo[infoState].neighbors = neighbors;
             statePageInfo[infoState].startingAmount = startingAmount;
-            statePageInfo[infoState].probs = probs;
+            statePageInfo[infoState].probs = probs.Select(a => a.Select(b => b.ToArray()).ToArray()).ToArray();
             statePageInfo[infoState].mobile = mobile;
             statePageInfo[infoState].mobileNeighborhood = mobileN;
             statePageInfo[infoState].moveProbs = moveProbs;
@@ -192,22 +192,103 @@ namespace Capstone_Application
 
         public void OneIteration(Form1 currentForm)
         {
-            Console.WriteLine("---------");
-            running = true;
+            //running = true;
             myCA.OneIteration();
             iterations++;
             // move these to check settings?
             List<int> currentCellCount = new List<int>();
             currentCellCount.AddRange(myCA.StateCount);
-            FullCount.Add(currentCellCount);
-            //Console.WriteLine("Saving Trans");
+
+            if (CheckCount(new List<int>(currentCellCount)))
+            {
+                FullCount.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentCellCount)));
+            }
             List<int> currentTransitions = new List<int>();
             currentTransitions.AddRange(myCA.Transitions);
-            FullTransitions.Add(currentTransitions);
-            //Console.WriteLine("Saving BINdex");
+            if (CheckTrans(new List<int>(currentTransitions)))
+            {
+                FullTransitions.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentTransitions)));
+            }
+            
             List<double> currentIndex = new List<double>();
             currentIndex.AddRange(myCA.CIndexes);
-            FullIndex.Add(currentIndex);
+            if (CheckIndex(new List<double>(currentIndex)))
+            {
+                FullIndex.Add(new Tuple<int, List<double>>(iterations, new List<double>(currentIndex)));
+            }
+        }
+
+        bool CheckCount(List<int> curCount)
+        {
+            if (iterations > 1)
+            {
+                Tuple<int, List<int>> prev = FullCount.Last();
+                List<int> prev_list = prev.Item2;
+                for (int i = 0; i < curCount.Count; i++)
+                {
+                    if (curCount[i] == prev_list[i])
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        bool CheckTrans(List<int> curTrans)
+        {
+            if (iterations > 1)
+            {
+                Tuple<int, List<int>> prev = FullTransitions.Last();
+                List<int> prev_list = prev.Item2;
+                for (int i = 0; i < curTrans.Count; i++)
+                {
+                    if (curTrans[i] == prev_list[i])
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        bool CheckIndex(List<double> curIndex)
+        {
+            if (iterations > 1)
+            {
+                Tuple<int, List<double>> prev = FullIndex.Last();
+                List<double> prev_list = prev.Item2;
+                for (int i = 0; i < curIndex.Count; i++)
+                {
+                    if (curIndex[i] == prev_list[i])
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public void CreateCA(Form1 form)

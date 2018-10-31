@@ -15,15 +15,15 @@ public class CellState
     public int mobileNeighborhood;
     public List<Tuple<int, int>> startingLocations;
 
-    public CellState(int totalStates, int neighborState, int neighborSize, List<List<List<double>>> probs, List<double> incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, int incomingNeighborhood, bool incMobile, List<Tuple<int, int>> incomingStartingLocations)
+    public CellState(int totalStates, int neighborState, int neighborSize, double[][][] probs, List<double> incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, int incomingNeighborhood, bool incMobile, List<Tuple<int, int>> incomingStartingLocations)
     {
         advProbs = new double[totalStates, totalStates][,];
         prob = new double[totalStates, neighborState, neighborSize + 1];
-        for (int i = 0; i < probs.Count; i++)
+        for (int i = 0; i < probs.Length; i++)
         {
-            for (int j = 0; j < probs[i].Count; j++)
+            for (int j = 0; j < probs[i].Length; j++)
             {
-                for (int k = 0; k < probs[i][j].Count; k++)
+                for (int k = 0; k < probs[i][j].Length; k++)
                 {
                     prob[i, j, k] = probs[i][j][k];
                 }

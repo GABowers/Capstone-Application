@@ -16,7 +16,7 @@ namespace Capstone_Application
         public int? startingAmount;
         //int neighborState;
         public double[,][,] advProbs;
-        public List<List<List<double>>> probs; // [x,y] prob to go to state x with y neighbors
+        public double[][][] probs; // [x,y] prob to go to state x with y neighbors
         //public List<string> locationCode;
         //public List<double> probValue;
         public List<double> moveProbs;

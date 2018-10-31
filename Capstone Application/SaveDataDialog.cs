@@ -18,7 +18,7 @@ namespace Capstone_Application
         RunSettings runSettings = Form1.runSettings;
         List<string> messages = new List<string>();
         bool checking = false;
-        Tuple<Tuple<List<bool>, List<bool>, List<bool>>, List<bool>, List<bool>> typeChecks;
+        //Tuple<Tuple<List<bool>, List<bool>, List<bool>>, List<bool>, List<bool>> typeChecks;
 
         public SaveDataDialog()
         {
