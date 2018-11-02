@@ -463,11 +463,27 @@ namespace Capstone_Application
         public void SaveData(string time, bool counts, bool trans, bool cIndex, string path)
         {
             path = path + "/" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Data.csv";
-            Console.WriteLine("Path: " + path);
+            //Console.WriteLine("Path: " + path);
+            List<int> iterations = new List<int>();
+            if(counts)
+            {
+                iterations.AddRange(controllerScript.FullCount.Select(x => x.Item1));
+            }
+            if (counts)
+            {
+                iterations.AddRange(controllerScript.FullIndex.Select(x => x.Item1));
+            }
+            if (counts)
+            {
+                iterations.AddRange(controllerScript.FullTransitions.Select(x => x.Item1));
+            }
+            iterations = iterations.Distinct().ToList();
+            iterations.Sort();
             using (StreamWriter wt = new StreamWriter(path))
             {
                 //pertinent info - run, iteration, time
-                string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs: " + controllerScript.caRuns + " Iterations: " + controllerScript.iterations;
+                wt.Write("Date,Run,Iterations");
+                string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + "," + controllerScript.caRuns + "," + controllerScript.iterations;
                 wt.Write(thing);
                 wt.WriteLine();
                 wt.Write("Iteration,");
@@ -496,9 +512,9 @@ namespace Capstone_Application
                     }
                 }
                 wt.WriteLine();
-                for (int i = 0; i < controllerScript.iterations; ++i)
+                for (int i = 0; i < iterations.Count; ++i)
                 {
-                    wt.Write((i + 1).ToString() + ",");
+                    wt.Write((iterations[i]).ToString() + ",");
                     wt.WriteLine();
                 }
                 wt.Close();
@@ -507,17 +523,18 @@ namespace Capstone_Application
             int count_val = 0;
             int trans_val = 0;
             int index_val = 0;
-            for (int i = 0; i < controllerScript.iterations; ++i)
+            for (int i = 0; i < iterations.Count; ++i)
             {
                 int line = i + 2;
                 string currentLine = lines[line];
-                
+                string[] currentLineArray = currentLine.Split(',');
+                int it = int.Parse(currentLineArray[0]);
                 if (counts)
                 {
                     List<Tuple<int, List<int>>> local_count = controllerScript.FullCount;
                     if (trans_val <= local_count.Count - 1)
                     {
-                        if ((i + 1) == local_count[count_val].Item1)
+                        if (local_count[count_val].Item1 == it)
                         {
                             for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                             {
@@ -533,20 +550,13 @@ namespace Capstone_Application
                             }
                         }
                     }
-                    else
-                    {
-                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                        {
-                            currentLine += local_count[count_val - 1].Item2[j].ToString() + ",";
-                        }
-                    }
                 }
                 if (trans)
                 {
                     List<Tuple<int, List<int>>> local_trans = controllerScript.FullTransitions;
                     if (trans_val <= local_trans.Count - 1)
                     {
-                        if ((i + 1) == local_trans[trans_val].Item1)
+                        if (local_trans[trans_val].Item1 == it)
                         {
                             for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                             {
@@ -562,20 +572,13 @@ namespace Capstone_Application
                             }
                         }
                     }
-                    else
-                    {
-                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                        {
-                            currentLine += local_trans[trans_val - 1].Item2[j].ToString() + ",";
-                        }
-                    }
                 }
                 if (cIndex)
                 {
                     List<Tuple<int, List<double>>> local_index = controllerScript.FullIndex;
                     if (index_val <= local_index.Count - 1)
                     {
-                        if ((i + 1) == local_index[index_val].Item1)
+                        if (local_index[index_val].Item1 == it)
                         {
                             for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                             {
@@ -589,13 +592,6 @@ namespace Capstone_Application
                             {
                                 currentLine += local_index[index_val - 1].Item2[j].ToString() + ",";
                             }
-                        }
-                    }
-                    else
-                    {
-                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                        {
-                            currentLine += local_index[index_val - 1].Item2[j].ToString() + ",";
                         }
                     }
                 }
