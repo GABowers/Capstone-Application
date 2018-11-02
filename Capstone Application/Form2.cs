@@ -176,9 +176,24 @@ namespace Capstone_Application
                     int halfHori = (int)((double)hori / 2);
                     List<double> moveProbs = new List<double>() { 0.25, 0.25, 0.25, 0.25};
                     List<double> stickingProbs = new List<double>() { 1};
-                    controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.Gray,
+                    List<List<List<double>>> immobile_probs = new List<List<List<double>>>();
+                    for (int i = 0; i < 2; i++)
+                    {
+                        immobile_probs.Add(new List<List<double>>());
+                        for (int j = 0; j < 2; j++)
+                        {
+                            immobile_probs[i].Add(new List<double>());
+
+                            for (int l = 0; l < 4 + 1; l++)
+                            {
+                                immobile_probs[i][j].Add(0);
+                                // add labels and text fields
+                            }
+                        }
+                    }
+                    controllerScript.StateInfoDirectEdit(0, NType.VonNeumann, GridType.Box, Color.Gray,
                         new List<Tuple<int, int>>() { new Tuple<int, int>((int)((double)hori / 2), (int)((double)vert / 2)) },
-                        0, 1, new List<List<List<double>>>(), false, 0, new List<double>(), false, new List<double>(),
+                        4, 1, immobile_probs, false, 0, new List<double>(), false, new List<double>(),
                         false, false, false, new List<Tuple<string, double>>());
                     List<List<List<double>>> tempProbs = new List<List<List<double>>>();
                     for (int i = 0; i < 2; i++)

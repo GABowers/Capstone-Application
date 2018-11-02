@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace Capstone_Application
         int localGridHeight;
         public int amountOfCellTypes;
         //double iterationSpeed;
-        Bitmap bmp;
+        DirectBitmap bmp;
         public Form1 local_form;
 
         public MainPageInfo MainPageInfo
@@ -354,15 +355,34 @@ namespace Capstone_Application
             {
                 iterations = 0;
                 Console.WriteLine(localGridWidth + "," +  localGridHeight);
-                bmp = new Bitmap(localGridWidth, localGridHeight);
+                bmp = new DirectBitmap(localGridWidth, localGridHeight);
+                //currentForm.innerPictureBox.Image = bmp.Bitmap;
                 UpdateBoard(currentForm);
                 AlreadyCA = true;
             }
         }
 
-        public void UpdateBoard(Form1 currentForm)
+        public static Color PreMultiplyAlpha(Color pixel)
         {
+            return Color.FromArgb(
+                pixel.A,
+                PreMultiplyAlpha_Component(pixel.R, pixel.A),
+                PreMultiplyAlpha_Component(pixel.G, pixel.A),
+                PreMultiplyAlpha_Component(pixel.B, pixel.A));
+        }
+
+        private static byte PreMultiplyAlpha_Component(byte source, byte alpha)
+        {
+            return (byte)((float)source * (float)alpha / (float)byte.MaxValue + 0.5f);
+        }
+
+        public unsafe void UpdateBoard(Form1 currentForm)
+        {
+            //BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
             Color tileColor;
+            //int bitsPerPixel_int = System.Drawing.Image.GetPixelFormatSize(bmp_data.PixelFormat);
+            //byte bitsPerPixel  = Convert.ToByte(bitsPerPixel_int);
+            //byte* scan0 = (byte*)bmp_data.Scan0.ToPointer();
             if (iterations == 0)
             {
                 for (int i = 0; i < localGridWidth; ++i)
@@ -371,17 +391,18 @@ namespace Capstone_Application
                     {
                         if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
                         {
-                            tileColor = colors[myCA.GetCellState(i, j)];
+                           tileColor  = PreMultiplyAlpha(colors[myCA.GetCellState(i, j)]);
                             bmp.SetPixel(i, j, tileColor);
                         }
                         else
                         {
-                            tileColor = Color.Black;
+                            tileColor = PreMultiplyAlpha(Color.Black);
                             bmp.SetPixel(i, j, tileColor);
                         }
                     }
                 }
             }
+            //Rectangle cur_rest = currentForm.innerPictureBox.ClientRectangle;
             for (int i = 0; i < myCA.ActiveAgents.Count; i++)
             {
                 AgentController curAgent = myCA.ActiveAgents[i];
@@ -395,12 +416,12 @@ namespace Capstone_Application
                         oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
                         if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
                         {
-                            tileColor = colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3];
+                            tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
                             bmp.SetPixel(oldX, oldY, tileColor);
                         }
                         else
                         {
-                            tileColor = Color.Black;
+                            tileColor = PreMultiplyAlpha(Color.Black);
                             bmp.SetPixel(oldX, oldY, tileColor);
                         }
                     }
@@ -409,75 +430,17 @@ namespace Capstone_Application
                 int newX = curAgent.xLocation;
                 int newY = curAgent.yLocation;
 
-                //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
 
-                tileColor = colors[curAgent.currentState];
+                tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
                 bmp.SetPixel(newX, newY, tileColor);
 
-                //if (statePageInfo[myCA.ActiveAgents[i].currentState].mobile)
-                //{
-                //    int oldX;
-                //    int oldY;
-                //    if(curAgent.History.Count > 1)
-                //    {
-                //        if(curAgent.HistoryChange)
-                //        {
-                //            oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
-                //            oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
-                //            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
-                //            {
-                //                tileColor = colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3];
-                //                bmp.SetPixel(oldX, oldY, tileColor);
-                //            }
-                //            else
-                //            {
-                //                tileColor = Color.Black;
-                //                bmp.SetPixel(oldX, oldY, tileColor);
-                //            }
-                //        }
-                //    }
-
-                //    int newX = curAgent.xLocation;
-                //    int newY = curAgent.yLocation;
-
-                //    //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
-
-                //    tileColor = colors[curAgent.currentState];
-                //    bmp.SetPixel(newX, newY, tileColor);
-                //    //if (myCA.grid[newX, newY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[newX, newY].agent, null) == false))
-                //    //{
-                //    //    tileColor = colors[myCA.GetCellState(newX, newY)];
-                //    //    bmp.SetPixel(newX, newY, tileColor);
-                //    //}
-                //    //else
-                //    //{
-                //    //    tileColor = Color.Black;
-                //    //    bmp.SetPixel(newX, newY, tileColor);
-                //    //}
-                //}
-                //else
-                //{
-                //    int newX = curAgent.xLocation;
-                //    int newY = curAgent.yLocation;
-
-                //    //Console.WriteLine("Prev: " + oldX + "," + oldY + " Cur: " + newX + "," + newY);
-
-                //    tileColor = colors[curAgent.currentState];
-                //    bmp.SetPixel(newX, newY, tileColor);
-
-                //    //if (myCA.grid[newX, newY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[newX, newY].agent, null) == false))
-                //    //{
-                //    //    tileColor = colors[myCA.GetCellState(newX, newY)];
-                //    //    bmp.SetPixel(newX, newY, tileColor);
-                //    //}
-                //    //else
-                //    //{
-                //    //    tileColor = Color.Black;
-                //    //    bmp.SetPixel(newX, newY, tileColor);
-                //    //}
-                //}
             }
-            currentForm.innerPictureBox.Image = bmp;
+            //if(currentForm.innerPictureBox != null)
+            //{
+            //    currentForm.innerPictureBox.Dispose();
+            //}
+            
+            currentForm.innerPictureBox.Image = bmp.Bitmap;
         }
 
         public void ClearGrid()
@@ -727,7 +690,7 @@ namespace Capstone_Application
                         if (remainder == 0)
                         {
                             // Auto image save
-                            form.InvokeImageSave(time);
+                            form.InvokeImageSave(time, runSettings.ImagePath);
                         }
                     }
                 }
@@ -783,7 +746,7 @@ namespace Capstone_Application
                 {
                     if (runSettings.ImageIncs[i] == -1)
                     {
-                        form.InvokeImageSave(time);
+                        form.InvokeImageSave(time, runSettings.ImagePath);
                     }
                 }
             }

@@ -16,16 +16,9 @@ Vector-based graphics for multi-faced agents
 consider adding update to StatePageInfo when moving between tabs. For advanced neighborhood, would require refactoring
 to allow for addition of StatePageInfos without knowing the exact number of rows and columns.
 
-Add "template" system. Select template when adding grid, which changes settings. For ants, CA=second order, grid=box,
-    neighborhood = something, agents = variable (3 or more, with 1 = colony, 2 = food, 3 = ants, 4 = obstacle), grid size editable
-	considering having grid (or background) settings, like pheremones dropped
 For template system, incorporate macro system, allowing user to select various options for when they arrive at X iteration
-Add line at beginning of count file, stating run and date?
 Heatmap/trace how to show multiple agents
 
-Completely revamp how a CA is made. Make it so you only define the grid size and number of agents initially (maybe not even grid size).
-    for each agent, define whether it's mobile or immobile, its neighborhood, whether it has any prob. of change (for mobile mainly) or
-	sticking effects/random walk/whatever.
 Change "count" to "amount"
 grid not expanding all the way in larger places
 picture control not showing grid of height 1
@@ -40,3 +33,10 @@ by the following spawner.
 Add element to agent types that can grow or decrease over time. Example, tree or food on the ground, with "biomass" or something.
 Add arbitrary number of these. Other agents can search for them (so need an AI search algorithm, A*?).
 Reproduction mechanism
+
+Add way to import images and use them in routines
+calc fractal dimension
+add sandpile
+add colors to DLA - change every x amount of cells
+
+CHANGE DLA STATE 0 NEIGHBORHOOD

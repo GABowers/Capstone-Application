@@ -106,21 +106,21 @@
             // 
             // gridSizeHori
             // 
-            this.gridSizeHori.Location = new System.Drawing.Point(147, 89);
+            this.gridSizeHori.Location = new System.Drawing.Point(147, 115);
             this.gridSizeHori.Name = "gridSizeHori";
             this.gridSizeHori.Size = new System.Drawing.Size(121, 20);
             this.gridSizeHori.TabIndex = 4;
             // 
             // gridSizeVert
             // 
-            this.gridSizeVert.Location = new System.Drawing.Point(147, 109);
+            this.gridSizeVert.Location = new System.Drawing.Point(147, 135);
             this.gridSizeVert.Name = "gridSizeVert";
             this.gridSizeVert.Size = new System.Drawing.Size(121, 20);
             this.gridSizeVert.TabIndex = 5;
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(9, 109);
+            this.label5.Location = new System.Drawing.Point(9, 135);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(125, 20);
             this.label5.TabIndex = 7;
@@ -129,7 +129,7 @@
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(9, 89);
+            this.label4.Location = new System.Drawing.Point(9, 115);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(125, 20);
             this.label4.TabIndex = 6;
@@ -139,7 +139,7 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(9, 69);
+            this.label3.Location = new System.Drawing.Point(9, 95);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(125, 20);
             this.label3.TabIndex = 5;
@@ -148,7 +148,7 @@
             // 
             // stateNumberBox
             // 
-            this.stateNumberBox.Location = new System.Drawing.Point(147, 69);
+            this.stateNumberBox.Location = new System.Drawing.Point(147, 95);
             this.stateNumberBox.Name = "stateNumberBox";
             this.stateNumberBox.Size = new System.Drawing.Size(121, 20);
             this.stateNumberBox.TabIndex = 3;
@@ -208,7 +208,7 @@
             // 
             // template_reset_label
             // 
-            this.template_reset_label.Location = new System.Drawing.Point(9, 35);
+            this.template_reset_label.Location = new System.Drawing.Point(9, 29);
             this.template_reset_label.Name = "template_reset_label";
             this.template_reset_label.Size = new System.Drawing.Size(125, 20);
             this.template_reset_label.TabIndex = 11;
@@ -217,7 +217,7 @@
             // 
             // template_reset_explanation
             // 
-            this.template_reset_explanation.Location = new System.Drawing.Point(286, 35);
+            this.template_reset_explanation.Location = new System.Drawing.Point(286, 29);
             this.template_reset_explanation.Name = "template_reset_explanation";
             this.template_reset_explanation.Size = new System.Drawing.Size(291, 40);
             this.template_reset_explanation.TabIndex = 12;
@@ -228,7 +228,7 @@
             // template_reset_checkbox
             // 
             this.template_reset_checkbox.AutoSize = true;
-            this.template_reset_checkbox.Location = new System.Drawing.Point(253, 39);
+            this.template_reset_checkbox.Location = new System.Drawing.Point(253, 34);
             this.template_reset_checkbox.Name = "template_reset_checkbox";
             this.template_reset_checkbox.Size = new System.Drawing.Size(15, 14);
             this.template_reset_checkbox.TabIndex = 13;

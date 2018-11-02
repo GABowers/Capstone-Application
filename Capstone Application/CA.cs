@@ -378,6 +378,10 @@ public class CA
                 StateCount[ActiveAgents[i].currentState] += 1;
                 ActiveAgents[i].HistoryChange = false;
             }
+            if(locations.Count == 0)
+            {
+                controller.Pause();
+            }
             locations.Shuffle();
             int x = locations[0].Item1;
             int y = locations[0].Item2;
@@ -420,10 +424,14 @@ public class CA
                     bool found = found_locs.Any(x => x.Item2 == cur.yLocation);
                     if (found)
                     {
-                        controller.Pause();
                         if(template_reset)
                         {
                             controller.local_form.AutoReset();
+                        }
+                        else
+                        {
+                            locations.Remove(new Tuple<int, int>(cur.xLocation, cur.yLocation));
+                            controller.Pause();
                         }
                     }
                 }

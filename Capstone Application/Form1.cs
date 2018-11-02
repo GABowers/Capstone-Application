@@ -353,15 +353,15 @@ namespace Capstone_Application
         //    return this.autoPauseCellCount.DropDownItems[controlName].Text;
         //}
 
-        public void InvokeImageSave(string time)
+        public void InvokeImageSave(string time, string path)
         {
-            Invoke(new Action(() => SaveImages(time)));
+            Invoke(new Action(() => SaveImages(time, path)));
         }
 
-        public void SaveImages(string time)
+        public void SaveImages(string time, string path)
         {
             string imageName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Image.bmp";
-            string fileName = (imageSaveFolder + "/" + imageName);
+            string fileName = (path + "/" + imageName);
             innerPictureBox.Image.Save(fileName);
         }
 
@@ -495,55 +495,88 @@ namespace Capstone_Application
                 
                 if (counts)
                 {
-                    if ((i + 1) == controllerScript.FullCount[count_val].Item1)
+                    List<Tuple<int, List<int>>> local_count = controllerScript.FullCount;
+                    if (trans_val <= local_count.Count - 1)
                     {
-                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        if ((i + 1) == local_count[count_val].Item1)
                         {
-                            currentLine += controllerScript.FullCount[count_val].Item2[j].ToString() + ",";
+                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                            {
+                                currentLine += local_count[count_val].Item2[j].ToString() + ",";
+                            }
+                            count_val += 1;
                         }
-                        count_val += 1;
+                        else
+                        {
+                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                            {
+                                currentLine += local_count[count_val - 1].Item2[j].ToString() + ",";
+                            }
+                        }
                     }
                     else
                     {
                         for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                         {
-                            currentLine += controllerScript.FullCount[count_val - 1].Item2[j].ToString() + ",";
+                            currentLine += local_count[count_val - 1].Item2[j].ToString() + ",";
                         }
                     }
                 }
                 if (trans)
                 {
-                    if ((i + 1) == controllerScript.FullTransitions[trans_val].Item1)
+                    List<Tuple<int, List<int>>> local_trans = controllerScript.FullTransitions;
+                    if (trans_val <= local_trans.Count - 1)
                     {
-                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        if ((i + 1) == local_trans[trans_val].Item1)
                         {
-                            currentLine += controllerScript.FullTransitions[trans_val].Item2[j].ToString() + ",";
+                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                            {
+                                currentLine += local_trans[trans_val].Item2[j].ToString() + ",";
+                            }
+                            trans_val += 1;
                         }
-                        trans_val += 1;
+                        else
+                        {
+                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                            {
+                                currentLine += local_trans[trans_val - 1].Item2[j].ToString() + ",";
+                            }
+                        }
                     }
                     else
                     {
                         for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                         {
-                            currentLine += controllerScript.FullTransitions[trans_val - 1].Item2[j].ToString() + ",";
+                            currentLine += local_trans[trans_val - 1].Item2[j].ToString() + ",";
                         }
                     }
                 }
                 if (cIndex)
                 {
-                    if ((i + 1) == controllerScript.FullIndex[index_val].Item1)
+                    List<Tuple<int, List<double>>> local_index = controllerScript.FullIndex;
+                    if (index_val <= local_index.Count - 1)
                     {
-                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        if ((i + 1) == local_index[index_val].Item1)
                         {
-                            currentLine += controllerScript.FullIndex[index_val].Item2[j].ToString() + ",";
+                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                            {
+                                currentLine += local_index[index_val].Item2[j].ToString() + ",";
+                            }
+                            index_val += 1;
                         }
-                        index_val += 1;
+                        else
+                        {
+                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                            {
+                                currentLine += local_index[index_val - 1].Item2[j].ToString() + ",";
+                            }
+                        }
                     }
                     else
                     {
                         for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                         {
-                            currentLine += controllerScript.FullIndex[index_val - 1].Item2[j].ToString() + ",";
+                            currentLine += local_index[index_val - 1].Item2[j].ToString() + ",";
                         }
                     }
                 }
