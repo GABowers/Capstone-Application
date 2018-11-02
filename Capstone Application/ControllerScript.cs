@@ -18,6 +18,7 @@ namespace Capstone_Application
         static  List<StatePageInfo> statePageInfo;
         public RunSettings runSettings = Form1.runSettings;
         public GridType gType;
+        public bool reset_now = false;
         List<NType> nTypes;
         List<GridType> grids;
         List<Color> colors = new List<Color>();
@@ -466,6 +467,7 @@ namespace Capstone_Application
             caRuns++;
             CreatedCA = false;
             editModeOn = false;
+            reset_now = false;
             ClearGrid();
         }
 
@@ -620,6 +622,12 @@ namespace Capstone_Application
                         form.AutoReset();
                     }
                 }
+            }
+
+            // spur-of-the-moment reset based on template call
+            if(reset_now)
+            {
+                form.AutoReset();
             }
 
             // Pause CA options

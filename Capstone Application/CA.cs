@@ -426,7 +426,7 @@ public class CA
                     {
                         if(template_reset)
                         {
-                            controller.local_form.AutoReset();
+                            controller.reset_now = true;
                         }
                         else
                         {
