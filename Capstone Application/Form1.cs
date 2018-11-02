@@ -49,7 +49,6 @@ namespace Capstone_Application
 
         private void Timer_Tick(object sender, System.EventArgs e)
         {
-            Console.WriteLine("timer active");
             Invoke(new Action(() => UpdateIterationBox()));
         }
 
