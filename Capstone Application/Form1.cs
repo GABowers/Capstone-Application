@@ -33,6 +33,7 @@ namespace Capstone_Application
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
         SaveDataDialog saveDialog;
+        System.Timers.Timer text_timer = new System.Timers.Timer();
 
         public int? RunMax { get => runMax; set => runMax = value; }
 
@@ -41,7 +42,15 @@ namespace Capstone_Application
             InitializeComponent();
             innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             locationTT = new ToolTip();
+            text_timer.Interval = 5;
+            text_timer.Elapsed += Timer_Tick;
             this.SetDesktopLocation(0, 0);
+        }
+
+        private void Timer_Tick(object sender, System.EventArgs e)
+        {
+            Console.WriteLine("timer active");
+            Invoke(new Action(() => UpdateIterationBox()));
         }
 
         private void newModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -83,6 +92,7 @@ namespace Capstone_Application
         private void UpdateIterationBox()
         {
             iterationCountBox.Text = controllerScript.iterations.ToString();
+            toolStrip1.Update();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -101,7 +111,17 @@ namespace Capstone_Application
             {
                 running = !running;
                 if (running == true)
+                {
                     backgroundWorker1.RunWorkerAsync();
+                    text_timer.Enabled = true;
+                    //text_timer.Start();
+                }
+                else if(running == false)
+                {
+                    //text_timer.Stop();
+                    text_timer.Enabled = false;
+                }
+                    
             }
         }
 
@@ -113,7 +133,6 @@ namespace Capstone_Application
         private void UpdateImage()
         {
             controllerScript.UpdateBoard(this);
-            UpdateIterationBox();
             if (counterFormOpen == true)
             {
                 counterWindow.UpdateCounts();
@@ -124,6 +143,7 @@ namespace Capstone_Application
         {
             RunCA();
             UpdateImage();
+            UpdateIterationBox();
             controllerScript.CheckSettings(this);
         }
 
