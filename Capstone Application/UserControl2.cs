@@ -12,14 +12,16 @@ namespace Capstone_Application
 {
     public partial class UserControl2 : UserControl
     {
+        StatePageInfo parent;
         int neighborStateXPosition = 0;
-        
+        Color color;
         int toStateXPosition = 0;
         int toStateYPosition = 0;
         int mobileN = 0;
         int states;
         int curState;
         int neighbors = 0;
+        int startingAmount = 0;
         bool sticking = false;
         bool mobile = false;
         bool storage = false;
@@ -34,8 +36,9 @@ namespace Capstone_Application
         List<Tuple<int, int>> startingLocations = new List<Tuple<int, int>>();
         List<Tuple<string, double>> storageObjects = new List<Tuple<string, double>>();
 
-        public UserControl2(int numStates, int thisState)
+        public UserControl2(StatePageInfo info, int numStates, int thisState)
         {
+            parent = info;
             states = numStates;
             curState = thisState;
             InitializeComponent();
@@ -44,6 +47,127 @@ namespace Capstone_Application
             neighborBox.SelectedIndex = 0;
             edgeBox.SelectedIndex = 0;
             extraBox.SelectedIndex = 0;
+            SetSettings();
+            SetUI();
+        }
+
+        void SetSettings()
+        {
+            if(parent.nType.HasValue)
+            {
+                nType = parent.nType.Value;
+            }
+            if (parent.gridType.HasValue)
+            {
+                gType = parent.gridType.Value;
+            }            
+            if (parent.probs != null)
+            {
+                probs = parent.probs;
+            }
+            if (parent.moveProbs != null)
+            {
+                moveProbs = parent.moveProbs;
+            }
+            if (parent.stickingProbs != null)
+            {
+                stickingProbs = parent.stickingProbs;
+            }
+            if (parent.sticking.HasValue)
+            {
+                sticking = parent.sticking.Value;
+            }
+            if (parent.mobile.HasValue)
+            {
+                mobile = parent.mobile.Value;
+            }
+            if (parent.storage.HasValue)
+            {
+                storage = parent.storage.Value;
+            }
+            if (parent.ai.HasValue)
+            {
+                ai = parent.ai.Value;
+            }
+            if (parent.growth.HasValue)
+            {
+                growth = parent.growth.Value;
+            }
+            if (parent.mobileNeighborhood.HasValue)
+            {
+                mobileN = parent.mobileNeighborhood.Value;
+            }
+            if (parent.startingLocations != null)
+            {
+                startingLocations = parent.startingLocations;
+            }
+            if (parent.storageObjects != null)
+            {
+                storageObjects = parent.storageObjects;
+            }
+            if (parent.neighbors.HasValue)
+            {
+                neighbors = parent.neighbors.Value;
+            }
+            if (parent.color.HasValue)
+            {
+                color = parent.color.Value;
+            }
+            if (parent.startingAmount.HasValue)
+            {
+                startingAmount = parent.startingAmount.Value;
+            }
+        }
+
+        void SetUI()
+        {
+            switch(neighbors)
+            {
+                case 0:
+                    neighborBox.SelectedIndex = 0;
+                    break;
+                case 4:
+                    neighborBox.SelectedIndex = 1;
+                    break;
+                case 8:
+                    neighborBox.SelectedIndex = 2;
+                    break;
+                case 12:
+                    neighborBox.SelectedIndex = 3;
+                    break;
+                case -1:
+                    neighborBox.SelectedIndex = 4;
+                    break;
+                default:
+                    neighborBox.SelectedIndex = 0;
+                    break;
+            }
+            switch(mobile)
+            {
+                case false:
+                    mobilityBox.SelectedIndex = 0;
+                    break;
+                case true:
+                    mobilityBox.SelectedIndex = 1;
+                    break;
+            }
+            switch(gType)
+            {
+                case GridType.Box:
+                    edgeBox.SelectedIndex = 0;
+                    break;
+                case GridType.CylinderH:
+                    edgeBox.SelectedIndex = 1;
+                    break;
+                case GridType.CylinderW:
+                    edgeBox.SelectedIndex = 2;
+                    break;
+                case GridType.Torus:
+                    edgeBox.SelectedIndex = 3;
+                    break;
+            }
+            agentCount.Text = startingAmount.ToString();
+            colorBox.BackColor = color;
         }
 
         private void colorBox_Click(object sender, EventArgs e)
@@ -67,6 +191,7 @@ namespace Capstone_Application
                 int yPos = 5;
                 Label mNeighborPickLabel = new Label() { Name = "mNeighborPickLabel", Text = "Set the neighborhood of the mobile agent--or what directions it can move", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
                 ComboBox mNeighborPick = new ComboBox() { Name = "mNeighborPick", Items = { "von Neumann" }, Location = new System.Drawing.Point(xInput, yPos) };
+                mNeighborPick.DropDownStyle = ComboBoxStyle.DropDownList;
                 mNeighborPick.SelectedIndexChanged += (sender, e) =>
                 {
                     switch (mNeighborPick.SelectedIndex)
@@ -80,9 +205,10 @@ namespace Capstone_Application
                     }
                     RefreshMobilityFields();
                 };
-                mNeighborPick.SelectedIndex = mobileN;
+                
                 mobilityButtonsPanel.Controls.Add(mNeighborPickLabel);
                 mobilityButtonsPanel.Controls.Add(mNeighborPick);
+                mNeighborPick.SelectedIndex = mobileN;
             }
         }
 
@@ -99,9 +225,25 @@ namespace Capstone_Application
                 for (int i = 0; i < states; i++)
                 {
                     stickingProbsTemp.Add(0);
+                }
+                for (int i = 0; i < stickingProbs.Count; i++)
+                {
+                    try
+                    {
+                        stickingProbsTemp[i] = stickingProbs[i];
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                stickingProbs = stickingProbsTemp;
+                for (int i = 0; i < states; i++)
+                {
+                    stickingProbsTemp.Add(0);
                     string stickState = (i + 1).ToString();
                     Label mStickyLabel = new Label() { Name = $"mStickyLabel{i}", Text = $"Sticking probability: the agent's propensity for sticking to other agents of type {stickState}.", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
-                    TextBox mStickyPick = new TextBox() { Name = $"mStickyPick{i}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20) };
+                    TextBox mStickyPick = new TextBox() { Name = $"mStickyPick{i}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20), Text = stickingProbs[i].ToString() };
                     mStickyPick.TextChanged += (sender, e) =>
                     {
                         int stick_loc = int.Parse(mStickyPick.Name.Remove(0, 11));
@@ -119,18 +261,7 @@ namespace Capstone_Application
                     mobilityInputPanel.Controls.Add(mStickyPick);
                 }
 
-                for (int i = 0; i < stickingProbs.Count; i++)
-                {
-                    try
-                    {
-                        stickingProbs[i] = stickingProbsTemp[i];
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
-                stickingProbs = stickingProbsTemp;
+                
                 int loop;
                 switch(mobileN)
                 {
@@ -146,9 +277,25 @@ namespace Capstone_Application
                 for (int i = 0; i < loop; i++)
                 {
                     moveProbsTemp.Add(0);
+                }
+                for (int i = 0; i < moveProbs.Count; i++)
+                {
+                    try
+                    {
+                        moveProbsTemp[i] = moveProbs[i];
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                moveProbs = moveProbsTemp;
+                for (int i = 0; i < loop; i++)
+                {
+                    moveProbsTemp.Add(0);
                     string moveDir = directions[i];
                     Label mMoveLabel = new Label() { Name = $"mMoveLabel{i}", Text = $"Probability of moving {moveDir}.", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
-                    TextBox mMovePick = new TextBox() { Name = $"mMovePick{i}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20) };
+                    TextBox mMovePick = new TextBox() { Name = $"mMovePick{i}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20), Text = moveProbs[i].ToString() };
                     mMovePick.TextChanged += (sender, e) =>
                     {
                         int move_loc = int.Parse(mMovePick.Name.Remove(0, 9));
@@ -193,18 +340,6 @@ namespace Capstone_Application
                     }
                 };
                 mobilityInputPanel.Controls.Add(calc);
-                for (int i = 0; i < moveProbs.Count; i++)
-                {
-                    try
-                    {
-                        moveProbs[i] = moveProbsTemp[i];
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
-                moveProbs = moveProbsTemp;
             }
         }
 
@@ -235,6 +370,25 @@ namespace Capstone_Application
                     }
                 }
             }
+            for (int i = 0; i < probs.Count; i++)
+            {
+                for (int j = 0; j < probs[i].Count; j++)
+                {
+                    for (int k = 0; k < probs[i][j].Count; k++)
+                    {
+                        try
+                        {
+                            tempProbs[i][j][k] = probs[i][j][k];
+                        }
+                        catch (Exception)
+                        {
+
+                            throw;
+                        }
+                    }
+                }
+            }
+            probs = tempProbs;
             string fromState = (curState + 1).ToString();
             for (int i = 0; i < states; i++)
             {
@@ -258,7 +412,7 @@ namespace Capstone_Application
                             {
                                 string neighbors = k.ToString();
                                 Label neighborsLabel = new Label() { Name = $"mNeighborLabel{i}.{j}.{k}", Text = $"Probability of change from state {fromState} to state {toState}, with {k} neighbors of state {neighborState}.", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
-                                TextBox neighborsPick = new TextBox() { Name = $"mNeighborPick{i}.{j}.{k}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20) };
+                                TextBox neighborsPick = new TextBox() { Name = $"mNeighborPick{i}.{j}.{k}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20), Text = probs[i][j][k].ToString() };
                                 neighborsPick.TextChanged += (sender, e) =>
                                 {
                                     string basic = neighborsPick.Name.Remove(0, 13);
@@ -285,26 +439,9 @@ namespace Capstone_Application
                 }
             }
 
-            for (int i = 0; i < probs.Count; i++)
-            {
-                for (int j = 0; j < probs[i].Count; j++)
-                {
-                    for (int k = 0; k < probs[i][j].Count; k++)
-                    {
-                        try
-                        {
-                            tempProbs[i][j][k] = probs[i][j][k];
-                        }
-                        catch (Exception)
-                        {
+            
 
-                            throw;
-                        }
-                    }
-                }
-            }
-
-            probs = tempProbs;
+            
             // populate fields with prob data
         }
 
@@ -403,7 +540,7 @@ namespace Capstone_Application
                 info.startingAmount = 0;
             }
 
-            info.probs = probs.Select(a => a.Select(b => b.ToArray()).ToArray()).ToArray();
+            info.probs = probs;
             info.stickingProbs = stickingProbs;
             info.sticking = sticking;
             info.moveProbs = moveProbs;
@@ -420,7 +557,14 @@ namespace Capstone_Application
 
         private void agentCount_TextChanged(object sender, EventArgs e)
         {
-
+            if(int.TryParse(agentCount.Text, out int result))
+            {
+                startingAmount = result;
+            }
+            else
+            {
+                startingAmount = 0;
+            }
         }
 
         private void neighborBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -470,7 +614,7 @@ namespace Capstone_Application
                     break;
             }
             RefreshMobilityButtons();
-            RefreshMobilityFields();
+            //RefreshMobilityFields();
         }
 
         private void edgeBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -493,6 +637,11 @@ namespace Capstone_Application
                     gType = GridType.Box;
                     break;
             }
+        }
+
+        private void colorBox_BackColorChanged(object sender, EventArgs e)
+        {
+            color = colorBox.BackColor;
         }
     }
 }

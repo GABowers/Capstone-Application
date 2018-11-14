@@ -39,4 +39,4 @@ calc fractal dimension
 add sandpile
 add colors to DLA - change every x amount of cells
 
-CHANGE DLA STATE 0 NEIGHBORHOOD
+Add ability to set chemical type. Calculate things like v(rms), and allow for real (continuous and additive) gravity effects.

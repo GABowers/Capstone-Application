@@ -15,7 +15,7 @@ namespace Capstone_Application
         static StatePageController cellPageController;
         static MainPageInfo mainPageInfo;
         public CA myCA;
-        static  List<StatePageInfo> statePageInfo;
+        static List<StatePageInfo> statePageInfo;
         public RunSettings runSettings = Form1.runSettings;
         public GridType gType;
         public bool reset_now = false;
@@ -93,6 +93,11 @@ namespace Capstone_Application
         //    uc.UpdateValues(statePageInfo[(currentState - 1)], currentState, amountOfStates);
         //}
 
+        public StatePageInfo GetStatePage(int currentState)
+        {
+            return statePageInfo[currentState];
+        }
+
         private bool CheckMainPageInfo()
         {
             bool isOK = true;
@@ -105,7 +110,7 @@ namespace Capstone_Application
             return isOK;
         }
 
-        private void SetupStateInfo()
+        public void SetupStateInfo()
         {
             // Clear out old state pages
             statePageInfo.Clear();
@@ -132,7 +137,7 @@ namespace Capstone_Application
             statePageInfo[infoState].startingLocations = startingLocations;
             statePageInfo[infoState].neighbors = neighbors;
             statePageInfo[infoState].startingAmount = startingAmount;
-            statePageInfo[infoState].probs = probs.Select(a => a.Select(b => b.ToArray()).ToArray()).ToArray();
+            statePageInfo[infoState].probs = probs;
             statePageInfo[infoState].mobile = mobile;
             statePageInfo[infoState].mobileNeighborhood = mobileN;
             statePageInfo[infoState].moveProbs = moveProbs;
@@ -315,12 +320,12 @@ namespace Capstone_Application
                 nTypes = new List<NType>();
                 for (int i = 0; i < statePageInfo.Count; i++)
                 {
-                    nTypes.Add(statePageInfo[i].nType);
+                    nTypes.Add(statePageInfo[i].nType.Value);
                 }
                 grids = new List<GridType>();
                 for (int i = 0; i < statePageInfo.Count; i++)
                 {
-                    grids.Add(statePageInfo[i].gridType);
+                    grids.Add(statePageInfo[i].gridType.Value);
                 }
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
@@ -329,7 +334,7 @@ namespace Capstone_Application
                 {
                     ratios.Add(statePageInfo[h].startingAmount.Value);
                     cellAmounts.Add(statePageInfo[h].startingAmount.Value);
-                    colors.Add(statePageInfo[h].color);
+                    colors.Add(statePageInfo[h].color.Value);
                 }
                 myCA.InitializeGrid(cellAmounts);
                 CreatedCA = true;
@@ -345,7 +350,7 @@ namespace Capstone_Application
         {
             for (int h = 0; h < statePageInfo.Count; ++h)
             {
-                colors[h] = statePageInfo[h].color;
+                colors[h] = statePageInfo[h].color.Value;
             }
         }
 

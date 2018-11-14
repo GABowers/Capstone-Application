@@ -63,7 +63,6 @@ namespace Capstone_Application
 
         private void InstantiateNewTabs()
         {
-            int amountOfStates = int.Parse(stateNumberBox.Text);
             //MAJOR
             //MAJOR
             //MAJOR BUG HERE: When deleting pages, it somehow keeps the last one! And leaves one extra page with things messed up. THIS MUST BE FIXED.
@@ -71,19 +70,22 @@ namespace Capstone_Application
             {
                 tabControl1.TabPages.Remove(tabControl1.TabPages[i]);
             }
-            //Use this to add tabs
-            for (int i = 0; i < amountOfStates; ++i)
+            if(int.TryParse(stateNumberBox.Text, out int result))
             {
-                UserControl2 uc2 = new UserControl2(amountOfStates, i);
-                tabPage2 = new TabPage();
-                int j = i + 1;
-                tabPage2.Text = "State " + j;
-                tabControl1.TabPages.Add(tabPage2);
-                tabControl1.TabPages[j].Controls.Add(uc2);
-                uc2.Name = "uc." + j;
-                
-                this.Show();
+                for (int i = 0; i < result; ++i)
+                {
+                    UserControl2 uc2 = new UserControl2(controllerScript.GetStatePage(i), result, i);
+                    tabPage2 = new TabPage();
+                    int j = i + 1;
+                    tabPage2.Text = "State " + j;
+                    tabControl1.TabPages.Add(tabPage2);
+                    tabControl1.TabPages[j].Controls.Add(uc2);
+                    uc2.Name = "uc." + j;
+                    this.Show();
+                }
             }
+            //Use this to add tabs
+            
         }
 
         //void RetrieveValues()
@@ -130,9 +132,16 @@ namespace Capstone_Application
             //WHERE SHOULD THIS BEEEEEE
             if (tabControl1.SelectedIndex == 0)
             {
-                if(int.TryParse(stateNumberBox.Text, out int result1) && int.TryParse(gridSizeHori.Text, out int result2) && int.TryParse(gridSizeVert.Text, out int result3))
+                if (templateBox.SelectedIndex == 0)
                 {
-                    controllerScript.MainPageNext(int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text), Template.None);
+                    if (int.TryParse(stateNumberBox.Text, out int result1) && int.TryParse(gridSizeHori.Text, out int result2) && int.TryParse(gridSizeVert.Text, out int result3))
+                    {
+                        controllerScript.MainPageNext(int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text), Template.None);
+                        InstantiateNewTabs();
+                    }
+                }
+                else
+                {
                     InstantiateNewTabs();
                 }
             }
@@ -158,7 +167,6 @@ namespace Capstone_Application
             switch (template)
             {
                 case Template.None:
-                    UpdateAllValues();
                     break;
                 case Template.DLA:
                     controllerScript.UpdateMainTemplateInfo(template_reset);
@@ -217,14 +225,11 @@ namespace Capstone_Application
                     tempProbs[0][0][4] = 1;
                     controllerScript.StateInfoDirectEdit(1, NType.VonNeumann, GridType.Box, Color.White,
                         new List<Tuple<int, int>>(), 4, 0, tempProbs, true, 0, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
-                        true, new List<double>() { 1, 0}, false, false, false, new List<Tuple<string, double>>());
+                        true, new List<double>() { 0, 0}, false, false, false, new List<Tuple<string, double>>());
                     break;
                 case Template.Isle_Royale:
                     break;
                 case Template.Ant_Sim:
-                    break;
-                default:
-                    UpdateAllValues();
                     break;
             }
         }
@@ -232,10 +237,10 @@ namespace Capstone_Application
         private void confirmTab_Click(object sender, EventArgs e)
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
-            RunTemplates();
-            
+            UpdateAllValues();
+
             //add code to save all tab data to new class
-            
+
             if (editForm == false)
             {
                 mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
@@ -266,28 +271,38 @@ namespace Capstone_Application
             switch(templateBox.SelectedIndex)
             {
                 case 0:
+                    controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = true;
+                    stateNumberBox.Text = 0.ToString();
                     template = Template.None;
                     DisableTemplateResetInfo();
                     break;
                 case 1:
+                    controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = false;
                     stateNumberBox.Text = 2.ToString();
                     template = Template.Random_Walk;
+                    RunTemplates();
                     break;
                 case 2:
+                    controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = false;
                     stateNumberBox.Text = 2.ToString();
                     template = Template.DLA;
                     EnableTemplateResetInfo();
+                    RunTemplates();
                     break;
                 case 3:
+                    controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = false;
                     template = Template.Isle_Royale;
+                    RunTemplates();
                     break;
                 case 4:
+                    controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = false;
                     template = Template.Ant_Sim;
+                    RunTemplates();
                     break;
                 default:
                     template = Template.None;

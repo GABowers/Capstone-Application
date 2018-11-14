@@ -87,7 +87,7 @@ public class CA
             CIndexes.Add(0);
             neighborhoods.Add(new Neighborhood(types[i]));
             separateAgents.Add(new List<AgentController>());
-            states[i] = new CellState(numStates, numStates, info[i].neighbors, info[i].probs, info[i].moveProbs, info[i].stickingProbs, info[i].sticking, info[i].mobileNeighborhood, info[i].mobile, info[i].startingLocations);
+            states[i] = new CellState(numStates, numStates, info[i].neighbors.Value, info[i].probs.Select(x => x.Select(y => y.ToArray()).ToArray()).ToArray(), info[i].moveProbs, info[i].stickingProbs, info[i].sticking.Value, info[i].mobileNeighborhood.Value, info[i].mobile.Value, info[i].startingLocations);
             for (int j = 0; j < (numStates - 1); j++)
             {
                 Transitions.Add(0);

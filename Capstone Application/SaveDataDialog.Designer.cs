@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveDataDialog));
-            System.Windows.Forms.TreeNode treeNode43 = new System.Windows.Forms.TreeNode("Count");
-            System.Windows.Forms.TreeNode treeNode44 = new System.Windows.Forms.TreeNode("Transitions");
-            System.Windows.Forms.TreeNode treeNode45 = new System.Windows.Forms.TreeNode("C Index");
-            System.Windows.Forms.TreeNode treeNode46 = new System.Windows.Forms.TreeNode("Data", new System.Windows.Forms.TreeNode[] {
-            treeNode43,
-            treeNode44,
-            treeNode45});
-            System.Windows.Forms.TreeNode treeNode47 = new System.Windows.Forms.TreeNode("Image");
-            System.Windows.Forms.TreeNode treeNode48 = new System.Windows.Forms.TreeNode("Paths");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Count");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Transitions");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("C Index");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Data", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode3});
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Image");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Paths");
             this.outerPanel = new System.Windows.Forms.Panel();
             this.controlsPanel = new System.Windows.Forms.Panel();
             this.messageNextButton = new System.Windows.Forms.Button();
@@ -83,6 +83,8 @@
             this.pauseIterationInput = new System.Windows.Forms.TextBox();
             this.pauseIntroLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.iterationSettingsTab = new System.Windows.Forms.TabPage();
+            this.iterationSettingsLabel = new System.Windows.Forms.Label();
             this.outerPanel.SuspendLayout();
             this.controlsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -105,6 +107,7 @@
             this.resetTab.SuspendLayout();
             this.pauseTabControl.SuspendLayout();
             this.pauseTab.SuspendLayout();
+            this.iterationSettingsTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // outerPanel
@@ -221,22 +224,22 @@
             this.saveOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.saveOptions.Location = new System.Drawing.Point(0, 0);
             this.saveOptions.Name = "saveOptions";
-            treeNode43.Name = "countChild";
-            treeNode43.Text = "Count";
-            treeNode44.Name = "transitionsChild";
-            treeNode44.Text = "Transitions";
-            treeNode45.Name = "cIndexChild";
-            treeNode45.Text = "C Index";
-            treeNode46.Name = "dataRoot";
-            treeNode46.Text = "Data";
-            treeNode47.Name = "imageRoot";
-            treeNode47.Text = "Image";
-            treeNode48.Name = "pathsRoot";
-            treeNode48.Text = "Paths";
+            treeNode1.Name = "countChild";
+            treeNode1.Text = "Count";
+            treeNode2.Name = "transitionsChild";
+            treeNode2.Text = "Transitions";
+            treeNode3.Name = "cIndexChild";
+            treeNode3.Text = "C Index";
+            treeNode4.Name = "dataRoot";
+            treeNode4.Text = "Data";
+            treeNode5.Name = "imageRoot";
+            treeNode5.Text = "Image";
+            treeNode6.Name = "pathsRoot";
+            treeNode6.Text = "Paths";
             this.saveOptions.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode46,
-            treeNode47,
-            treeNode48});
+            treeNode4,
+            treeNode5,
+            treeNode6});
             this.saveOptions.Size = new System.Drawing.Size(150, 223);
             this.saveOptions.TabIndex = 0;
             this.saveOptions.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.saveOptions_AfterCheck);
@@ -246,6 +249,7 @@
             this.saveTabsControl.Controls.Add(this.dataTab);
             this.saveTabsControl.Controls.Add(this.imageTab);
             this.saveTabsControl.Controls.Add(this.pathTab);
+            this.saveTabsControl.Controls.Add(this.iterationSettingsTab);
             this.saveTabsControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.saveTabsControl.Location = new System.Drawing.Point(0, 0);
             this.saveTabsControl.Name = "saveTabsControl";
@@ -292,8 +296,8 @@
             this.dataIntroLabel.Name = "dataIntroLabel";
             this.dataIntroLabel.Size = new System.Drawing.Size(282, 39);
             this.dataIntroLabel.TabIndex = 2;
-            this.dataIntroLabel.Text = "Save csv file with various data about each iteration, including agent counts, tra" +
-    "nsitions, and the C Index. Works best at the end of the run.";
+            this.dataIntroLabel.Text = "Save csv file with various data about each iteration up to the present, including" +
+    " agent counts, transitions, and the C Index. Works best at the end of the run.";
             // 
             // saveDataFolderInput
             // 
@@ -583,6 +587,27 @@
             this.pauseIntroLabel.Text = "Auto-pause the CA upon either threshoold type below. If there are multiple inputs" +
     ", the first threshold crossed will cause a pause.";
             // 
+            // iterationSettingsTab
+            // 
+            this.iterationSettingsTab.Controls.Add(this.iterationSettingsLabel);
+            this.iterationSettingsTab.Location = new System.Drawing.Point(4, 22);
+            this.iterationSettingsTab.Name = "iterationSettingsTab";
+            this.iterationSettingsTab.Size = new System.Drawing.Size(288, 197);
+            this.iterationSettingsTab.TabIndex = 3;
+            this.iterationSettingsTab.Text = "Iteration Settings";
+            this.iterationSettingsTab.UseVisualStyleBackColor = true;
+            // 
+            // iterationSettingsLabel
+            // 
+            this.iterationSettingsLabel.AutoSize = true;
+            this.iterationSettingsLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.iterationSettingsLabel.Location = new System.Drawing.Point(0, 0);
+            this.iterationSettingsLabel.MaximumSize = new System.Drawing.Size(288, 0);
+            this.iterationSettingsLabel.Name = "iterationSettingsLabel";
+            this.iterationSettingsLabel.Size = new System.Drawing.Size(286, 65);
+            this.iterationSettingsLabel.TabIndex = 0;
+            this.iterationSettingsLabel.Text = resources.GetString("iterationSettingsLabel.Text");
+            // 
             // SaveDataDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -618,6 +643,8 @@
             this.pauseTabControl.ResumeLayout(false);
             this.pauseTab.ResumeLayout(false);
             this.pauseTab.PerformLayout();
+            this.iterationSettingsTab.ResumeLayout(false);
+            this.iterationSettingsTab.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -670,5 +697,7 @@
         private System.Windows.Forms.Label pauseIntroLabel;
         private System.Windows.Forms.Button messageNextButton;
         private System.Windows.Forms.Button messagePrevButton;
+        private System.Windows.Forms.TabPage iterationSettingsTab;
+        private System.Windows.Forms.Label iterationSettingsLabel;
     }
 }
