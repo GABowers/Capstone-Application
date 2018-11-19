@@ -33,6 +33,8 @@ namespace Capstone_Application
         public List<Tuple<string, double>> storageObjects;
         public int? neighbors;
 
+        public List<object> template_objects;
+
         public StatePageInfo(int currentState)
         {
             stateNum = currentState;

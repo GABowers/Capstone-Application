@@ -265,7 +265,7 @@ namespace Capstone_Application
                         controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 1, editState);
                     }
                 }
-                else
+                else if (mouseDownX != mouseUpX && mouseDownY != mouseUpY)
                 {
                     int maxX = Math.Max(mouseDownX, mouseUpX);
                     int minX = Math.Min(mouseDownX, mouseUpX);
@@ -283,6 +283,7 @@ namespace Capstone_Application
                     {
                         rangeY[i] = (minY + i);
                     }
+                    Console.WriteLine(distanceX + "," + distanceY);
                     if (e.Button == MouseButtons.Left)
                     {
                         controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 0, editState);

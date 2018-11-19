@@ -118,7 +118,6 @@ namespace Capstone_Application
             for (int i = 0; i < mainPageInfo.numStates; ++i)
             {
                 // Needs to be different based on which type of neighborhood we're using.
-
                 StatePageInfo current = new StatePageInfo(i + 1);
                 //StatePageInfo current = new StatePageInfo(mainPageInfo.numStates);
                 statePageInfo.Add(current);
@@ -527,6 +526,7 @@ namespace Capstone_Application
                         myCA.AddAgent(myCA.grid[xProper, yProper].agent);
                     }
                 }
+                UpdateCounter();
             }
         }
 
@@ -557,9 +557,9 @@ namespace Capstone_Application
                         {
                             if (myCA.grid[xProper, yProper].ContainsAgent == true)
                             {
-                                myCA.grid[xProper, yProper].ContainsAgent = false;
-                                myCA.grid[xProper, yProper].agent = null;
                                 myCA.RemoveAgent(xProper, yProper);
+                                myCA.grid[xProper, yProper].agent = null;
+                                myCA.grid[xProper, yProper].ContainsAgent = false;
                             }
                             else if (myCA.grid[xProper, yProper].ContainsAgent == false)
                             {
@@ -573,9 +573,15 @@ namespace Capstone_Application
                         }
                     }
                 }
+                UpdateCounter();
             }
         }
 
+        void UpdateCounter()
+        {
+            //get new statecount from CA, then change counter box
+        }
+        
         //public List<double> ReturnConnectivityIndex()
         //{
         //    Console.WriteLine("ReturnConnectivityIndex");

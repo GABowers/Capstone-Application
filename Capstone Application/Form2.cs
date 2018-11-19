@@ -17,8 +17,10 @@ namespace Capstone_Application
         MainPageController mainPageController;
         Template template;
         TabPage tabPage2;
+        object templateUC;
         bool editForm;
         bool template_reset = false;
+        bool finalized = false;
         public Form2(string name, Form1 main, bool edit)
         {
             editForm = edit;
@@ -127,22 +129,26 @@ namespace Capstone_Application
 
         private void nextTab_Click(object sender, EventArgs e)
         {
+            finalized = true;
             // Consider modifying so StatePageInfo class is added/edited when moving between pages with next/previous
             
             //WHERE SHOULD THIS BEEEEEE
             if (tabControl1.SelectedIndex == 0)
             {
-                if (templateBox.SelectedIndex == 0)
+                switch(template)
                 {
-                    if (int.TryParse(stateNumberBox.Text, out int result1) && int.TryParse(gridSizeHori.Text, out int result2) && int.TryParse(gridSizeVert.Text, out int result3))
-                    {
-                        controllerScript.MainPageNext(int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text), Template.None);
+                    case Template.None:
+                        if (int.TryParse(stateNumberBox.Text, out int result1) && int.TryParse(gridSizeHori.Text, out int result2) && int.TryParse(gridSizeVert.Text, out int result3))
+                        {
+                            controllerScript.MainPageNext(int.Parse(stateNumberBox.Text), int.Parse(gridSizeHori.Text), int.Parse(gridSizeVert.Text), Template.None);
+                            InstantiateNewTabs();
+                        }
+                        break;
+
+                    default:
+                        FinalizeTemplates();
                         InstantiateNewTabs();
-                    }
-                }
-                else
-                {
-                    InstantiateNewTabs();
+                        break;
                 }
             }
             else
@@ -169,67 +175,127 @@ namespace Capstone_Application
                 case Template.None:
                     break;
                 case Template.DLA:
-                    controllerScript.UpdateMainTemplateInfo(template_reset);
-                    int hori = 101;
-                    if(int.TryParse(gridSizeHori.Text, out int result1))
                     {
-                        hori = result1;
                     }
-                    int vert = 101;
-                    if(int.TryParse(gridSizeVert.Text, out int result2))
-                    {
-                        vert = result2;
-                    }
-                    controllerScript.MainPageNext(2, hori, vert, Template.DLA);
-                    int halfHori = (int)((double)hori / 2);
-                    List<double> moveProbs = new List<double>() { 0.25, 0.25, 0.25, 0.25};
-                    List<double> stickingProbs = new List<double>() { 1};
-                    List<List<List<double>>> immobile_probs = new List<List<List<double>>>();
-                    for (int i = 0; i < 2; i++)
-                    {
-                        immobile_probs.Add(new List<List<double>>());
-                        for (int j = 0; j < 2; j++)
-                        {
-                            immobile_probs[i].Add(new List<double>());
-
-                            for (int l = 0; l < 4 + 1; l++)
-                            {
-                                immobile_probs[i][j].Add(0);
-                                // add labels and text fields
-                            }
-                        }
-                    }
-                    controllerScript.StateInfoDirectEdit(0, NType.VonNeumann, GridType.Box, Color.Gray,
-                        new List<Tuple<int, int>>() { new Tuple<int, int>((int)((double)hori / 2), (int)((double)vert / 2)) },
-                        4, 1, immobile_probs, false, 0, new List<double>(), false, new List<double>(),
-                        false, false, false, new List<Tuple<string, double>>());
-                    List<List<List<double>>> tempProbs = new List<List<List<double>>>();
-                    for (int i = 0; i < 2; i++)
-                    {
-                        tempProbs.Add(new List<List<double>>());
-                        for (int j = 0; j < 2; j++)
-                        {
-                            tempProbs[i].Add(new List<double>());
-                            
-                            for (int l = 0; l < 4 + 1; l++)
-                            {
-                                tempProbs[i][j].Add(0);
-                                // add labels and text fields
-                            }
-                        }
-                    }
-                    tempProbs[0][0][0] = 0;
-                    tempProbs[0][0][1] = 1;
-                    tempProbs[0][0][2] = 1;
-                    tempProbs[0][0][3] = 1;
-                    tempProbs[0][0][4] = 1;
-                    controllerScript.StateInfoDirectEdit(1, NType.VonNeumann, GridType.Box, Color.White,
-                        new List<Tuple<int, int>>(), 4, 0, tempProbs, true, 0, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
-                        true, new List<double>() { 0, 0}, false, false, false, new List<Tuple<string, double>>());
-                    break;
+                        break;
                 case Template.Isle_Royale:
                     break;
                 case Template.Ant_Sim:
+                    break;
+                case Template.Gas:
+                    {
+                        GasTemplateUC gasUC = new GasTemplateUC();
+                        templatePanel.Controls.Add(gasUC);
+                        templateUC = gasUC;
+                        
+                    }
+                    break;
+            }
+        }
+
+        private void FinalizeTemplates()
+        {
+            switch (template)
+            {
+                case Template.Gas:
+                    {
+                        GasTemplateUC gasUC = (GasTemplateUC)templateUC;
+                        List<double> template_storage = new List<double>();
+                        string m_name = gasUC.name;
+                        double mol_vol = gasUC.GetVolume();
+                        double vrms = gasUC.GetVRMS();
+                        double mm = gasUC.GetMM();
+                        double t = gasUC.temperature;
+                        double cross_sec = gasUC.GetCross(mol_vol);
+                        int hori = 1000;
+                        if (int.TryParse(gridSizeHori.Text, out int result1))
+                        {
+                            hori = result1;
+                        }
+                        int vert = 1000;
+                        if (int.TryParse(gridSizeVert.Text, out int result2))
+                        {
+                            vert = result2;
+                        }
+                        controllerScript.MainPageNext(1, hori, vert, Template.Gas);
+                        controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.White,
+                            new List<Tuple<int, int>>(), 0, 0, new List<List<List<double>>>(), true, 4, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
+                            false, new List<double>(), false, false, false, new List<Tuple<string, double>>());
+                        double full_vol = ((hori) * (vert) * mol_vol);
+                        template_storage.Add(t);
+                        template_storage.Add(full_vol);
+                        template_storage.Add(mm);
+                        template_storage.Add(Math.Pow(mol_vol, (1.0 / 3.0)));
+                        template_storage.Add(cross_sec);
+                        template_storage.Add(gasUC.k);
+                        template_storage.Add(vrms);
+                        template_storage.Add(gasUC.avagodro);
+                        template_storage.Add(gasUC.resolution);
+                        controllerScript.GetStatePage(0).template_objects = new List<object>();
+                        for (int i = 0; i < template_storage.Count; i++)
+                        {
+                            controllerScript.GetStatePage(0).template_objects.Add(template_storage[i]);
+                        }
+                    }
+                    break;
+                case Template.DLA:
+                    {
+                        controllerScript.UpdateMainTemplateInfo(template_reset);
+                        int hori = 101;
+                        if (int.TryParse(gridSizeHori.Text, out int result1))
+                        {
+                            hori = result1;
+                        }
+                        int vert = 101;
+                        if (int.TryParse(gridSizeVert.Text, out int result2))
+                        {
+                            vert = result2;
+                        }
+                        controllerScript.MainPageNext(2, hori, vert, Template.DLA);
+                        int halfHori = (int)((double)hori / 2);
+                        List<List<List<double>>> immobile_probs = new List<List<List<double>>>();
+                        for (int i = 0; i < 2; i++)
+                        {
+                            immobile_probs.Add(new List<List<double>>());
+                            for (int j = 0; j < 2; j++)
+                            {
+                                immobile_probs[i].Add(new List<double>());
+
+                                for (int l = 0; l < 4 + 1; l++)
+                                {
+                                    immobile_probs[i][j].Add(0);
+                                    // add labels and text fields
+                                }
+                            }
+                        }
+                        controllerScript.StateInfoDirectEdit(0, NType.VonNeumann, GridType.Box, Color.Gray,
+                            new List<Tuple<int, int>>() { new Tuple<int, int>((int)((double)hori / 2), (int)((double)vert / 2)) },
+                            4, 1, immobile_probs, false, 0, new List<double>(), false, new List<double>(),
+                            false, false, false, new List<Tuple<string, double>>());
+                        List<List<List<double>>> tempProbs = new List<List<List<double>>>();
+                        for (int i = 0; i < 2; i++)
+                        {
+                            tempProbs.Add(new List<List<double>>());
+                            for (int j = 0; j < 2; j++)
+                            {
+                                tempProbs[i].Add(new List<double>());
+
+                                for (int l = 0; l < 4 + 1; l++)
+                                {
+                                    tempProbs[i][j].Add(0);
+                                    // add labels and text fields
+                                }
+                            }
+                        }
+                        tempProbs[0][0][0] = 0;
+                        tempProbs[0][0][1] = 1;
+                        tempProbs[0][0][2] = 1;
+                        tempProbs[0][0][3] = 1;
+                        tempProbs[0][0][4] = 1;
+                        controllerScript.StateInfoDirectEdit(1, NType.VonNeumann, GridType.Box, Color.White,
+                            new List<Tuple<int, int>>(), 4, 0, tempProbs, true, 0, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
+                            true, new List<double>() { 0, 0 }, false, false, false, new List<Tuple<string, double>>());
+                    }
                     break;
             }
         }
@@ -237,6 +303,10 @@ namespace Capstone_Application
         private void confirmTab_Click(object sender, EventArgs e)
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
+            if(!finalized)
+            {
+                FinalizeTemplates();
+            }
             UpdateAllValues();
 
             //add code to save all tab data to new class
@@ -304,6 +374,13 @@ namespace Capstone_Application
                     template = Template.Ant_Sim;
                     RunTemplates();
                     break;
+                case 5:
+                    controllerScript.SetupStateInfo();
+                    stateNumberBox.Enabled = false;
+                    stateNumberBox.Text = 1.ToString();
+                    template = Template.Gas;
+                    RunTemplates();
+                    break;
                 default:
                     template = Template.None;
                     break;
@@ -351,5 +428,6 @@ public enum Template
     Random_Walk,
     DLA,
     Isle_Royale,
-    Ant_Sim
+    Ant_Sim,
+    Gas
 }

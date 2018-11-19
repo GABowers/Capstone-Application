@@ -114,6 +114,12 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="GasTemplateUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GasTemplateUC.Designer.cs">
+      <DependentUpon>GasTemplateUC.cs</DependentUpon>
+    </Compile>
     <Compile Include="GroupingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GasTemplateUC.resx">
+      <DependentUpon>GasTemplateUC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GroupingForm.resx">
       <DependentUpon>GroupingForm.cs</DependentUpon>

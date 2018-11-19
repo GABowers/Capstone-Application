@@ -14,6 +14,7 @@ namespace Capstone_Application
         public int xLocation;
         public int yLocation;
         public int iterations_alive = 0;
+        public double[] walkProbs;
         private bool historyChange = false;
         List<Tuple<int, int, int>> history = new List<Tuple<int, int, int>>();
         //List<Tuple<int, int>> neighborhood = new List<Tuple<int, int>>();

@@ -49,7 +49,7 @@ public class CA
     //List<Tuple<int, int, int, int>> dataList;
 
     private List<StatePageInfo> infos;
-    private List<object> generic = new List<object>();
+    private List<List<object>> generics = new List<List<object>>();
 
     //public int CaType { get => caType; set => caType = value; }
     //public AgentController[] ActiveAgentsArray { get => activeAgentsArray; set => activeAgentsArray = value; }
@@ -92,28 +92,50 @@ public class CA
             {
                 Transitions.Add(0);
             }
+            generics.Add(info[i].template_objects);
         }
 
-        double a = (double)width / 2;
-        double b = (double)height / 2;
-        double a_floor = Math.Floor(a);
-        double b_floor = Math.Floor(b);
-        List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
-        int total = width * height;
-        double val = 360.0 / total;
-        for (int i = 0; i < total; i++)
-        {
-            double use = val * i;
-            double rad = (use * Math.PI) / 180.0;
-            double x = a_floor * Math.Cos(rad);
-            double y = b_floor * Math.Sin(rad);
-            
-            Tuple<int, int> loc = new Tuple<int, int>((int)(Math.Floor(x) + a_floor), (int)(Math.Floor(y) + b_floor));
-            locations.Add(loc);
-        }
-        var result = locations.Distinct().ToList();
-        generic.Add(result);
+        TemplateCheck();
+        
     }
+
+    void TemplateCheck()
+    {
+        Console.WriteLine("TEMPLAtae: " + template);
+        switch(template)
+        {
+            case Template.DLA:
+                {
+                    double a = (double)gridWidth / 2;
+                    double b = (double)gridHeight / 2;
+                    double a_floor = Math.Floor(a);
+                    double b_floor = Math.Floor(b);
+                    List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
+                    int total = gridWidth * gridHeight;
+                    double val = 360.0 / total;
+                    for (int i = 0; i < total; i++)
+                    {
+                        double use = val * i;
+                        double rad = (use * Math.PI) / 180.0;
+                        double x = a_floor * Math.Cos(rad);
+                        double y = b_floor * Math.Sin(rad);
+
+                        Tuple<int, int> loc = new Tuple<int, int>((int)(Math.Floor(x) + a_floor), (int)(Math.Floor(y) + b_floor));
+                        locations.Add(loc);
+                    }
+                    var result = locations.Distinct().ToList();
+                    generics.Add(new List<object>() { result });
+                }
+                break;
+            case Template.Gas:
+                {
+
+                }
+                break;
+        }
+        
+    }
+
 
     //public void ChangeCell(int i, int j)
     //{
@@ -253,6 +275,7 @@ public class CA
 
     public void AddAgent(AgentController agent)
     {
+        agent.walkProbs = states[agent.currentState].walkProbs;
         ActiveAgents.Add(agent);
     }
 
@@ -359,10 +382,13 @@ public class CA
                 GetCIndex(i);
             }
         }
-
         else if(template == Template.DLA)
         {
             DLARoutine();
+        }
+        else if (template == Template.Gas)
+        {
+            GasRoutine();
         }
     }
 
@@ -370,7 +396,7 @@ public class CA
     {
         
         AgentController cur = ActiveAgents[ActiveAgents.Count - 1];
-        List<Tuple<int, int>> locations = (List<Tuple<int, int>>)generic[0];
+        List<Tuple<int, int>> locations = (List<Tuple<int, int>>)generics[0][0];
         if (cur.currentState == 0)
         {
             for (int i = 0; i < ActiveAgents.Count; i++)
@@ -441,6 +467,101 @@ public class CA
         for (int i = 0; i < numStates; i++)
         {
             GetCIndex(i);
+        }
+    }
+
+    void GasRoutine()
+    {
+        Tuple<double, double> center = new Tuple<double, double>((double)gridWidth/2, (double)gridHeight/2);
+        // get pressure: num molecules/avagodros = n, T and V from prev data
+        double n = ActiveAgents.Count / 6.022e23;
+        double t = (double)generics[0][0];
+        double v = (double)generics[0][1];
+        double mm = (double)generics[0][2];
+        double side_length = (double)generics[0][3];
+        double cross_sec = (double)generics[0][4];
+        double k = (double)generics[0][5];
+        double vrms = (double)generics[0][6];
+        double avagodro = (double)generics[0][7];
+        int resolution = Convert.ToInt32(generics[0][8]);
+
+        double m = mm / 1000;
+        double p = (n * 8.3145 * t) / v;
+        double d = (mm * p) / (8.3145 * t);
+        double num_den = p / (k * t);
+        double mean_free = 1 / (num_den * cross_sec);
+        double diffuse = (1.0 / 3.0) * (mean_free * vrms);
+        // based on resolution, determine number and location of boxes, as well as centroids
+        List<Tuple<double, double, double, double>> boxes = new List<Tuple<double, double, double, double>>();
+        List<int> box_counts = new List<int>();
+        List<Tuple<double, double>> centroid_vectors = new List<Tuple<double, double>>();
+        double width_inc = gridWidth / (double)resolution;
+        double height_inc = gridHeight / (double)resolution;
+        double width_half = width_inc / 2;
+        double height_half = height_inc / 2;
+        for (int i = 0; i < resolution; i++)
+        {
+            for (int j = 0; j < resolution; j++)
+            {
+                double x_loc = i * width_inc;
+                double y_loc = j * height_inc;
+                boxes.Add(new Tuple<double, double, double, double>(x_loc, y_loc, (x_loc + width_inc), (y_loc + height_inc)));
+                box_counts.Add(0);
+                centroid_vectors.Add(new Tuple<double, double>((x_loc + width_half) - center.Item1, (y_loc + height_half) - center.Item2));
+            }
+        }
+        // Based on resolution, determine equilibrium proportion per box, then compare to reality
+        int total_molecules = ActiveAgents.Count; // CHANGE LATER FOR CORRECT TYPES
+        //double mols_per_box = (double)total_molecules / (boxes.Count);
+        double gradient_x = 0;
+        double gradient_y = 0;
+        List<Tuple<int, int>> agent_locations = new List<Tuple<int, int>>();
+        for (int i = 0; i < ActiveAgents.Count; i++)
+        {
+            // later add check for if agent is of correct type
+            agent_locations.Add(new Tuple<int, int>(ActiveAgents[i].xLocation, ActiveAgents[i].yLocation));
+        }
+        int count = agent_locations.Count;
+        while(agent_locations.Count > 0)
+        {
+            if (count == 0)
+            {
+                throw new Exception("You're looping too many times, something's wrong!");
+            }
+            for (int i = 0; i < boxes.Count; i++)
+            {
+                if(agent_locations[0].Item1 >= boxes[i].Item1 && agent_locations[0].Item1 < boxes[i].Item3 && agent_locations[0].Item2 >= boxes[i].Item2 && agent_locations[0].Item2 < boxes[i].Item4)
+                {
+                    box_counts[i] += 1;
+                    agent_locations.RemoveAt(0);
+                    break;
+                }
+            }
+            count--;
+        }
+        for (int i = 0; i < box_counts.Count; i++)
+        {
+            double num_mol = box_counts[i] / avagodro;
+            double conc = num_mol / v;
+            double partial_pressure = conc * 8.3145 * t;
+            gradient_x += centroid_vectors[i].Item1 * (1 - (partial_pressure/p));
+            gradient_y += centroid_vectors[i].Item2 * (1 - (partial_pressure/p));
+        }
+        double direction_vrms = vrms / 4;
+        gradient_x += center.Item1;
+        gradient_y += center.Item2;
+        for (int i = 0; i < ActiveAgents.Count; i++)
+        {
+            AgentController cur = ActiveAgents[i];
+            double a_x = ((gradient_x - cur.xLocation)*side_length)/d;
+            double a_y = ((gradient_y - cur.yLocation)*side_length)/d;
+            //find proportional change in each direction
+            cur.walkProbs[0] = (cur.walkProbs[0] * diffuse - a_y) / diffuse;
+            cur.walkProbs[1] = (cur.walkProbs[1] * diffuse + a_x) / diffuse;
+            cur.walkProbs[2] = (cur.walkProbs[2] * diffuse + a_y) / diffuse;
+            cur.walkProbs[3] = (cur.walkProbs[3] * diffuse - a_x) / diffuse;
+            AgentMove(cur, i);
+            cur.AddHistory();
         }
     }
 
@@ -878,10 +999,10 @@ public class CA
         rng.GetBytes(bytes);
         var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
         Double randomWalk = ul / (Double)(1UL << 53);
-        double upProb = states[currentAgent.currentState].walkProbs[0];
-        double rightProb = states[currentAgent.currentState].walkProbs[1];
-        double downProb = states[currentAgent.currentState].walkProbs[2];
-        double leftProb = states[currentAgent.currentState].walkProbs[3];
+        double upProb = currentAgent.walkProbs[0];
+        double rightProb = currentAgent.walkProbs[1];
+        double downProb = currentAgent.walkProbs[2];
+        double leftProb = currentAgent.walkProbs[3];
 
         double newRight = (upProb + rightProb);
         double newDown = newRight + downProb;

@@ -30,6 +30,10 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.templatePanel = new System.Windows.Forms.Panel();
+            this.template_reset_checkbox = new System.Windows.Forms.CheckBox();
+            this.template_reset_explanation = new System.Windows.Forms.Label();
+            this.template_reset_label = new System.Windows.Forms.Label();
             this.templateBox = new System.Windows.Forms.ComboBox();
             this.templateBoxLabel = new System.Windows.Forms.Label();
             this.gridSizeHori = new System.Windows.Forms.TextBox();
@@ -44,9 +48,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.previousTab = new System.Windows.Forms.Button();
             this.nextTab = new System.Windows.Forms.Button();
-            this.template_reset_label = new System.Windows.Forms.Label();
-            this.template_reset_explanation = new System.Windows.Forms.Label();
-            this.template_reset_checkbox = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -62,6 +63,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.templatePanel);
             this.tabPage1.Controls.Add(this.template_reset_checkbox);
             this.tabPage1.Controls.Add(this.template_reset_explanation);
             this.tabPage1.Controls.Add(this.template_reset_label);
@@ -81,6 +83,43 @@
             this.tabPage1.Text = "Setup";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // templatePanel
+            // 
+            this.templatePanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.templatePanel.Location = new System.Drawing.Point(3, 161);
+            this.templatePanel.Name = "templatePanel";
+            this.templatePanel.Size = new System.Drawing.Size(577, 337);
+            this.templatePanel.TabIndex = 14;
+            // 
+            // template_reset_checkbox
+            // 
+            this.template_reset_checkbox.AutoSize = true;
+            this.template_reset_checkbox.Location = new System.Drawing.Point(253, 34);
+            this.template_reset_checkbox.Name = "template_reset_checkbox";
+            this.template_reset_checkbox.Size = new System.Drawing.Size(15, 14);
+            this.template_reset_checkbox.TabIndex = 2;
+            this.template_reset_checkbox.UseVisualStyleBackColor = true;
+            this.template_reset_checkbox.CheckedChanged += new System.EventHandler(this.template_reset_checkbox_CheckedChanged);
+            // 
+            // template_reset_explanation
+            // 
+            this.template_reset_explanation.Location = new System.Drawing.Point(286, 29);
+            this.template_reset_explanation.Name = "template_reset_explanation";
+            this.template_reset_explanation.Size = new System.Drawing.Size(291, 40);
+            this.template_reset_explanation.TabIndex = 12;
+            this.template_reset_explanation.Text = "Some template simulations stop after a certain event occurs. To reset the grid at" +
+    " this point, check this box. Make sure to save your data!";
+            this.template_reset_explanation.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // template_reset_label
+            // 
+            this.template_reset_label.Location = new System.Drawing.Point(9, 29);
+            this.template_reset_label.Name = "template_reset_label";
+            this.template_reset_label.Size = new System.Drawing.Size(125, 20);
+            this.template_reset_label.TabIndex = 11;
+            this.template_reset_label.Text = "Template reset";
+            this.template_reset_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // templateBox
             // 
             this.templateBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -88,11 +127,14 @@
             this.templateBox.Items.AddRange(new object[] {
             "None",
             "Random Walk",
-            "DLA"});
+            "DLA",
+            "Isle Royale",
+            "Ant Sim",
+            "Gas"});
             this.templateBox.Location = new System.Drawing.Point(147, 9);
             this.templateBox.Name = "templateBox";
             this.templateBox.Size = new System.Drawing.Size(121, 21);
-            this.templateBox.TabIndex = 9;
+            this.templateBox.TabIndex = 1;
             this.templateBox.SelectedIndexChanged += new System.EventHandler(this.templateBox_SelectedIndexChanged);
             // 
             // templateBoxLabel
@@ -163,7 +205,7 @@
             this.cancelTab.Location = new System.Drawing.Point(465, 532);
             this.cancelTab.Name = "cancelTab";
             this.cancelTab.Size = new System.Drawing.Size(60, 28);
-            this.cancelTab.TabIndex = 4;
+            this.cancelTab.TabIndex = 98;
             this.cancelTab.Text = "Cancel";
             this.cancelTab.UseVisualStyleBackColor = true;
             this.cancelTab.Click += new System.EventHandler(this.cancelTab_Click);
@@ -173,7 +215,7 @@
             this.confirmTab.Location = new System.Drawing.Point(531, 532);
             this.confirmTab.Name = "confirmTab";
             this.confirmTab.Size = new System.Drawing.Size(60, 28);
-            this.confirmTab.TabIndex = 2;
+            this.confirmTab.TabIndex = 99;
             this.confirmTab.Text = "Confirm";
             this.confirmTab.UseVisualStyleBackColor = true;
             this.confirmTab.Click += new System.EventHandler(this.confirmTab_Click);
@@ -191,7 +233,7 @@
             this.previousTab.Location = new System.Drawing.Point(293, 532);
             this.previousTab.Name = "previousTab";
             this.previousTab.Size = new System.Drawing.Size(80, 28);
-            this.previousTab.TabIndex = 3;
+            this.previousTab.TabIndex = 96;
             this.previousTab.Text = "Previous Tab";
             this.previousTab.UseVisualStyleBackColor = true;
             this.previousTab.Click += new System.EventHandler(this.previousTab_Click);
@@ -201,39 +243,10 @@
             this.nextTab.Location = new System.Drawing.Point(379, 532);
             this.nextTab.Name = "nextTab";
             this.nextTab.Size = new System.Drawing.Size(80, 28);
-            this.nextTab.TabIndex = 1;
+            this.nextTab.TabIndex = 97;
             this.nextTab.Text = "Next Tab";
             this.nextTab.UseVisualStyleBackColor = true;
             this.nextTab.Click += new System.EventHandler(this.nextTab_Click);
-            // 
-            // template_reset_label
-            // 
-            this.template_reset_label.Location = new System.Drawing.Point(9, 29);
-            this.template_reset_label.Name = "template_reset_label";
-            this.template_reset_label.Size = new System.Drawing.Size(125, 20);
-            this.template_reset_label.TabIndex = 11;
-            this.template_reset_label.Text = "Template reset";
-            this.template_reset_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // template_reset_explanation
-            // 
-            this.template_reset_explanation.Location = new System.Drawing.Point(286, 29);
-            this.template_reset_explanation.Name = "template_reset_explanation";
-            this.template_reset_explanation.Size = new System.Drawing.Size(291, 40);
-            this.template_reset_explanation.TabIndex = 12;
-            this.template_reset_explanation.Text = "Some template simulations stop after a certain event occurs. To reset the grid at" +
-    " this point, check this box. Make sure to save your data!";
-            this.template_reset_explanation.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // template_reset_checkbox
-            // 
-            this.template_reset_checkbox.AutoSize = true;
-            this.template_reset_checkbox.Location = new System.Drawing.Point(253, 34);
-            this.template_reset_checkbox.Name = "template_reset_checkbox";
-            this.template_reset_checkbox.Size = new System.Drawing.Size(15, 14);
-            this.template_reset_checkbox.TabIndex = 13;
-            this.template_reset_checkbox.UseVisualStyleBackColor = true;
-            this.template_reset_checkbox.CheckedChanged += new System.EventHandler(this.template_reset_checkbox_CheckedChanged);
             // 
             // Form2
             // 
@@ -278,5 +291,6 @@
         private System.Windows.Forms.CheckBox template_reset_checkbox;
         private System.Windows.Forms.Label template_reset_explanation;
         private System.Windows.Forms.Label template_reset_label;
+        private System.Windows.Forms.Panel templatePanel;
     }
 }
