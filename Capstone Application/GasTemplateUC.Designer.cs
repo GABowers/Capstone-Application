@@ -154,7 +154,7 @@
             // resLabel
             // 
             this.resLabel.AutoSize = true;
-            this.resLabel.Location = new System.Drawing.Point(10, 176);
+            this.resLabel.Location = new System.Drawing.Point(6, 176);
             this.resLabel.Name = "resLabel";
             this.resLabel.Size = new System.Drawing.Size(419, 13);
             this.resLabel.TabIndex = 14;
