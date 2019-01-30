@@ -20,10 +20,6 @@ namespace Capstone_Application
         //bool unpaused;
         public bool counterFormOpen = false;
         bool running = false;
-        //bool saveImages = false;
-        string imageSaveFolder;
-        string countSaveFolder;
-        string pathSaveFolder;
         int mouseDownX = 0;
         int mouseDownY = 0;
         int iterationSpeed = 0;
@@ -32,7 +28,7 @@ namespace Capstone_Application
         public static RunSettings runSettings;
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
-        SaveDataDialog saveDialog;
+        //SaveDataDialog saveDialog;
         System.Timers.Timer text_timer = new System.Timers.Timer();
 
         public int? RunMax { get => runMax; set => runMax = value; }
@@ -65,11 +61,6 @@ namespace Capstone_Application
             otherform.Dispose();
         }
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void dansNeighborAnalysisToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -96,7 +87,7 @@ namespace Capstone_Application
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            // load program settings
         }
 
         void toolStripLabel2_Click(object sender, EventArgs e)
@@ -120,7 +111,6 @@ namespace Capstone_Application
                     //text_timer.Stop();
                     text_timer.Enabled = false;
                 }
-                    
             }
         }
 
@@ -148,7 +138,6 @@ namespace Capstone_Application
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            // Ask Dan about this
             while (running == true)
             {
                 if(iterationSpeed == 0)
@@ -159,20 +148,17 @@ namespace Capstone_Application
                 }
                 else if(iterationSpeed > 0)
                 {
+                    DateTime time_start = DateTime.Now;
                     RunCA();
                     Invoke(new Action(() => UpdateImage()));
                     controllerScript.CheckSettings(this);
-                    System.Threading.Thread.Sleep(iterationSpeed);
+                    DateTime time_end = DateTime.Now;
+                    System.Threading.Thread.Sleep(Math.Max((iterationSpeed - Convert.ToInt32((time_end - time_start).TotalMilliseconds)), 0));
                 }
             }
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-
-        }
-
-        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
 
         }
@@ -230,10 +216,6 @@ namespace Capstone_Application
                     controllerScript.editModeOn = false;
                 }
             }
-        }
-
-        private void innerPictureBox_Click(object sender, EventArgs e)
-        {
         }
 
         private void innerPictureBox_MouseDown(object sender, MouseEventArgs e)
@@ -297,23 +279,6 @@ namespace Capstone_Application
             }
         }
 
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
-        private void setAutoResetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cellCountToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // Move this stuff to be performed when a user creates their setup in the separate dialog box
-            // We don't want this done every time we click on the menu item.
-
-        }
-
         public void UpdateIterationResetCell(int states)
         {
             for (int i = 0; i < states; i++)
@@ -363,16 +328,6 @@ namespace Capstone_Application
             // selectedMenuItem.Owner.Show();
         }
 
-        //string GetCountResetText(string controlName)
-        //{
-        //    return this.cellCountToolStripMenuItem.DropDownItems[controlName].Text;
-        //}
-
-        //string GetCountPauseText(string controlName)
-        //{
-        //    return this.autoPauseCellCount.DropDownItems[controlName].Text;
-        //}
-
         public void InvokeImageSave(string time, string path)
         {
             Invoke(new Action(() => SaveImages(time, path)));
@@ -385,31 +340,10 @@ namespace Capstone_Application
             innerPictureBox.Image.Save(fileName);
         }
 
-        //public void SaveCounts(string time)
-        //{
-        //    string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count.txt";
-        //    string fileName = (countSaveFolder + "/" + countName);
-        //    using (StreamWriter wt = new StreamWriter(fileName))
-        //    {
-
-        //        for (int i = 0; i < controllerScript.FullCount.Count; ++i)
-        //        {
-        //            wt.Write("Iteration: " + (i + 1).ToString());
-        //            for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
-        //            {
-        //                string cellTypeString = (j + 1).ToString();
-        //                wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
-        //            }
-        //            wt.WriteLine();
-        //        }
-        //        wt.Close();
-        //    }
-        //}
-
-        public void AutoPathSave(string time)
+        public void AutoPathSave(string time, string folder_path)
         {
             string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Agent Paths.txt";
-            string fileName = (pathSaveFolder + "/" + countName);
+            string fileName = (folder_path + "/" + countName);
             string agent = "Agent ";
             using (StreamWriter wt = new StreamWriter(fileName))
             {
@@ -437,33 +371,12 @@ namespace Capstone_Application
             }
         }
 
-        //public void SaveCount()
-        //{
-        //    string countName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-        //        DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-        //        controllerScript.caRuns + " Iteration " + controllerScript.iterations;
-        //    string fileName = (countSaveFolder + "/" + countName);
-
-        //    using (StreamWriter wt = new StreamWriter(fileName))
-        //    {
-
-        //        for (int i = 0; i < controllerScript.FullCount.Count; ++i)
-        //        {
-        //            wt.Write("Iteration: " + (i + 1).ToString());
-        //            for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
-        //            {
-        //                string cellTypeString = (j + 1).ToString();
-        //                wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
-        //            }
-        //            wt.WriteLine();
-        //        }
-        //        wt.Close();
-        //    }
-        //}
-
         public void SaveData(string time, bool counts, bool trans, bool cIndex, string path)
         {
-            path = path + "/" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Data.csv";
+            if(string.IsNullOrEmpty(Path.GetExtension(path)))
+            {
+                path = path + "/" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Data.csv";
+            }
             //Console.WriteLine("Path: " + path);
             List<int> iterations = new List<int>();
             if(counts)
@@ -484,6 +397,7 @@ namespace Capstone_Application
             {
                 //pertinent info - run, iteration, time
                 wt.Write("Date,Run,Iterations");
+                wt.WriteLine();
                 string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + "," + controllerScript.caRuns + "," + controllerScript.iterations;
                 wt.Write(thing);
                 wt.WriteLine();
@@ -526,14 +440,14 @@ namespace Capstone_Application
             int index_val = 0;
             for (int i = 0; i < iterations.Count; ++i)
             {
-                int line = i + 2;
+                int line = i + 3;
                 string currentLine = lines[line];
                 string[] currentLineArray = currentLine.Split(',');
                 int it = int.Parse(currentLineArray[0]);
                 if (counts)
                 {
                     List<Tuple<int, List<int>>> local_count = controllerScript.FullCount;
-                    if (trans_val <= local_count.Count - 1)
+                    if (count_val <= local_count.Count - 1)
                     {
                         if (local_count[count_val].Item1 == it)
                         {
@@ -577,7 +491,7 @@ namespace Capstone_Application
                 if (cIndex)
                 {
                     List<Tuple<int, List<double>>> local_index = controllerScript.FullIndex;
-                    if (index_val <= local_index.Count - 1)
+                    if (index_val <= local_index.Count- 1)
                     {
                         if (local_index[index_val].Item1 == it)
                         {
@@ -618,50 +532,6 @@ namespace Capstone_Application
             counterFormOpen = true;
         }
 
-        private void resetIterationTextBox_Leave(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void iterationCountCountSave_Leave(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void iterationCountImageSave_Leave(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void cellCountToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            ////saveFileDialog1.InitialDirectory = Application.StartupPath;
-            //saveFileDialog1.Filter = "(*.txt)|*.txt|(*.*)|*.*";
-            //saveFileDialog1.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-            //    DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Run " +
-            //    controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Cell Count";
-            ////saveFileDialog1.RestoreDirectory = true;
-
-            //if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            //{
-            //    using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
-            //    {
-            //        for (int i = 0; i < controllerScript.FullCount.Count; ++i)
-            //        {
-            //            wt.Write("Iteration: " + (i+1).ToString());
-            //            for (int j = 0; j < controllerScript.FullCount[i].Count; ++j)
-            //            {
-            //                string cellTypeString = (j + 1).ToString();
-            //                wt.Write(" Cell Type " + cellTypeString + ": " + controllerScript.FullCount[i][j]);
-            //            }
-            //            wt.WriteLine();
-            //        }
-            //        wt.Close();
-            //    }
-            //}
-        }
-
         private void imageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
@@ -675,56 +545,10 @@ namespace Capstone_Application
             }
         }
 
-        private void pathToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //    if (controllerScript.myCA.CaType == 1)
-            //    {
-            //        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            //        saveFileDialog1.InitialDirectory = Application.StartupPath;
-            //        saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            //        saveFileDialog1.FilterIndex = 2;
-            //        saveFileDialog1.RestoreDirectory = true;
-
-            //        if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-            //        {
-            //            string agent = "Agent ";
-            //            using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
-            //            {
-            //                int maxLength = (controllerScript.myCA.gridWidth.ToString().Length * 2) + 4;
-
-            //                if ((controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6 > maxLength)
-            //                {
-            //                    maxLength = (controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6;
-            //                }
-            //                for (int i = 0; i < controllerScript.myCA.ActiveAgents.Count; ++i)
-            //                {
-            //                    wt.Write(agent.PadRight(maxLength - (i + 1).ToString().Length) + (i + 1) + "|");
-            //                }
-            //                wt.WriteLine();
-            //                for (int i = 0; i < (controllerScript.iterations + 1); i++)
-            //                {
-            //                    for (int j = 0; j < controllerScript.myCA.ActiveAgents.Count; j++)
-            //                    {
-            //                        wt.Write(controllerScript.myCA.ActiveAgents[j].History[i].ToString().PadRight(maxLength) + "|");
-            //                    }
-            //                    wt.WriteLine();
-            //                }
-
-            //                wt.Close();
-            //            }
-            //        }
-            //    }
-        }
-
         private void visualizationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ImageTrace showImageTrace = new ImageTrace();
             showImageTrace.ShowDialog();
-        }
-
-        private void speedInput_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void decrease_Click(object sender, EventArgs e)
@@ -760,15 +584,9 @@ namespace Capstone_Application
             }
         }
 
-        private void innerPictureBox_MouseHover(object sender, EventArgs e)
-        {
-
-        }
-
         private void innerPictureBox_MouseLeave(object sender, EventArgs e)
         {
             //base.OnMouseLeave(e);
-
             locationTT.Hide(innerPictureBox);
         }
 
@@ -791,91 +609,57 @@ namespace Capstone_Application
             controllerScript.ResetRuns();
             UpdateRunBox();
         }
-
-        private void runCountMaxRuns_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void runCountMaxRuns_CheckedChanged(object sender, EventArgs e)
-        {
-            if (runCountMaxRuns.Checked)
-            {
-            }
-            else
-            {
-            }
-        }
-
-        private void toolStripTextBox1_Leave(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            if (int.TryParse(toolStripTextBox1.Text, out int result))
-            {
-            }
-            else
-            {
-            }
-        }
-
-
-
-        private void autoPauseIterationCount_Click(object sender, EventArgs e)
-        {
-
-        }
+        
         private void dataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             //saveFileDialog1.InitialDirectory = Application.StartupPath;
-            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog1.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = true;
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
-                {
-                    //pertinent info - run, iteration, time
-                    string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs: " + controllerScript.caRuns + " Iterations: " + controllerScript.iterations;
-                    wt.Write(thing);
-                    wt.WriteLine();
-                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                    {
-                        string cellTypeString = (j + 1).ToString();
-                        wt.Write("Type " + cellTypeString);
-                    }
-                    wt.WriteLine();
-                    for (int i = 0; i < controllerScript.iterations; ++i)
-                    {
-                        wt.Write("Iteration: " + (i + 1).ToString());
-                        wt.WriteLine();
-                    }
-                    wt.Close();
-                }
-                string[] lines = File.ReadAllLines(saveFileDialog1.FileName);
-                for (int i = 0; i < controllerScript.iterations; ++i)
-                {
-                    int line = i + 2;
-                    string currentLine = lines[line];
-                    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                    {
-                    }
-                    lines[line] = currentLine;
-                }
-                using (StreamWriter writer = new StreamWriter(saveFileDialog1.FileName, false))
-                {
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        writer.Write(lines[i]);
-                        writer.WriteLine();
-                    }
-                    writer.Close();
-                }
+                SaveData(DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff"), runSettings.SaveCounts, runSettings.SaveTrans, runSettings.SaveIndex, saveFileDialog1.FileName);
+                //using (StreamWriter wt = new StreamWriter(saveFileDialog1.FileName))
+                //{
+                //    //pertinent info - run, iteration, time
+                //    string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs: " + controllerScript.caRuns + " Iterations: " + controllerScript.iterations;
+                //    wt.Write(thing);
+                //    wt.WriteLine();
+                //    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                //    {
+                //        string cellTypeString = (j + 1).ToString();
+                //        wt.Write("Type " + cellTypeString);
+                //    }
+                //    wt.WriteLine();
+                //    for (int i = 0; i < controllerScript.iterations; ++i)
+                //    {
+                //        wt.Write("Iteration: " + (i + 1).ToString());
+                //        wt.WriteLine();
+                //    }
+                //    wt.Close();
+                //}
+                //string[] lines = File.ReadAllLines(saveFileDialog1.FileName);
+                //for (int i = 0; i < controllerScript.iterations; ++i)
+                //{
+                //    int line = i + 2;
+                //    string currentLine = lines[line];
+                //    for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                //    {
+
+                //    }
+                //    lines[line] = currentLine;
+                //}
+                //using (StreamWriter writer = new StreamWriter(saveFileDialog1.FileName, false))
+                //{
+                //    for (int i = 0; i < lines.Length; i++)
+                //    {
+                //        writer.Write(lines[i]);
+                //        writer.WriteLine();
+                //    }
+                //    writer.Close();
+                //}
             }
         }
 
@@ -918,7 +702,7 @@ namespace Capstone_Application
 
         private void runSettingsButton_Click(object sender, EventArgs e)
         {
-            saveDialog = new SaveDataDialog();
+            SaveDataDialog saveDialog = new SaveDataDialog();
             saveDialog.Show();
         }
 
@@ -930,6 +714,8 @@ namespace Capstone_Application
         private void ResetCA()
         {
             controllerScript.ResetGrid(this);
+            controllerScript.CreateCA((this));
+            controllerScript.StartCA(this);
             UpdateRunBox();
             UpdateImage();
         }

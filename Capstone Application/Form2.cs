@@ -33,7 +33,7 @@ namespace Capstone_Application
                 controllerScript.SetMainInfo(stateNumberBox, gridSizeHori, gridSizeVert);
                 InstantiateNewTabs();
                 PreventChanges();
-                //RetrieveValues();
+                RetrieveValues();
             }
             templateBox.SelectedIndex = 0;
             DisableTemplateResetInfo();
@@ -90,16 +90,16 @@ namespace Capstone_Application
             
         }
 
-        //void RetrieveValues()
-        //{
-        //    int amountOfStates = int.Parse(stateNumberBox.Text);
-        //    //for loop for each tab
-        //    for (int i = 1; i < tabControl1.TabPages.Count; ++i)
-        //    {
-        //        UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
-        //        controllerScript.AdvancedRetrieveProbValues(newUC, i);
-        //    }
-        //}
+        void RetrieveValues()
+        {
+            stateNumberBox.Text = controllerScript.MainPageInfo.numStates.ToString();
+            //for loop for each tab
+            for (int i = 1; i < tabControl1.TabPages.Count; ++i)
+            {
+                UserControl2 newUC = tabControl1.TabPages[i].Controls.Cast<UserControl2>().Where(c => c.Name == ("uc." + i)).FirstOrDefault();
+                controllerScript.AdvancedRetrieveProbValues(newUC, i);
+            }
+        }
 
         private void UpdateAllValues()
         {

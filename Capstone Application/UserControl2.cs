@@ -370,6 +370,7 @@ namespace Capstone_Application
                     }
                 }
             }
+            // pull from real probs if any old
             for (int i = 0; i < probs.Count; i++)
             {
                 for (int j = 0; j < probs[i].Count; j++)
@@ -382,8 +383,8 @@ namespace Capstone_Application
                         }
                         catch (Exception)
                         {
-
-                            throw;
+                            // do nothing
+                            //throw;
                         }
                     }
                 }
@@ -438,10 +439,6 @@ namespace Capstone_Application
                     }
                 }
             }
-
-            
-
-            
             // populate fields with prob data
         }
 
@@ -479,47 +476,65 @@ namespace Capstone_Application
             }
         }
 
-        //public void UpdateValues(StatePageInfo info, int currentState)
-        //{
-        //    colorBox.BackColor = info.color;
-        //    agentCount.Text = info.startingAmount.ToString();
-
-        //    for (int otherState = 0; otherState < info.advProbs.GetLength(0); otherState++)
-        //    {
-        //        int currentOtherState = otherState + 1;
-
-        //        // unlikely but possible - situations where one would set this to a value
-        //        // (prob of staying the same is currently automatically assigned as the remainder
-        //        // of however much of 0-1 is used)
-        //        // rather than keeping blank vVv   Just consider it...
-        //        if (currentOtherState == currentState)
-        //        {
-        //            for (int neighborState = 0; neighborState < info.advProbs.GetLength(1); neighborState++)
-        //            {
-        //                info.advProbs[otherState, neighborState] = new double[1, 1];
-        //            }
-        //            continue;
-        //        }
-
-        //        string stateName = "StatePanel" + otherState;
-        //        for (int neighborState = 0; neighborState < info.advProbs.GetLength(1); neighborState++)
-        //        {
-        //            string neighborName = "NeighborPanel" + neighborState;
-        //            To_State_Panel currentStatePanel = this.inputPanel.Controls.Find(stateName, true).FirstOrDefault() as To_State_Panel;
-        //            Neighbor_State_Entry currentNeighbor = currentStatePanel.Controls.Find(neighborName, true).FirstOrDefault() as Neighbor_State_Entry;
-        //            int columns = currentNeighbor.dataGridView1.ColumnCount;
-        //            int rows = currentNeighbor.dataGridView1.RowCount;
-        //            info.advProbs[otherState, neighborState] = new double[rows, columns];
-        //            for (int i = 0; i < rows; i++)
-        //            {
-        //                for (int j = 0; j < columns; j++)
-        //                {
-        //                    currentNeighbor.dataGridView1[i, j].Value = info.advProbs[otherState, neighborState][i, j];
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        public void UpdateValues(StatePageInfo info, int currentState)
+        {
+            colorBox.BackColor = info.color.Value;
+            agentCount.Text = info.startingAmount.ToString();
+            probs = info.probs;
+            stickingProbs = info.stickingProbs;
+            sticking = info.sticking.Value;
+            moveProbs = info.moveProbs;
+            storage = info.storage.Value;
+            ai = info.ai.Value;
+            growth = info.growth.Value;
+            storageObjects = info.storageObjects;
+            startingLocations = info.startingLocations;
+            mobileN = info.mobileNeighborhood.Value;
+            switch (info.nType)
+            {
+                case NType.None:
+                    neighborBox.SelectedIndex = 0;
+                    break;
+                case NType.VonNeumann:
+                    neighborBox.SelectedIndex = 1;
+                    break;
+                case NType.Moore:
+                    neighborBox.SelectedIndex = 2;
+                    break;
+                case NType.Hybrid:
+                    neighborBox.SelectedIndex = 3;
+                    break;
+                case NType.Advanced:
+                    neighborBox.SelectedIndex = 4;
+                    break;
+            }
+            switch(info.gridType)
+            {
+                case GridType.Box:
+                    edgeBox.SelectedIndex = 0;
+                    break;
+                case GridType.CylinderH:
+                    edgeBox.SelectedIndex = 1;
+                    break;
+                case GridType.CylinderW:
+                    edgeBox.SelectedIndex = 2;
+                    break;
+                case GridType.Torus:
+                    edgeBox.SelectedIndex = 3;
+                    break;
+            }
+            switch(info.mobile)
+            {
+                case false:
+                    mobilityBox.SelectedIndex = 0;
+                    break;
+                case true:
+                    mobilityBox.SelectedIndex = 1;
+                    break;
+            }
+            RefreshNeighborFields();
+            RefreshMobilityButtons();
+        }
 
         public void SetValues(StatePageInfo info, int currentState)
         {

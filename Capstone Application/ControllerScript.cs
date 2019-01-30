@@ -17,16 +17,14 @@ namespace Capstone_Application
         public CA myCA;
         static List<StatePageInfo> statePageInfo;
         public RunSettings runSettings = Form1.runSettings;
-        public GridType gType;
         public bool reset_now = false;
         List<NType> nTypes;
         List<GridType> grids;
-        List<Color> colors = new List<Color>();
-        List<float> ratios = new List<float>();
-        List<int> cellAmounts = new List<int>();
-        List<Tuple<int, List<int>>> fullCount = new List<Tuple<int, List<int>>>();
-        List<Tuple<int, List<int>>> fullTransitions = new List<Tuple<int, List<int>>>();
-        List<Tuple<int, List<double>>> fullIndex = new List<Tuple<int, List<double>>>();
+        List<Color> colors;
+        List<int> cellAmounts;
+        List<Tuple<int, List<int>>> fullCount;
+        List<Tuple<int, List<int>>> fullTransitions;
+        List<Tuple<int, List<double>>> fullIndex;
 
         public bool editModeOn = false;
         bool createdCA = false;
@@ -34,7 +32,7 @@ namespace Capstone_Application
         //bool running;
         public int iterations = 0;
         public int caRuns = 1;
-        public int neighborhoodType;
+        //public int neighborhoodType;
         int localGridWidth;
         int localGridHeight;
         public int amountOfCellTypes;
@@ -178,10 +176,10 @@ namespace Capstone_Application
             newUC.SetValues(statePageInfo[(currentState - 1)], currentState);
         }
 
-        //public void AdvancedRetrieveProbValues(UserControl2 newUC, int currentState)
-        //{
-        //    newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
-        //}
+        public void AdvancedRetrieveProbValues(UserControl2 newUC, int currentState)
+        {
+            newUC.UpdateValues(statePageInfo[(currentState - 1)], currentState);
+        }
 
         //public void Update2ndOrder(_2ndOrderTabs newUC, int currentState)
         //{
@@ -308,7 +306,15 @@ namespace Capstone_Application
             if (CreatedCA == false)
             {
                 iterations = 0;
+                caRuns = 1;
                 editModeOn = false;
+                grids = new List<GridType>();
+                nTypes = new List<NType>();
+                colors = new List<Color>();
+                cellAmounts = new List<int>();
+                fullCount = new List<Tuple<int, List<int>>>();
+                fullTransitions = new List<Tuple<int, List<int>>>();
+                fullIndex = new List<Tuple<int, List<double>>>();
                 amountOfCellTypes = mainPageInfo.numStates;
                 Template template = mainPageInfo.template;
                 bool reset = false;
@@ -316,22 +322,22 @@ namespace Capstone_Application
                 {
                     reset = mainPageInfo.template_reset.Value;
                 }
-                nTypes = new List<NType>();
+                
                 for (int i = 0; i < statePageInfo.Count; i++)
                 {
                     nTypes.Add(statePageInfo[i].nType.Value);
                 }
-                grids = new List<GridType>();
+                
                 for (int i = 0; i < statePageInfo.Count; i++)
                 {
                     grids.Add(statePageInfo[i].gridType.Value);
                 }
+                
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
                 myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, grids, statePageInfo, template, reset);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
-                    ratios.Add(statePageInfo[h].startingAmount.Value);
                     cellAmounts.Add(statePageInfo[h].startingAmount.Value);
                     colors.Add(statePageInfo[h].color.Value);
                 }
@@ -381,7 +387,7 @@ namespace Capstone_Application
             return (byte)((float)source * (float)alpha / (float)byte.MaxValue + 0.5f);
         }
 
-        public unsafe void UpdateBoard(Form1 currentForm)
+        public void UpdateBoard(Form1 currentForm)
         {
             //BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
             Color tileColor;
@@ -450,22 +456,18 @@ namespace Capstone_Application
 
         public void ClearGrid()
         {
-            //Destroy(tex);
-            //Destroy(board);
-            //Destroy(sr);
+            // clear grid allows CA settings to persist while removing this specific "run."
             iterations = 0;
-            ratios.Clear();
-            colors.Clear();
             FullCount.Clear();
             FullTransitions.Clear();
-            //imageList.Clear();
-            //probabilities.Clear();
+            FullIndex.Clear();
             myCA = null;
             AlreadyCA = false;
         }
 
         public void ResetGrid(Form1 form)
         {
+            // this should be for reseting everything, including CA settings
             string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
             CheckFinalDataSave(form, time);
             caRuns++;
@@ -731,7 +733,7 @@ namespace Capstone_Application
                         if (remainder == 0)
                         {
                             // Auto image save
-                            form.AutoPathSave(time);
+                            form.AutoPathSave(time, runSettings.PathsPath);
                         }
                     }
                 }
@@ -778,7 +780,7 @@ namespace Capstone_Application
                 {
                     if (runSettings.PathsIncs[i] == -1)
                     {
-                        form.AutoPathSave(time);
+                        form.AutoPathSave(time, runSettings.PathsPath);
                     }
                 }
             }

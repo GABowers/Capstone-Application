@@ -101,7 +101,6 @@
             this.menuStrip1.Size = new System.Drawing.Size(505, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // toolStripMenuItem1
             // 
@@ -112,7 +111,6 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItem1.Text = "File";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // saveTemplateToolStripMenuItem
             // 
@@ -182,7 +180,6 @@
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
             this.pathToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.pathToolStripMenuItem.Text = "Path";
-            this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
             // 
             // visualizationToolStripMenuItem
             // 
@@ -392,15 +389,11 @@
             this.runCountMaxRuns.Name = "runCountMaxRuns";
             this.runCountMaxRuns.Size = new System.Drawing.Size(173, 22);
             this.runCountMaxRuns.Text = "Set Max Auto Runs";
-            this.runCountMaxRuns.CheckedChanged += new System.EventHandler(this.runCountMaxRuns_CheckedChanged);
-            this.runCountMaxRuns.Click += new System.EventHandler(this.runCountMaxRuns_Click);
             // 
             // toolStripTextBox1
             // 
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
-            this.toolStripTextBox1.Leave += new System.EventHandler(this.toolStripTextBox1_Leave);
-            this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
             // 
             // resetCountToolStripMenuItem
             // 
@@ -446,7 +439,6 @@
             this.speedInput.Name = "speedInput";
             this.speedInput.Size = new System.Drawing.Size(25, 25);
             this.speedInput.Text = "0";
-            this.speedInput.Click += new System.EventHandler(this.speedInput_Click);
             this.speedInput.TextChanged += new System.EventHandler(this.speedInput_TextChanged);
             // 
             // decrease
@@ -486,7 +478,6 @@
             // 
             // saveFileDialog1
             // 
-            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
             // 
             // iterationLabel
             // 
@@ -513,10 +504,8 @@
             this.innerPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.innerPictureBox.TabIndex = 3;
             this.innerPictureBox.TabStop = false;
-            this.innerPictureBox.Click += new System.EventHandler(this.innerPictureBox_Click);
             this.innerPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseDown);
             this.innerPictureBox.MouseLeave += new System.EventHandler(this.innerPictureBox_MouseLeave);
-            this.innerPictureBox.MouseHover += new System.EventHandler(this.innerPictureBox_MouseHover);
             this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
             this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
             // 
