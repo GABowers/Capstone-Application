@@ -763,8 +763,8 @@ public class CA
             cIndex = (finalEdge / (double)maxEdges) * ((double)ConnectedVertices / amount);
         }
         //Console.WriteLine(separateAgents[state].Count + "," + finalEdge + "," + maxEdges + "," + ConnectedVertices + "," + amount + "," +  cIndex);
+        CIndexes[state] = cIndex;
         return cIndex;
-        //CIndexes[state] = cIndex;
     }
 
     private List<int> GetNeighborCount(int x, int y, int oldState)

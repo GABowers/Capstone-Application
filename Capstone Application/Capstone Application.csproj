@@ -49,10 +49,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>148664D2139679C967351104EF82A3B1A95D866E</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>D2B7D63760C287E0CE6D8E18B495147A566EF67B</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Capstone Application_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Capstone Application_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -218,6 +218,7 @@
     <EmbeddedResource Include="UserControl2.resx">
       <DependentUpon>UserControl2.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Capstone Application_1_TemporaryKey.pfx" />
     <None Include="Capstone Application_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
