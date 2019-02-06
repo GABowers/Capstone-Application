@@ -187,8 +187,9 @@ namespace Capstone_Application
                         GasTemplateUC gasUC = new GasTemplateUC();
                         templatePanel.Controls.Add(gasUC);
                         templateUC = gasUC;
-                        
                     }
+                    break;
+                case Template.Random_Walk:
                     break;
             }
         }
@@ -197,6 +198,32 @@ namespace Capstone_Application
         {
             switch (template)
             {
+                case Template.Random_Walk:
+                    {
+                        controllerScript.UpdateMainTemplateInfo(template_reset);
+                        int hori = 101;
+                        if (int.TryParse(gridSizeHori.Text, out int result1))
+                        {
+                            hori = result1;
+                        }
+                        int vert = 101;
+                        if (int.TryParse(gridSizeVert.Text, out int result2))
+                        {
+                            vert = result2;
+                        }
+                        int statenum = int.Parse(stateNumberBox.Text);
+                        controllerScript.MainPageNext(statenum, hori, vert, Template.Random_Walk);
+                        int halfHori = (int)(hori / 2.0);
+                        int halfVert = (int)(vert / 2.0);
+                        List<List<List<double>>> immobile_probs = new List<List<List<double>>>();
+                        List<List<List<double>>> tempProbs = new List<List<List<double>>>();
+                        controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.White,
+                            new List<Tuple<int, int>>() { new Tuple<int, int>(halfHori, halfVert)}, 0, 1, 
+                            tempProbs, true, 0, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
+                            true, new List<double>() { 0, 0 }, false, false, false, new List<Tuple<string, double>>());
+                    }
+                    break;
+
                 case Template.Gas:
                     {
                         GasTemplateUC gasUC = (GasTemplateUC)templateUC;
@@ -350,7 +377,7 @@ namespace Capstone_Application
                 case 1:
                     controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = false;
-                    stateNumberBox.Text = 2.ToString();
+                    stateNumberBox.Text = 1.ToString();
                     template = Template.Random_Walk;
                     RunTemplates();
                     break;

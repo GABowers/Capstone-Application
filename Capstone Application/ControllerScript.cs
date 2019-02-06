@@ -366,7 +366,8 @@ namespace Capstone_Application
             {
                 iterations = 0;
                 Console.WriteLine(localGridWidth + "," +  localGridHeight);
-                bmp = new DirectBitmap(localGridWidth, localGridHeight);
+                bmp = new 
+                    DirectBitmap(localGridWidth, localGridHeight);
                 //currentForm.innerPictureBox.Image = bmp.Bitmap;
                 UpdateBoard(currentForm);
                 AlreadyCA = true;

@@ -343,7 +343,7 @@ public class CA
                 Transitions[(i * (numStates - 1)) + j] = 0;
             }
         }
-        if (template == Template.None)
+        if (template == Template.None || template == Template.Random_Walk)
         {
             for (int x = 0; x < ActiveAgents.Count; ++x)
             {
