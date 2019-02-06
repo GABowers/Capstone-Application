@@ -396,7 +396,7 @@ public class CA
     {
         
         AgentController cur = ActiveAgents[ActiveAgents.Count - 1];
-        List<Tuple<int, int>> locations = (List<Tuple<int, int>>)generics[0][0];
+        List<Tuple<int, int>> locations = (List<Tuple<int, int>>)generics[2][0];
         if (cur.currentState == 0)
         {
             for (int i = 0; i < ActiveAgents.Count; i++)
