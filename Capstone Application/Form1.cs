@@ -663,43 +663,6 @@ namespace Capstone_Application
             }
         }
 
-        public void SaveGroupings(List<List<double>> groupings)
-        {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "(*.csv)|*.csv";
-            sfd.FileName = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString() + " " +
-                DateTime.Now.Hour.ToString() + "-" + DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString() + " Grouping Save";
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                using (StreamWriter wt = new StreamWriter(sfd.FileName))
-                {
-                    for (int i = 0; i < groupings[0].Count; i++)
-                    {
-                        wt.Write("State " + (i + 1).ToString() + ",");
-                    }
-                    wt.WriteLine();
-                    for (int i = 0; i < groupings.Count; ++i)
-                    {
-                        for (int j = 0; j < groupings[i].Count; ++j)
-                        {
-                            wt.Write(groupings[i][j] + ",");
-                        }
-                        wt.WriteLine();
-                    }
-                    wt.Close();
-                }
-            }
-        }
-
-        private void groupingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if(controllerScript.AlreadyCA)
-            {
-                GroupingForm newGrouper = new GroupingForm(this);
-                newGrouper.ShowDialog();
-            }
-        }
-
         private void runSettingsButton_Click(object sender, EventArgs e)
         {
             SaveDataDialog saveDialog = new SaveDataDialog();

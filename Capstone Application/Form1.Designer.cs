@@ -45,7 +45,6 @@
             this.analysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dansNeighborAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.randomWalkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.mainWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,6 +68,7 @@
             this.resetCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.runCountBox = new System.Windows.Forms.ToolStripLabel();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.iterationLabel = new System.Windows.Forms.ToolStripLabel();
             this.iterationCountBox = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -78,7 +78,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.iterationLabel = new System.Windows.Forms.ToolStripLabel();
             this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -199,8 +198,7 @@
             // 
             this.analysisToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dansNeighborAnalysisToolStripMenuItem,
-            this.randomWalkToolStripMenuItem,
-            this.groupingToolStripMenuItem});
+            this.randomWalkToolStripMenuItem});
             this.analysisToolStripMenuItem.Name = "analysisToolStripMenuItem";
             this.analysisToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.analysisToolStripMenuItem.Text = "Analysis";
@@ -217,13 +215,6 @@
             this.randomWalkToolStripMenuItem.Name = "randomWalkToolStripMenuItem";
             this.randomWalkToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.randomWalkToolStripMenuItem.Text = "Random Walk";
-            // 
-            // groupingToolStripMenuItem
-            // 
-            this.groupingToolStripMenuItem.Name = "groupingToolStripMenuItem";
-            this.groupingToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.groupingToolStripMenuItem.Text = "Grouping";
-            this.groupingToolStripMenuItem.Click += new System.EventHandler(this.groupingToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
@@ -413,6 +404,16 @@
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
+            // iterationLabel
+            // 
+            this.iterationLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.iterationLabel.Image = ((System.Drawing.Image)(resources.GetObject("iterationLabel.Image")));
+            this.iterationLabel.ImageTransparentColor = System.Drawing.Color.Transparent;
+            this.iterationLabel.Name = "iterationLabel";
+            this.iterationLabel.Size = new System.Drawing.Size(51, 22);
+            this.iterationLabel.Text = "Iteration";
+            this.iterationLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            // 
             // iterationCountBox
             // 
             this.iterationCountBox.Name = "iterationCountBox";
@@ -475,19 +476,6 @@
             // 
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
-            // saveFileDialog1
-            // 
-            // 
-            // iterationLabel
-            // 
-            this.iterationLabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.iterationLabel.Image = ((System.Drawing.Image)(resources.GetObject("iterationLabel.Image")));
-            this.iterationLabel.ImageTransparentColor = System.Drawing.Color.Transparent;
-            this.iterationLabel.Name = "iterationLabel";
-            this.iterationLabel.Size = new System.Drawing.Size(51, 22);
-            this.iterationLabel.Text = "Iteration";
-            this.iterationLabel.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             // 
             // innerPictureBox
             // 
@@ -583,7 +571,6 @@
         private System.Windows.Forms.ToolStripMenuItem resetCountToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem randomWalkToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem groupingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runSettingsButton;
         private System.Windows.Forms.ToolStripLabel iterationLabel;
     }

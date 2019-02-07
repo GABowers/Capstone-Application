@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\GAB\Desktop\CAPSTONE\Winform\2019-02-06\</PublishUrl>
+    <PublishUrl>C:\Users\GAB\Desktop\CAPSTONE\Winform\2019-02-06-2\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -22,7 +22,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>19</ApplicationRevision>
+    <ApplicationRevision>20</ApplicationRevision>
     <ApplicationVersion>0.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -120,12 +120,6 @@
     <Compile Include="GasTemplateUC.Designer.cs">
       <DependentUpon>GasTemplateUC.cs</DependentUpon>
     </Compile>
-    <Compile Include="GroupingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GroupingForm.Designer.cs">
-      <DependentUpon>GroupingForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="ImageTrace.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -189,9 +183,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GasTemplateUC.resx">
       <DependentUpon>GasTemplateUC.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GroupingForm.resx">
-      <DependentUpon>GroupingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImageTrace.resx">
       <DependentUpon>ImageTrace.cs</DependentUpon>
