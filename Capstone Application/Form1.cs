@@ -682,5 +682,11 @@ namespace Capstone_Application
             UpdateRunBox();
             UpdateImage();
         }
+
+        private void traceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImageTrace showImageTrace = new ImageTrace();
+            showImageTrace.ShowDialog();
+        }
     }
 }

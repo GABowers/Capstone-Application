@@ -16,23 +16,41 @@ namespace Capstone_Application
         int startX = 4;
         int startY = 7;
         List<CheckBox> checklist = new List<CheckBox>();
-        Bitmap bmp;
+        DirectBitmap bmp;
+        TraceOption action = TraceOption.Heatmap;
 
         public ImageTrace()
         {
             InitializeComponent();
             AddAgents();
-            bmp = new Bitmap(controllerScript.myCA.gridWidth, controllerScript.myCA.gridHeight);
+            bmp = new DirectBitmap(controllerScript.myCA.gridWidth, controllerScript.myCA.gridHeight);
             tracePictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            tracePictureBox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             backgroundWorker1.WorkerReportsProgress = true;
         }
 
+        // how to treat heatmap: collapse across agents, or keep separate (colors or something)?
+
         private void pathTraceRadio_CheckedChanged(object sender, EventArgs e)
         {
+            SetAction();
         }
 
         private void freqTraceRadio_CheckedChanged(object sender, EventArgs e)
         {
+            SetAction();
+        }
+
+        void SetAction()
+        {
+            if(pathTraceRadio.Checked)
+            {
+                action = TraceOption.Trace;
+            }
+            else if(freqTraceRadio.Checked)
+            {
+                action = TraceOption.Heatmap;
+            }
         }
 
         void AddAgents()
@@ -53,17 +71,20 @@ namespace Capstone_Application
 
         void checkBox_CheckedChanged(object sender, EventArgs e)
         {
+            Console.WriteLine("Checking");
+            // handle adding new agents to the current visualization
         }
 
         void LookForWork()
         {
-            if (this.freqTraceRadio.Checked)
+            switch(action)
             {
-                DoHeatMap();
-            }
-            else if (this.pathTraceRadio.Checked)
-            {
-                DoTrace();
+                case TraceOption.Heatmap:
+                    DoHeatMap();
+                    break;
+                case TraceOption.Trace:
+                    DoTrace();
+                    break;
             }
         }
 
@@ -75,7 +96,7 @@ namespace Capstone_Application
         void DoHeatMap()
         {
             int currentPercentage = 0;
-            List<int> duplicates = new List<int>();
+            //List<int> duplicates = new List<int>();
             for (int i = 0; i < controllerScript.myCA.gridWidth; i++)
             {
                 for (int j = 0; j < controllerScript.myCA.gridHeight; j++)
@@ -83,72 +104,33 @@ namespace Capstone_Application
                     bmp.SetPixel(i, j, Color.Black);
                 }
             }
-            int numberOfCheckedAgents = 0;
-            int incrementor = 0;
-            for (int i = 0; i < checklist.Count; i++)
-            {
-                numberOfCheckedAgents++;
-            }
-
+            //int numberOfCheckedAgents = 0;
+            //int incrementor = 0;
+            List<int> agent_locations = new List<int>();
+            List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
             for (int i = 0; i < checklist.Count; i++)
             {
                 if(checklist[i].Checked)
                 {
-                    int pathLength = controllerScript.myCA.ActiveAgents[i].History.Count;
-                    int maxProgress = numberOfCheckedAgents * ((pathLength * pathLength) + pathLength);
-                    int maxDupes = 0;
-                    List<int> dupeLocations = new List<int>();
-                    List<int> dupeTempLocations = new List<int>();
-                    for (int j = 0; j < pathLength; j++)
-                    {
-                        if (dupeLocations.Contains(j))
-                        {
-                            int location = dupeLocations.IndexOf(j);
-                            duplicates.Add(duplicates[dupeTempLocations[location]]);
-                            continue;
-                        }
-                        int tempDupe = 0;
-                        int x = controllerScript.myCA.ActiveAgents[i].History[j].Item1;
-                        int y = controllerScript.myCA.ActiveAgents[i].History[j].Item2;
-                        Tuple<int, int> tempTuple = new Tuple<int, int>(x, y);
-
-                        for(int k = 0; k < pathLength; k++)
-                        {
-                            int percentage = (int)((((incrementor * (pathLength * pathLength)) + (j * pathLength) + (k + 1)) / (double)maxProgress) * 100);
-                            if (percentage > currentPercentage)
-                            {
-                                currentPercentage = percentage;
-                                backgroundWorker1.ReportProgress(percentage);
-                            }
-                            if (controllerScript.myCA.ActiveAgents[i].History[k].Equals(tempTuple))
-                            {
-                                dupeLocations.Add(k);
-                                dupeTempLocations.Add(j);
-                                tempDupe++;
-                            }
-                        }
-                        duplicates.Add(tempDupe);
-                        if (tempDupe > maxDupes)
-                        {
-                            maxDupes = tempDupe;
-                        }
-                    }
-
-                    for (int j = 0; j < pathLength; j++)
-                    {
-                        int percentage = (int)((((incrementor+1) * (pathLength * pathLength) + (j + 1))/ (double)maxProgress) * 100);
-                        if (percentage > currentPercentage)
-                        {
-                            currentPercentage = percentage;
-                            backgroundWorker1.ReportProgress(percentage);
-                        }
-                        double fraction = (duplicates[j] / (double)maxDupes) * 255;
-                        int rightColor = Convert.ToInt32(fraction);
-                        Color tempColor = Color.FromArgb(rightColor, rightColor, rightColor);
-                        bmp.SetPixel(controllerScript.myCA.ActiveAgents[i].History[j].Item1, controllerScript.myCA.ActiveAgents[i].History[j].Item2, tempColor);
-                    }
-                    incrementor++;
+                    agent_locations.Add(i);
                 }
+            }
+
+            for (int i = 0; i < agent_locations.Count; i++)
+            {
+                locations.AddRange(controllerScript.myCA.ActiveAgents[agent_locations[i]].History.Select(x => new Tuple<int, int>(x.Item1, x.Item2)).ToList());
+            }
+
+            List<Tuple<int, int>> unique_locations = locations.Distinct().ToList();
+            List<int> location_counts = unique_locations.Select(x => locations.Count(y => y.Equals(x))).ToList();
+            double max = location_counts.Max();
+            List<double> scaled_values = location_counts.Select(x => x / max).ToList();
+            for (int i = 0; i < unique_locations.Count(); i++)
+            {
+                double fraction = scaled_values[i] * 255;
+                int rightColor = Convert.ToInt32(fraction);
+                Color tempColor = Color.FromArgb(rightColor, rightColor, rightColor);
+                bmp.SetPixel(unique_locations[i].Item1, unique_locations[i].Item2, tempColor);
             }
             UpdateImage();
         }
@@ -196,7 +178,7 @@ namespace Capstone_Application
 
         void UpdateImage()
         {
-            this.tracePictureBox.Image = bmp;
+            this.tracePictureBox.Image = bmp.Bitmap;
         }
 
         void CreateImage()
@@ -236,6 +218,12 @@ namespace Capstone_Application
         private void backgroundWorker1_ProgressChanged_1(object sender, ProgressChangedEventArgs e)
         {
             this.progressBar1.Value = e.ProgressPercentage;
+        }
+
+        enum TraceOption
+        {
+            Heatmap,
+            Trace
         }
     }
 }
