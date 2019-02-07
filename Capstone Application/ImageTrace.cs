@@ -95,7 +95,6 @@ namespace Capstone_Application
 
         void DoHeatMap()
         {
-            int currentPercentage = 0;
             //List<int> duplicates = new List<int>();
             for (int i = 0; i < controllerScript.myCA.gridWidth; i++)
             {
@@ -104,8 +103,6 @@ namespace Capstone_Application
                     bmp.SetPixel(i, j, Color.Black);
                 }
             }
-            //int numberOfCheckedAgents = 0;
-            //int incrementor = 0;
             List<int> agent_locations = new List<int>();
             List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
             for (int i = 0; i < checklist.Count; i++)
@@ -137,7 +134,6 @@ namespace Capstone_Application
 
         void DoTrace()
         {
-            int currentPercentage = 0;
             for (int i = 0; i < controllerScript.myCA.gridWidth; i++)
             {
                 for (int j = 0; j < controllerScript.myCA.gridHeight; j++)
@@ -145,35 +141,47 @@ namespace Capstone_Application
                     bmp.SetPixel(i, j, Color.Black);
                 }
             }
-            int numberOfCheckedAgents = 0;
-            int incrementor = 0;
+            List<int> agent_locations = new List<int>();
             for (int i = 0; i < checklist.Count; i++)
-            {
-                numberOfCheckedAgents++;
-            }
-                for (int i = 0; i < checklist.Count; i++)
             {
                 if (checklist[i].Checked)
                 {
-                    int pathLength = controllerScript.myCA.ActiveAgents[i].History.Count;
-                    int maxProgress = numberOfCheckedAgents * pathLength;
-                    for(int j = 0; j < pathLength; j++)
+                    agent_locations.Add(i);
+                }
+            }
+            List<Tuple<int, int>> already_colored = new List<Tuple<int, int>>();
+            for (int i = 0; i < agent_locations.Count; i++)
+            {
+                List<Tuple<int, int, int>> history = controllerScript.myCA.ActiveAgents[agent_locations[i]].History;
+                List<Tuple<int, int, int>> unique_history = history.Distinct().ToList();
+                List<Tuple<int, int>> unique_history_locations = unique_history.Select(x => new Tuple<int, int>(x.Item1, x.Item2)).ToList();
+
+                for (int j = 0; j < unique_history.Count; j++)
+                {
+                    Tuple<int, int> cur_loc = new Tuple<int, int>(unique_history[j].Item1, unique_history[j].Item2);
+                    double alpha = Convert.ToDouble(j + 1) / unique_history.Count();
+                    if (already_colored.Contains(cur_loc))
                     {
-                        int percentage = (int)((((incrementor * pathLength) + (j + 1)) / (double)maxProgress) * 100);
-                        if(percentage > currentPercentage)
-                        {
-                            currentPercentage = percentage;
-                            backgroundWorker1.ReportProgress(percentage);
-                        }
-                        double fraction = ((j + 1) / (double)pathLength) * 255;
-                        int rightColor = Convert.ToInt32(fraction);
-                        Color tempColor = Color.FromArgb(rightColor, rightColor, rightColor);
-                        bmp.SetPixel(controllerScript.myCA.ActiveAgents[i].History[j].Item1, controllerScript.myCA.ActiveAgents[i].History[j].Item2, tempColor);
+                        Blend(cur_loc, alpha, controllerScript.colors[unique_history[j].Item3]);
                     }
-                    incrementor++;
+                    else
+                    {
+                        Color cur_color = controllerScript.colors[unique_history[j].Item3];
+                        Color new_color = Color.FromArgb((int)(cur_color.R*alpha), (int)(cur_color.G * alpha), (int)(cur_color.B * alpha));
+                        bmp.SetPixel(cur_loc.Item1, cur_loc.Item2, new_color);
+                        already_colored.Add(new Tuple<int, int>(unique_history[j].Item1, unique_history[j].Item2));
+                    }
                 }
             }
             UpdateImage();
+        }
+
+        void Blend(Tuple<int, int> loc, double alpha, Color next)
+        {
+            Color cur_color = bmp.GetPixel(loc.Item1, loc.Item2);
+            Color new_color = Color.FromArgb((int)(next.R * alpha), (int)(next.G * alpha), (int)(next.B * alpha));
+            Color combined = Color.FromArgb(Math.Min(255, (cur_color.R + new_color.R)), Math.Min(255, (cur_color.G + new_color.G)), Math.Min(255, (cur_color.B + new_color.B)));
+            bmp.SetPixel(loc.Item1, loc.Item2, combined);
         }
 
         void UpdateImage()

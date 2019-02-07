@@ -20,7 +20,7 @@ namespace Capstone_Application
         public bool reset_now = false;
         List<NType> nTypes;
         List<GridType> grids;
-        List<Color> colors;
+        public List<Color> colors;
         List<int> cellAmounts;
         List<Tuple<int, List<int>>> fullCount;
         List<Tuple<int, List<int>>> fullTransitions;
