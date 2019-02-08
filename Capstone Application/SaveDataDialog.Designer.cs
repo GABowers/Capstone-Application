@@ -83,8 +83,8 @@
             this.pauseIterationInput = new System.Windows.Forms.TextBox();
             this.pauseIntroLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.iterationSettingsTab = new System.Windows.Forms.TabPage();
-            this.iterationSettingsLabel = new System.Windows.Forms.Label();
+            this.templateTab = new System.Windows.Forms.TabPage();
+            this.tempTabExplain = new System.Windows.Forms.Label();
             this.outerPanel.SuspendLayout();
             this.controlsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -107,7 +107,7 @@
             this.resetTab.SuspendLayout();
             this.pauseTabControl.SuspendLayout();
             this.pauseTab.SuspendLayout();
-            this.iterationSettingsTab.SuspendLayout();
+            this.templateTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // outerPanel
@@ -161,7 +161,7 @@
             this.messageBox.Name = "messageBox";
             this.messageBox.Size = new System.Drawing.Size(272, 22);
             this.messageBox.TabIndex = 2;
-            this.messageBox.Text = "Save data directory does not exist. It will be created.";
+            this.messageBox.Text = "This space intentionally left blank.";
             this.messageBox.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // loadButton
@@ -249,7 +249,7 @@
             this.saveTabsControl.Controls.Add(this.dataTab);
             this.saveTabsControl.Controls.Add(this.imageTab);
             this.saveTabsControl.Controls.Add(this.pathTab);
-            this.saveTabsControl.Controls.Add(this.iterationSettingsTab);
+            this.saveTabsControl.Controls.Add(this.templateTab);
             this.saveTabsControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.saveTabsControl.Location = new System.Drawing.Point(0, 0);
             this.saveTabsControl.Name = "saveTabsControl";
@@ -587,26 +587,25 @@
             this.pauseIntroLabel.Text = "Auto-pause the CA upon either threshoold type below. If there are multiple inputs" +
     ", the first threshold crossed will cause a pause.";
             // 
-            // iterationSettingsTab
+            // templateTab
             // 
-            this.iterationSettingsTab.Controls.Add(this.iterationSettingsLabel);
-            this.iterationSettingsTab.Location = new System.Drawing.Point(4, 22);
-            this.iterationSettingsTab.Name = "iterationSettingsTab";
-            this.iterationSettingsTab.Size = new System.Drawing.Size(288, 197);
-            this.iterationSettingsTab.TabIndex = 3;
-            this.iterationSettingsTab.Text = "Iteration Settings";
-            this.iterationSettingsTab.UseVisualStyleBackColor = true;
+            this.templateTab.Controls.Add(this.tempTabExplain);
+            this.templateTab.Location = new System.Drawing.Point(4, 22);
+            this.templateTab.Name = "templateTab";
+            this.templateTab.Padding = new System.Windows.Forms.Padding(3);
+            this.templateTab.Size = new System.Drawing.Size(288, 197);
+            this.templateTab.TabIndex = 3;
+            this.templateTab.Text = "Template";
+            this.templateTab.UseVisualStyleBackColor = true;
             // 
-            // iterationSettingsLabel
+            // tempTabExplain
             // 
-            this.iterationSettingsLabel.AutoSize = true;
-            this.iterationSettingsLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.iterationSettingsLabel.Location = new System.Drawing.Point(0, 0);
-            this.iterationSettingsLabel.MaximumSize = new System.Drawing.Size(288, 0);
-            this.iterationSettingsLabel.Name = "iterationSettingsLabel";
-            this.iterationSettingsLabel.Size = new System.Drawing.Size(286, 65);
-            this.iterationSettingsLabel.TabIndex = 0;
-            this.iterationSettingsLabel.Text = resources.GetString("iterationSettingsLabel.Text");
+            this.tempTabExplain.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tempTabExplain.Location = new System.Drawing.Point(3, 3);
+            this.tempTabExplain.Name = "tempTabExplain";
+            this.tempTabExplain.Size = new System.Drawing.Size(282, 39);
+            this.tempTabExplain.TabIndex = 3;
+            this.tempTabExplain.Text = "Set save options for a specific template being used.";
             // 
             // SaveDataDialog
             // 
@@ -643,8 +642,7 @@
             this.pauseTabControl.ResumeLayout(false);
             this.pauseTab.ResumeLayout(false);
             this.pauseTab.PerformLayout();
-            this.iterationSettingsTab.ResumeLayout(false);
-            this.iterationSettingsTab.PerformLayout();
+            this.templateTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -697,7 +695,7 @@
         private System.Windows.Forms.Label pauseIntroLabel;
         private System.Windows.Forms.Button messageNextButton;
         private System.Windows.Forms.Button messagePrevButton;
-        private System.Windows.Forms.TabPage iterationSettingsTab;
-        private System.Windows.Forms.Label iterationSettingsLabel;
+        private System.Windows.Forms.TabPage templateTab;
+        private System.Windows.Forms.Label tempTabExplain;
     }
 }

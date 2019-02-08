@@ -18,6 +18,7 @@ namespace Capstone_Application
         List<CheckBox> checklist = new List<CheckBox>();
         DirectBitmap bmp;
         TraceOption action = TraceOption.Heatmap;
+        struct HSV { public float h; public float s; public float v; };
 
         public ImageTrace()
         {
@@ -104,7 +105,7 @@ namespace Capstone_Application
                 }
             }
             List<int> agent_locations = new List<int>();
-            List<Tuple<int, int>> locations = new List<Tuple<int, int>>();
+            List<Tuple<int, int, int>> locations = new List<Tuple<int, int, int>>();
             for (int i = 0; i < checklist.Count; i++)
             {
                 if(checklist[i].Checked)
@@ -115,19 +116,35 @@ namespace Capstone_Application
 
             for (int i = 0; i < agent_locations.Count; i++)
             {
-                locations.AddRange(controllerScript.myCA.ActiveAgents[agent_locations[i]].History.Select(x => new Tuple<int, int>(x.Item1, x.Item2)).ToList());
+                locations.AddRange(controllerScript.myCA.ActiveAgents[agent_locations[i]].History.Select(x => x).ToList());
             }
-
-            List<Tuple<int, int>> unique_locations = locations.Distinct().ToList();
-            List<int> location_counts = unique_locations.Select(x => locations.Count(y => y.Equals(x))).ToList();
-            double max = location_counts.Max();
-            List<double> scaled_values = location_counts.Select(x => x / max).ToList();
-            for (int i = 0; i < unique_locations.Count(); i++)
+            List<int> states = locations.Select(x => x.Item3).ToList();
+            
+            List<int> unique_states = states.Distinct().ToList();
+            List<Tuple<int, int>> already_colored = new List<Tuple<int, int>>();
+            for (int i = 0; i < unique_states.Count; i++)
             {
-                double fraction = scaled_values[i] * 255;
-                int rightColor = Convert.ToInt32(fraction);
-                Color tempColor = Color.FromArgb(rightColor, rightColor, rightColor);
-                bmp.SetPixel(unique_locations[i].Item1, unique_locations[i].Item2, tempColor);
+                List<Tuple<int, int>> unique_locations = locations.Where(x => x.Item3.Equals(i)).Select(y => new Tuple<int, int>(y.Item1, y.Item2)).Distinct().ToList();
+                List<int> location_counts = unique_locations.Select(x => locations.Count(y => y.Equals(x))).ToList();
+                double max = location_counts.Max();
+                List<double> scaled_values = location_counts.Select(x => x / max).ToList();
+                for (int j = 0; j < unique_locations.Count(); j++)
+                {
+                    double fraction = scaled_values[j] * 255;
+                    int rightColor = Convert.ToInt32(fraction);
+                    Color tempColor = Color.FromArgb(rightColor, rightColor, rightColor);
+                    Tuple<int, int> cur_loc = new Tuple<int, int>(unique_locations[i].Item1, unique_locations[i].Item2);
+                    if (already_colored.Contains(cur_loc))
+                    {
+                        Blend(cur_loc, tempColor);
+                    }
+                    else
+                    {
+                        bmp.SetPixel(unique_locations[j].Item1, unique_locations[j].Item2, tempColor);
+                        already_colored.Add(new Tuple<int, int>(unique_locations[j].Item1, unique_locations[i].Item2));
+                    }
+                    
+                }
             }
             UpdateImage();
         }
@@ -160,14 +177,14 @@ namespace Capstone_Application
                 {
                     Tuple<int, int> cur_loc = new Tuple<int, int>(unique_history[j].Item1, unique_history[j].Item2);
                     double alpha = Convert.ToDouble(j + 1) / unique_history.Count();
+                    Color cur_color = controllerScript.colors[unique_history[j].Item3];
+                    Color new_color = Color.FromArgb((int)(cur_color.R * alpha), (int)(cur_color.G * alpha), (int)(cur_color.B * alpha));
                     if (already_colored.Contains(cur_loc))
                     {
-                        Blend(cur_loc, alpha, controllerScript.colors[unique_history[j].Item3]);
+                        Blend(cur_loc, new_color);
                     }
                     else
                     {
-                        Color cur_color = controllerScript.colors[unique_history[j].Item3];
-                        Color new_color = Color.FromArgb((int)(cur_color.R*alpha), (int)(cur_color.G * alpha), (int)(cur_color.B * alpha));
                         bmp.SetPixel(cur_loc.Item1, cur_loc.Item2, new_color);
                         already_colored.Add(new Tuple<int, int>(unique_history[j].Item1, unique_history[j].Item2));
                     }
@@ -176,12 +193,64 @@ namespace Capstone_Application
             UpdateImage();
         }
 
-        void Blend(Tuple<int, int> loc, double alpha, Color next)
+        float getBrightness(Color c)
         {
+            return (c.R * 0.299f + c.G * 0.587f + c.B * 0.114f) / 256f;
+        }
+
+        void Blend(Tuple<int, int> loc, Color next)
+        {
+            // convert to HSL, combine H
             Color cur_color = bmp.GetPixel(loc.Item1, loc.Item2);
-            Color new_color = Color.FromArgb((int)(next.R * alpha), (int)(next.G * alpha), (int)(next.B * alpha));
-            Color combined = Color.FromArgb(Math.Min(255, (cur_color.R + new_color.R)), Math.Min(255, (cur_color.G + new_color.G)), Math.Min(255, (cur_color.B + new_color.B)));
-            bmp.SetPixel(loc.Item1, loc.Item2, combined);
+            HSV cur_hsv = new HSV() { h = cur_color.GetHue(), s = cur_color.GetSaturation(), v = getBrightness(cur_color) };
+            HSV new_hsv = new HSV() { h = next.GetHue(), s = next.GetSaturation(), v = getBrightness(next) };
+            HSV combined = new HSV() { h = (cur_hsv.h + new_hsv.h)/2.0f, s = (cur_hsv.s + new_hsv.s) / 2.0f , v = (cur_hsv.v + new_hsv.v) / 2.0f };
+            Color new_color = ColorFromHSL(combined);
+            bmp.SetPixel(loc.Item1, loc.Item2, new_color);
+        }
+
+        // HSV stuff from https://stackoverflow.com/questions/28759764/c-sharp-sethue-or-alternatively-convert-hsl-to-rgb-and-set-rgb
+
+        Color ColorFromHSL(HSV hsl)
+        {
+            if(hsl.s == 0)
+            {
+                int L = (int)hsl.v;
+                return Color.FromArgb(2555, L, L, L);
+            }
+
+            double min, max, h;
+            h = hsl.h / 360.0;
+            max = hsl.v < 0.5 ? hsl.v * (1 + hsl.s) : (hsl.v + hsl.s) - (hsl.v * hsl.s);
+            min = (hsl.v * 2.0) - max;
+
+            Color c = Color.FromArgb(255, (int)(255 * RGBChannelFromHue(min, max, h + 1 / 3.1)), (int)(255 * RGBChannelFromHue(min, max, h)), (int)(255 * RGBChannelFromHue(min, max, h - 1 / 3.1)));
+            return c;
+        }
+
+        double RGBChannelFromHue(double m1, double m2, double h)
+        {
+            h = (h + 1.0) % 1.0;
+            if (h < 0)
+            {
+                h += 1;
+            }
+            if (h * 6 < 1)
+            {
+                return m1 + (m2 - m1) * 6 * h;
+            }
+            else if(h * 2 < 1)
+            {
+                return m2;
+            }
+            else if(h * 3 < 2)
+            {
+                return m1 + (m2 - m1) * 6 * (2.0 / 3.0 - h);
+            }
+            else
+            {
+                return m1;
+            }
         }
 
         void UpdateImage()

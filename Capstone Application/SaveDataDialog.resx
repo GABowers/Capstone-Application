@@ -146,9 +146,6 @@
   <data name="pathsIncLabel.Text" xml:space="preserve">
     <value>Set the iterative increments you want. A value of 5 means that after every 5th itheration (5, 10, 15, etc.) the file will be stored. A value of -1 means the file will be stored when the run resets. Use multiple types by separating them with a comma.</value>
   </data>
-  <data name="iterationSettingsLabel.Text" xml:space="preserve">
-    <value>Enable or disable various options for storing information per iteration. This can be changed at any time, but it's recommended to change it once at the beginning of a run. Most of these options are fairly trivial to process so they're enabled by default.</value>
-  </data>
   <metadata name="folderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
