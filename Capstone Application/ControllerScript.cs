@@ -25,6 +25,7 @@ namespace Capstone_Application
         List<Tuple<int, List<int>>> fullCount;
         List<Tuple<int, List<int>>> fullTransitions;
         List<Tuple<int, List<double>>> fullIndex;
+        List<object> templateObject;
 
         public bool editModeOn = false;
         bool createdCA = false;
@@ -306,7 +307,6 @@ namespace Capstone_Application
             if (CreatedCA == false)
             {
                 iterations = 0;
-                caRuns = 1;
                 editModeOn = false;
                 grids = new List<GridType>();
                 nTypes = new List<NType>();
@@ -451,8 +451,18 @@ namespace Capstone_Application
             //{
             //    currentForm.innerPictureBox.Dispose();
             //}
+            if(currentForm.innerPictureBox.Image != null)
+            {
+                lock (currentForm.innerPictureBox.Image)
+                {
+                    currentForm.innerPictureBox.Image = bmp.Bitmap;
+                }
+            }
+            else
+            {
+                currentForm.innerPictureBox.Image = bmp.Bitmap;
+            }
             
-            currentForm.innerPictureBox.Image = bmp.Bitmap;
         }
 
         public void ClearGrid()
@@ -785,6 +795,18 @@ namespace Capstone_Application
                     }
                 }
             }
+
+            if(runSettings.TemplateIncs.Count > 0)
+            {
+                TemplateAdd();
+                for (int i = 0; i < runSettings.TemplateIncs.Count; i++)
+                {
+                    if (caRuns == runSettings.TemplateIncs[i])
+                    {
+                        TemplateSave(form, time);
+                    }
+                }
+            }
         }
 
         public void CheckMaxRuns(Form1 form)
@@ -795,6 +817,45 @@ namespace Capstone_Application
                 {
                     form.PauseUnpauseCA();
                 }
+            }
+        }
+
+        public void ResetTemplate()
+        {
+            templateObject = new List<object>();
+            TemplateInit();
+        }
+
+        void TemplateInit()
+        {
+            switch(mainPageInfo.template)
+            {
+                case Template.Random_Walk:
+                    templateObject.Add(new List<Tuple<int, int, int>>());
+                    break;
+            }
+        }
+
+        void TemplateAdd()
+        {
+            // do the custom actions of each template
+            switch(mainPageInfo.template)
+            {
+                case Template.Random_Walk:
+                    List<Tuple<int, int, int>> prev = (List<Tuple<int, int, int>>)templateObject[0];
+                    prev.AddRange(myCA.AddEnds().Select(x => new Tuple<int, int, int>(x.Item1, x.Item2, iterations)));
+                    templateObject[0] = prev;
+                    break;
+            }
+        }
+
+        void TemplateSave(Form1 form, string time)
+        {
+            switch(mainPageInfo.template)
+            {
+                case Template.Random_Walk:
+                    form.TemplateSave(templateObject, MainPageInfo.template, time, runSettings.TemplatePath);
+                    break;
             }
         }
     }

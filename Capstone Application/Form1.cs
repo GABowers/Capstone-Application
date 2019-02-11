@@ -677,10 +677,46 @@ namespace Capstone_Application
         private void ResetCA()
         {
             controllerScript.ResetGrid(this);
-            controllerScript.CreateCA((this));
+            controllerScript.CreateCA(this);
             controllerScript.StartCA(this);
             UpdateRunBox();
             UpdateImage();
+        }
+
+        public void TemplateSave(List<object> templateList, Template template, string time, string path)
+        {
+            switch(controllerScript.MainPageInfo.template)
+            {
+                case Template.Random_Walk:
+                    {
+                        List<Tuple<int, int, int>> cur = (List<Tuple<int, int, int>>)templateList[0];
+                        if (string.IsNullOrEmpty(Path.GetExtension(path)))
+                        {
+                            path = path + "/" + time + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Data.csv";
+                        }
+                        using (StreamWriter wt = new StreamWriter(path))
+                        {
+                            //pertinent info - run, iteration, time
+                            wt.Write("Final Positions");
+                            wt.WriteLine();
+                            wt.Write("Date,Runs");
+                            wt.WriteLine();
+                            string thing = time + "," + controllerScript.caRuns;
+                            wt.Write(thing);
+                            wt.WriteLine();
+                            wt.Write("Iteration, X, Y");
+                            wt.WriteLine();
+                            for (int i = 0; i < cur.Count - 1; ++i)
+                            {
+                                wt.Write(cur[i].Item3 + "," + cur[i].Item1 + "," +  cur[i].Item2);
+                                wt.WriteLine();
+                            }
+                            wt.Write(cur.Last().Item1 + "," + cur.Last().Item2);
+                            wt.Close();
+                        }
+                    }
+                    break;
+            }
         }
 
         private void traceToolStripMenuItem_Click(object sender, EventArgs e)

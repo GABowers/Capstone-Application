@@ -343,9 +343,14 @@ namespace Capstone_Application
                 mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
                 mainForm.UpdateIterationPauseCell(int.Parse(stateNumberBox.Text));
             }
-
-            Form1.runSettings = new RunSettings(amountOfStates);
-            controllerScript.runSettings = Form1.runSettings;
+            if(!editForm)
+            {
+                Form1.runSettings = new RunSettings(amountOfStates);
+                controllerScript.runSettings = Form1.runSettings;
+                controllerScript.ResetTemplate();
+                controllerScript.ResetRuns();
+            }
+            
             this.Close();
         }
 

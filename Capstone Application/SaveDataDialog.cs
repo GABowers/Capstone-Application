@@ -29,14 +29,45 @@ namespace Capstone_Application
 
         void RetrieveOrCreate()
         {
-            //if (runSettings != null)
-            //{
-
-            //}
-            //else
-            //{
-            //    runSettings = new RunSettings(controller.amountOfCellTypes);
-            //}
+            if(!runSettings.Fresh)
+            {
+                templatePath.Text = runSettings.TemplatePath;
+                templateIncrementInput.Text = string.Join(", ", runSettings.TemplateIncs);
+                savePathsFolderInput.Text = runSettings.PathsPath;
+                pathsIncInput.Text = string.Join(", ", runSettings.PathsIncs);
+                saveImageFolderInput.Text = runSettings.ImagePath;
+                imageIncInput.Text = string.Join(", ", runSettings.ImageIncs);
+                saveDataFolderInput.Text = runSettings.DataPath;
+                dataIncInput.Text = string.Join(", ", runSettings.DataIncs);
+                saveOptions.SelectedNode = saveOptions.Nodes[0].Nodes[0];
+                saveOptions.Nodes[0].Nodes[0].Checked = runSettings.SaveCounts;
+                saveOptions.SelectedNode = saveOptions.Nodes[0].Nodes[1];
+                saveOptions.Nodes[0].Nodes[1].Checked = runSettings.SaveTrans;
+                saveOptions.SelectedNode = saveOptions.Nodes[0].Nodes[2];
+                saveOptions.Nodes[0].Nodes[2].Checked = runSettings.SaveIndex;
+                if(runSettings.SaveCounts || runSettings.SaveTrans || runSettings.SaveIndex)
+                {
+                    saveOptions.SelectedNode = saveOptions.Nodes[0];
+                    saveOptions.Nodes[0].Checked = true;
+                }
+                int num = controller.amountOfCellTypes;
+                for (int i = 0; i < num; i++)
+                {
+                    string name_reset = "resetInput" + i;
+                    string name_pause = "pauseInput" + i;
+                    TextBox box_reset = (TextBox)resetAgentPanel.Controls.Find(name_reset, true).First();
+                    TextBox box_pause = (TextBox)pauseAgentPanel.Controls.Find(name_pause, true).First();
+                    box_reset.Text = runSettings.ResetCounts[i].ToString();
+                    box_pause.Text = runSettings.PauseCounts[i].ToString();
+                }
+                resetIterationInput.Text = string.Join(", ", runSettings.ResetIterations);
+                pauseIterationInput.Text = string.Join(", ", runSettings.PauseIterations);
+                
+            }
+            else
+            {
+                runSettings.Fresh = false;
+            }
         }
 
         void GenFields()
@@ -91,6 +122,16 @@ namespace Capstone_Application
                 pauseAgentPanel.Controls.Add(pauseText);
                 pauseAgentPanel.Controls.Add(pauseAgentInput);
                 y += 25;
+            }
+
+            switch(controller.MainPageInfo.template)
+            {
+                case Template.None:
+                    templateSpecificLabel.Text = "You're not using a template. These options only appear when doing so.";
+                    break;
+                case Template.Random_Walk:
+                    templateSpecificLabel.Text = "Save each agent's final location (excluding the preceeding path).";
+                    break;
             }
         }
 
@@ -252,7 +293,6 @@ namespace Capstone_Application
                     runSettings.PathsIncs.Add(result);
                 }
             }
-
         }
 
         private void savePathsFolderInput_TextChanged(object sender, EventArgs e)
@@ -282,6 +322,31 @@ namespace Capstone_Application
             else
             {
                 runSettings.ImagePath = saveImageFolderInput.Text;
+            }
+        }
+
+        private void templatePath_TextChanged(object sender, EventArgs e)
+        {
+            // check if nonsensical
+            string filepath = templatePath.Text;
+            bool real = Directory.Exists(filepath);
+            if (!real)
+            {
+                messages.Add("Path doesn't exist. It will be created.");
+            }
+            runSettings.TemplatePath = templatePath.Text;
+        }
+
+        private void templateIncrementInput_TextChanged(object sender, EventArgs e)
+        {
+            runSettings.TemplateIncs.Clear();
+            string[] text = templateIncrementInput.Text.Split(',');
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (int.TryParse(text[i], out int result))
+                {
+                    runSettings.TemplateIncs.Add(result);
+                }
             }
         }
     }

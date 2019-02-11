@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveDataDialog));
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Count");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Transitions");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("C Index");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Data", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3});
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Image");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Paths");
+            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Count");
+            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Transitions");
+            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("C Index");
+            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Data", new System.Windows.Forms.TreeNode[] {
+            treeNode25,
+            treeNode26,
+            treeNode27});
+            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Image");
+            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Paths");
             this.outerPanel = new System.Windows.Forms.Panel();
             this.controlsPanel = new System.Windows.Forms.Panel();
             this.messageNextButton = new System.Windows.Forms.Button();
@@ -67,6 +67,13 @@
             this.pathsIntroLabel = new System.Windows.Forms.Label();
             this.savePathsFolderInput = new System.Windows.Forms.TextBox();
             this.savePathsLabel = new System.Windows.Forms.Label();
+            this.templateTab = new System.Windows.Forms.TabPage();
+            this.templatePathLabel = new System.Windows.Forms.Label();
+            this.templateIncrementInput = new System.Windows.Forms.TextBox();
+            this.templateIncrementLabel = new System.Windows.Forms.Label();
+            this.templatePath = new System.Windows.Forms.TextBox();
+            this.templateSpecificLabel = new System.Windows.Forms.Label();
+            this.tempTabExplain = new System.Windows.Forms.Label();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.resetTabControl = new System.Windows.Forms.TabControl();
             this.resetTab = new System.Windows.Forms.TabPage();
@@ -83,8 +90,6 @@
             this.pauseIterationInput = new System.Windows.Forms.TextBox();
             this.pauseIntroLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.templateTab = new System.Windows.Forms.TabPage();
-            this.tempTabExplain = new System.Windows.Forms.Label();
             this.outerPanel.SuspendLayout();
             this.controlsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -99,6 +104,7 @@
             this.dataTab.SuspendLayout();
             this.imageTab.SuspendLayout();
             this.pathTab.SuspendLayout();
+            this.templateTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
@@ -107,7 +113,6 @@
             this.resetTab.SuspendLayout();
             this.pauseTabControl.SuspendLayout();
             this.pauseTab.SuspendLayout();
-            this.templateTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // outerPanel
@@ -224,22 +229,22 @@
             this.saveOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.saveOptions.Location = new System.Drawing.Point(0, 0);
             this.saveOptions.Name = "saveOptions";
-            treeNode1.Name = "countChild";
-            treeNode1.Text = "Count";
-            treeNode2.Name = "transitionsChild";
-            treeNode2.Text = "Transitions";
-            treeNode3.Name = "cIndexChild";
-            treeNode3.Text = "C Index";
-            treeNode4.Name = "dataRoot";
-            treeNode4.Text = "Data";
-            treeNode5.Name = "imageRoot";
-            treeNode5.Text = "Image";
-            treeNode6.Name = "pathsRoot";
-            treeNode6.Text = "Paths";
+            treeNode25.Name = "countChild";
+            treeNode25.Text = "Count";
+            treeNode26.Name = "transitionsChild";
+            treeNode26.Text = "Transitions";
+            treeNode27.Name = "cIndexChild";
+            treeNode27.Text = "C Index";
+            treeNode28.Name = "dataRoot";
+            treeNode28.Text = "Data";
+            treeNode29.Name = "imageRoot";
+            treeNode29.Text = "Image";
+            treeNode30.Name = "pathsRoot";
+            treeNode30.Text = "Paths";
             this.saveOptions.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode4,
-            treeNode5,
-            treeNode6});
+            treeNode28,
+            treeNode29,
+            treeNode30});
             this.saveOptions.Size = new System.Drawing.Size(150, 223);
             this.saveOptions.TabIndex = 0;
             this.saveOptions.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.saveOptions_AfterCheck);
@@ -430,6 +435,73 @@
             this.savePathsLabel.TabIndex = 10;
             this.savePathsLabel.Text = "Designate path, or click the button to the right to do so.";
             // 
+            // templateTab
+            // 
+            this.templateTab.Controls.Add(this.templatePathLabel);
+            this.templateTab.Controls.Add(this.templateIncrementInput);
+            this.templateTab.Controls.Add(this.templateIncrementLabel);
+            this.templateTab.Controls.Add(this.templatePath);
+            this.templateTab.Controls.Add(this.templateSpecificLabel);
+            this.templateTab.Controls.Add(this.tempTabExplain);
+            this.templateTab.Location = new System.Drawing.Point(4, 22);
+            this.templateTab.Name = "templateTab";
+            this.templateTab.Padding = new System.Windows.Forms.Padding(3);
+            this.templateTab.Size = new System.Drawing.Size(288, 197);
+            this.templateTab.TabIndex = 3;
+            this.templateTab.Text = "Template";
+            this.templateTab.UseVisualStyleBackColor = true;
+            // 
+            // templatePathLabel
+            // 
+            this.templatePathLabel.AutoSize = true;
+            this.templatePathLabel.Location = new System.Drawing.Point(3, 47);
+            this.templatePathLabel.Name = "templatePathLabel";
+            this.templatePathLabel.Size = new System.Drawing.Size(267, 13);
+            this.templatePathLabel.TabIndex = 18;
+            this.templatePathLabel.Text = "Designate path, or click the button to the right to do so.";
+            // 
+            // templateIncrementInput
+            // 
+            this.templateIncrementInput.Location = new System.Drawing.Point(6, 160);
+            this.templateIncrementInput.Name = "templateIncrementInput";
+            this.templateIncrementInput.Size = new System.Drawing.Size(121, 20);
+            this.templateIncrementInput.TabIndex = 17;
+            this.templateIncrementInput.TextChanged += new System.EventHandler(this.templateIncrementInput_TextChanged);
+            // 
+            // templateIncrementLabel
+            // 
+            this.templateIncrementLabel.Location = new System.Drawing.Point(3, 90);
+            this.templateIncrementLabel.Name = "templateIncrementLabel";
+            this.templateIncrementLabel.Size = new System.Drawing.Size(282, 65);
+            this.templateIncrementLabel.TabIndex = 16;
+            this.templateIncrementLabel.Text = "Set the number of run increments you want. A value of 5 means that after 5 runs, " +
+    "this data will be saved.";
+            // 
+            // templatePath
+            // 
+            this.templatePath.Location = new System.Drawing.Point(6, 64);
+            this.templatePath.Name = "templatePath";
+            this.templatePath.Size = new System.Drawing.Size(242, 20);
+            this.templatePath.TabIndex = 15;
+            this.templatePath.TextChanged += new System.EventHandler(this.templatePath_TextChanged);
+            // 
+            // templateSpecificLabel
+            // 
+            this.templateSpecificLabel.Location = new System.Drawing.Point(3, 20);
+            this.templateSpecificLabel.Name = "templateSpecificLabel";
+            this.templateSpecificLabel.Size = new System.Drawing.Size(282, 28);
+            this.templateSpecificLabel.TabIndex = 4;
+            this.templateSpecificLabel.Text = "N/A";
+            // 
+            // tempTabExplain
+            // 
+            this.tempTabExplain.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tempTabExplain.Location = new System.Drawing.Point(3, 3);
+            this.tempTabExplain.Name = "tempTabExplain";
+            this.tempTabExplain.Size = new System.Drawing.Size(282, 13);
+            this.tempTabExplain.TabIndex = 3;
+            this.tempTabExplain.Text = "Save information for a specific template being used.";
+            // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -585,27 +657,7 @@
             this.pauseIntroLabel.Size = new System.Drawing.Size(209, 39);
             this.pauseIntroLabel.TabIndex = 5;
             this.pauseIntroLabel.Text = "Auto-pause the CA upon either threshoold type below. If there are multiple inputs" +
-    ", the first threshold crossed will cause a pause.";
-            // 
-            // templateTab
-            // 
-            this.templateTab.Controls.Add(this.tempTabExplain);
-            this.templateTab.Location = new System.Drawing.Point(4, 22);
-            this.templateTab.Name = "templateTab";
-            this.templateTab.Padding = new System.Windows.Forms.Padding(3);
-            this.templateTab.Size = new System.Drawing.Size(288, 197);
-            this.templateTab.TabIndex = 3;
-            this.templateTab.Text = "Template";
-            this.templateTab.UseVisualStyleBackColor = true;
-            // 
-            // tempTabExplain
-            // 
-            this.tempTabExplain.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tempTabExplain.Location = new System.Drawing.Point(3, 3);
-            this.tempTabExplain.Name = "tempTabExplain";
-            this.tempTabExplain.Size = new System.Drawing.Size(282, 39);
-            this.tempTabExplain.TabIndex = 3;
-            this.tempTabExplain.Text = "Set save options for a specific template being used.";
+    ", ALL thresholds crossed will cause a pause.";
             // 
             // SaveDataDialog
             // 
@@ -632,6 +684,8 @@
             this.imageTab.PerformLayout();
             this.pathTab.ResumeLayout(false);
             this.pathTab.PerformLayout();
+            this.templateTab.ResumeLayout(false);
+            this.templateTab.PerformLayout();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
@@ -642,7 +696,6 @@
             this.pauseTabControl.ResumeLayout(false);
             this.pauseTab.ResumeLayout(false);
             this.pauseTab.PerformLayout();
-            this.templateTab.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -697,5 +750,10 @@
         private System.Windows.Forms.Button messagePrevButton;
         private System.Windows.Forms.TabPage templateTab;
         private System.Windows.Forms.Label tempTabExplain;
+        private System.Windows.Forms.Label templateSpecificLabel;
+        private System.Windows.Forms.Label templatePathLabel;
+        private System.Windows.Forms.TextBox templateIncrementInput;
+        private System.Windows.Forms.Label templateIncrementLabel;
+        private System.Windows.Forms.TextBox templatePath;
     }
 }

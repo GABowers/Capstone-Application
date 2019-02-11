@@ -565,6 +565,16 @@ public class CA
         }
     }
 
+    public List<Tuple<int, int>> AddEnds()
+    {
+        List<Tuple<int, int>> output = new List<Tuple<int, int>>();
+        for (int i = 0; i < ActiveAgents.Count; i++)
+        {
+            output.Add(new Tuple<int, int>(ActiveAgents[i].xLocation, ActiveAgents[i].yLocation));
+        }
+        return output;
+    }
+
     // clearly not working correctly. up to 5 times SLOWER than other method.
     //async void ASyncRun()
     //{

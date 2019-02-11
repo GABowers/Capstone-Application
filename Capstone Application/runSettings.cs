@@ -8,11 +8,14 @@ namespace Capstone_Application
 {
     public class RunSettings
     {
+        bool fresh = true;
         string dataPath;
         List<int> dataIncs;
         string imagePath;
         List<int> imageIncs;
         string pathsPath;
+        List<int> templateIncs;
+        string templatePath;
         List<int> pathsIncs;
         List<int> resetIterations;
         List<int> resetCounts;
@@ -39,12 +42,16 @@ namespace Capstone_Application
         public bool SaveCounts { get => saveCounts; set => saveCounts = value; }
         public bool SaveTrans { get => saveTrans; set => saveTrans = value; }
         public bool SaveIndex { get => saveIndex; set => saveIndex = value; }
+        public List<int> TemplateIncs { get => templateIncs; set => templateIncs = value; }
+        public string TemplatePath { get => templatePath; set => templatePath = value; }
+        public bool Fresh { get => fresh; set => fresh = value; }
 
         public RunSettings(int agents)
         {
             DataIncs = new List<int>();
             ImageIncs = new List<int>();
             PathsIncs = new List<int>();
+            TemplateIncs = new List<int>();
             ResetIterations = new List<int>();
             PauseIterations = new List<int>();
             ResetCounts = new List<int>();
@@ -54,6 +61,7 @@ namespace Capstone_Application
                 ResetCounts.Add(-1);
                 PauseCounts.Add(-1);
             }
+            Fresh = true;
         }
     }
 }
