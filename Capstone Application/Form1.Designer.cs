@@ -45,6 +45,7 @@
             this.analysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dansNeighborAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.randomWalkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.traceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
             this.mainWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,24 +63,21 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.editGridButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.runCountMaxRuns = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.resetCountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runLabel = new System.Windows.Forms.ToolStripLabel();
             this.runCountBox = new System.Windows.Forms.ToolStripLabel();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.iterationLabel = new System.Windows.Forms.ToolStripLabel();
             this.iterationCountBox = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.speedLabel = new System.Windows.Forms.ToolStripLabel();
             this.speedInput = new System.Windows.Forms.ToolStripTextBox();
             this.decrease = new System.Windows.Forms.ToolStripButton();
             this.increase = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
-            this.traceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -145,7 +143,7 @@
             // 
             this.newModelToolStripMenuItem.AutoToolTip = true;
             this.newModelToolStripMenuItem.Name = "newModelToolStripMenuItem";
-            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newModelToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.newModelToolStripMenuItem.Text = "New Model";
             this.newModelToolStripMenuItem.ToolTipText = "Define CA type, grid boundaries, agent types and properties.";
             this.newModelToolStripMenuItem.Click += new System.EventHandler(this.newModelToolStripMenuItem_Click);
@@ -153,7 +151,7 @@
             // editModelToolStripMenuItem
             // 
             this.editModelToolStripMenuItem.Name = "editModelToolStripMenuItem";
-            this.editModelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editModelToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.editModelToolStripMenuItem.Text = "Edit Model";
             this.editModelToolStripMenuItem.Click += new System.EventHandler(this.editModelToolStripMenuItem_Click);
             // 
@@ -171,27 +169,27 @@
             // imageToolStripMenuItem
             // 
             this.imageToolStripMenuItem.Name = "imageToolStripMenuItem";
-            this.imageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.imageToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.imageToolStripMenuItem.Text = "Image";
             this.imageToolStripMenuItem.Click += new System.EventHandler(this.imageToolStripMenuItem_Click);
             // 
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.pathToolStripMenuItem.Text = "Path";
             // 
             // visualizationToolStripMenuItem
             // 
             this.visualizationToolStripMenuItem.Name = "visualizationToolStripMenuItem";
-            this.visualizationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.visualizationToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.visualizationToolStripMenuItem.Text = "Visualization";
             this.visualizationToolStripMenuItem.Click += new System.EventHandler(this.visualizationToolStripMenuItem_Click);
             // 
             // dataToolStripMenuItem
             // 
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.dataToolStripMenuItem.Text = "Data";
             this.dataToolStripMenuItem.Click += new System.EventHandler(this.dataToolStripMenuItem_Click);
             // 
@@ -218,6 +216,13 @@
             this.randomWalkToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.randomWalkToolStripMenuItem.Text = "Random Walk";
             // 
+            // traceToolStripMenuItem
+            // 
+            this.traceToolStripMenuItem.Name = "traceToolStripMenuItem";
+            this.traceToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.traceToolStripMenuItem.Text = "Trace";
+            this.traceToolStripMenuItem.Click += new System.EventHandler(this.traceToolStripMenuItem_Click);
+            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -231,19 +236,19 @@
             // mainWindowToolStripMenuItem
             // 
             this.mainWindowToolStripMenuItem.Name = "mainWindowToolStripMenuItem";
-            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mainWindowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.mainWindowToolStripMenuItem.Text = "Main Window";
             // 
             // modelToolStripMenuItem
             // 
             this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
-            this.modelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.modelToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.modelToolStripMenuItem.Text = "Model";
             // 
             // cellCounterToolStripMenuItem
             // 
             this.cellCounterToolStripMenuItem.Name = "cellCounterToolStripMenuItem";
-            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cellCounterToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.cellCounterToolStripMenuItem.Text = "Run Data";
             this.cellCounterToolStripMenuItem.Click += new System.EventHandler(this.cellCounterToolStripMenuItem_Click);
             // 
@@ -287,13 +292,14 @@
             this.toolStripSeparator5,
             this.editGridButton,
             this.toolStripSeparator3,
-            this.toolStripDropDownButton2,
+            this.runLabel,
             this.runCountBox,
             this.toolStripSeparator4,
             this.iterationLabel,
             this.iterationCountBox,
             this.toolStripButton1,
             this.toolStripSeparator6,
+            this.speedLabel,
             this.speedInput,
             this.decrease,
             this.increase});
@@ -355,45 +361,18 @@
             this.editGridButton.Size = new System.Drawing.Size(65, 22);
             this.editGridButton.Text = "Edit Grid";
             this.editGridButton.ToolTipText = "Edit Grid";
-            this.editGridButton.Click += new System.EventHandler(this.editGridButton_Click);
+            this.editGridButton.MouseHover += new System.EventHandler(this.editGridButton_MouseHover);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripDropDownButton2
+            // runLabel
             // 
-            this.toolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runCountMaxRuns,
-            this.resetCountToolStripMenuItem});
-            this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
-            this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
-            this.toolStripDropDownButton2.Size = new System.Drawing.Size(41, 22);
-            this.toolStripDropDownButton2.Text = "Run";
-            // 
-            // runCountMaxRuns
-            // 
-            this.runCountMaxRuns.CheckOnClick = true;
-            this.runCountMaxRuns.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripTextBox1});
-            this.runCountMaxRuns.Name = "runCountMaxRuns";
-            this.runCountMaxRuns.Size = new System.Drawing.Size(173, 22);
-            this.runCountMaxRuns.Text = "Set Max Auto Runs";
-            // 
-            // toolStripTextBox1
-            // 
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
-            // 
-            // resetCountToolStripMenuItem
-            // 
-            this.resetCountToolStripMenuItem.Name = "resetCountToolStripMenuItem";
-            this.resetCountToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.resetCountToolStripMenuItem.Text = "Reset Count";
-            this.resetCountToolStripMenuItem.Click += new System.EventHandler(this.resetCountToolStripMenuItem_Click);
+            this.runLabel.Name = "runLabel";
+            this.runLabel.Size = new System.Drawing.Size(28, 22);
+            this.runLabel.Text = "Run";
             // 
             // runCountBox
             // 
@@ -436,6 +415,12 @@
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
             // 
+            // speedLabel
+            // 
+            this.speedLabel.Name = "speedLabel";
+            this.speedLabel.Size = new System.Drawing.Size(39, 22);
+            this.speedLabel.Text = "Speed";
+            // 
             // speedInput
             // 
             this.speedInput.MaxLength = 3;
@@ -474,11 +459,6 @@
             this.panel1.Size = new System.Drawing.Size(505, 505);
             this.panel1.TabIndex = 4;
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
             // innerPictureBox
             // 
             this.innerPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -499,12 +479,10 @@
             this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
             this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
             // 
-            // traceToolStripMenuItem
+            // backgroundWorker1
             // 
-            this.traceToolStripMenuItem.Name = "traceToolStripMenuItem";
-            this.traceToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.traceToolStripMenuItem.Text = "Trace";
-            this.traceToolStripMenuItem.Click += new System.EventHandler(this.traceToolStripMenuItem_Click);
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // Form1
             // 
@@ -552,9 +530,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton2;
-        public System.Windows.Forms.ToolStripMenuItem runCountMaxRuns;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.ToolStripLabel runCountBox;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripLabel iterationCountBox;
@@ -576,13 +551,14 @@
         private System.Windows.Forms.ToolStripTextBox speedInput;
         private System.Windows.Forms.ToolStripButton decrease;
         private System.Windows.Forms.ToolStripButton increase;
-        private System.Windows.Forms.ToolStripDropDownButton editGridButton;
-        private System.Windows.Forms.ToolStripMenuItem resetCountToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem randomWalkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runSettingsButton;
         private System.Windows.Forms.ToolStripLabel iterationLabel;
         private System.Windows.Forms.ToolStripMenuItem traceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripLabel runLabel;
+        private System.Windows.Forms.ToolStripLabel speedLabel;
+        public System.Windows.Forms.ToolStripDropDownButton editGridButton;
     }
 }
 

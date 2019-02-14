@@ -20,6 +20,7 @@ namespace Capstone_Application
         List<int> resetIterations;
         List<int> resetCounts;
         List<int> pauseIterations;
+        List<int> pauseRuns;
         List<int> pauseCounts;
         bool autoReset;
         bool autoPause;
@@ -45,6 +46,7 @@ namespace Capstone_Application
         public List<int> TemplateIncs { get => templateIncs; set => templateIncs = value; }
         public string TemplatePath { get => templatePath; set => templatePath = value; }
         public bool Fresh { get => fresh; set => fresh = value; }
+        public List<int> PauseRuns { get => pauseRuns; set => pauseRuns = value; }
 
         public RunSettings(int agents)
         {

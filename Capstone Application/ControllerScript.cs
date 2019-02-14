@@ -811,10 +811,11 @@ namespace Capstone_Application
 
         public void CheckMaxRuns(Form1 form)
         {
-            if(form.RunMax.HasValue)
+            for (int i = 0; i < runSettings.PauseRuns.Count; i++)
             {
-                if(caRuns > form.RunMax)
+                if (caRuns > runSettings.PauseRuns[i])
                 {
+                    //CheckFinalDataSave(form, time);
                     form.PauseUnpauseCA();
                 }
             }

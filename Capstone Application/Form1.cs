@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace Capstone_Application
         public static RunSettings runSettings;
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
+        System.Timers.Timer edit_timer;
         //SaveDataDialog saveDialog;
         System.Timers.Timer text_timer = new System.Timers.Timer();
 
@@ -199,23 +201,6 @@ namespace Capstone_Application
             controllerScript.CheckMaxRuns(this);
             Invoke(new Action(() => UpdateRunBox()));
             Invoke(new Action(() => UpdateImage()));
-        }
-
-        private void editGridButton_Click(object sender, EventArgs e)
-        {
-            if(running == false)
-            {
-                if (controllerScript.editModeOn == false)
-                {
-                    this.editGridButton.Text = "Editing";
-                    controllerScript.editModeOn = true;
-                }
-                else if (controllerScript.editModeOn == true)
-                {
-                    this.editGridButton.Text = "Edit Grid";
-                    controllerScript.editModeOn = false;
-                }
-            }
         }
 
         private void innerPictureBox_MouseDown(object sender, MouseEventArgs e)
@@ -723,6 +708,38 @@ namespace Capstone_Application
         {
             ImageTrace showImageTrace = new ImageTrace();
             showImageTrace.ShowDialog();
+        }
+
+        private void editGridButton_MouseHover(object sender, EventArgs e)
+        {
+            
+            if (controllerScript.AlreadyCA)
+            {
+                if (running == false)
+                {
+                    editGridButton.DropDown.Show();
+                    //edit_timer.Interval = 200;
+                    //edit_timer.Elapsed += editTimer_Elapsed;
+                    if (controllerScript.editModeOn == false)
+                    {
+                        this.editGridButton.Text = "Editing";
+                        controllerScript.editModeOn = true;
+                    }
+                    else if (controllerScript.editModeOn == true)
+                    {
+                        this.editGridButton.Text = "Edit Grid";
+                        controllerScript.editModeOn = false;
+                    }
+                }
+            }
+        }
+
+        private void editTimer_Elapsed(object sender, EventArgs e)
+        {
+            // get proper locations. Check mouse position. start from editGridButton.DropDown.Bounds.ToString()
+            editGridButton.DropDown.Hide();
+            this.editGridButton.Text = "Edit Grid";
+            controllerScript.editModeOn = false;
         }
     }
 }

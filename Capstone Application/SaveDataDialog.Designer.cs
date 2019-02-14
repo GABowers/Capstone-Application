@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveDataDialog));
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Count");
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Transitions");
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("C Index");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Data", new System.Windows.Forms.TreeNode[] {
-            treeNode25,
-            treeNode26,
-            treeNode27});
-            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Image");
-            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Paths");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Count");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Transitions");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("C Index");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Data", new System.Windows.Forms.TreeNode[] {
+            treeNode7,
+            treeNode8,
+            treeNode9});
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Image");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Paths");
             this.outerPanel = new System.Windows.Forms.Panel();
             this.controlsPanel = new System.Windows.Forms.Panel();
             this.messageNextButton = new System.Windows.Forms.Button();
@@ -90,6 +90,8 @@
             this.pauseIterationInput = new System.Windows.Forms.TextBox();
             this.pauseIntroLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.pauseRunInput = new System.Windows.Forms.TextBox();
+            this.pauseRunLabel = new System.Windows.Forms.Label();
             this.outerPanel.SuspendLayout();
             this.controlsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -229,22 +231,22 @@
             this.saveOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.saveOptions.Location = new System.Drawing.Point(0, 0);
             this.saveOptions.Name = "saveOptions";
-            treeNode25.Name = "countChild";
-            treeNode25.Text = "Count";
-            treeNode26.Name = "transitionsChild";
-            treeNode26.Text = "Transitions";
-            treeNode27.Name = "cIndexChild";
-            treeNode27.Text = "C Index";
-            treeNode28.Name = "dataRoot";
-            treeNode28.Text = "Data";
-            treeNode29.Name = "imageRoot";
-            treeNode29.Text = "Image";
-            treeNode30.Name = "pathsRoot";
-            treeNode30.Text = "Paths";
+            treeNode7.Name = "countChild";
+            treeNode7.Text = "Count";
+            treeNode8.Name = "transitionsChild";
+            treeNode8.Text = "Transitions";
+            treeNode9.Name = "cIndexChild";
+            treeNode9.Text = "C Index";
+            treeNode10.Name = "dataRoot";
+            treeNode10.Text = "Data";
+            treeNode11.Name = "imageRoot";
+            treeNode11.Text = "Image";
+            treeNode12.Name = "pathsRoot";
+            treeNode12.Text = "Paths";
             this.saveOptions.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode28,
-            treeNode29,
-            treeNode30});
+            treeNode10,
+            treeNode11,
+            treeNode12});
             this.saveOptions.Size = new System.Drawing.Size(150, 223);
             this.saveOptions.TabIndex = 0;
             this.saveOptions.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.saveOptions_AfterCheck);
@@ -602,6 +604,8 @@
             // 
             // pauseTab
             // 
+            this.pauseTab.Controls.Add(this.pauseRunLabel);
+            this.pauseTab.Controls.Add(this.pauseRunInput);
             this.pauseTab.Controls.Add(this.pauseAgentPanel);
             this.pauseTab.Controls.Add(this.pauseAgentLabel);
             this.pauseTab.Controls.Add(this.pauseIterationLabel);
@@ -658,6 +662,23 @@
             this.pauseIntroLabel.TabIndex = 5;
             this.pauseIntroLabel.Text = "Auto-pause the CA upon either threshoold type below. If there are multiple inputs" +
     ", ALL thresholds crossed will cause a pause.";
+            // 
+            // pauseRunInput
+            // 
+            this.pauseRunInput.Location = new System.Drawing.Point(112, 63);
+            this.pauseRunInput.Name = "pauseRunInput";
+            this.pauseRunInput.Size = new System.Drawing.Size(100, 20);
+            this.pauseRunInput.TabIndex = 10;
+            this.pauseRunInput.TextChanged += new System.EventHandler(this.pauseRunInput_TextChanged);
+            // 
+            // pauseRunLabel
+            // 
+            this.pauseRunLabel.AutoSize = true;
+            this.pauseRunLabel.Location = new System.Drawing.Point(109, 46);
+            this.pauseRunLabel.Name = "pauseRunLabel";
+            this.pauseRunLabel.Size = new System.Drawing.Size(27, 13);
+            this.pauseRunLabel.TabIndex = 11;
+            this.pauseRunLabel.Text = "Run";
             // 
             // SaveDataDialog
             // 
@@ -755,5 +776,7 @@
         private System.Windows.Forms.TextBox templateIncrementInput;
         private System.Windows.Forms.Label templateIncrementLabel;
         private System.Windows.Forms.TextBox templatePath;
+        private System.Windows.Forms.Label pauseRunLabel;
+        private System.Windows.Forms.TextBox pauseRunInput;
     }
 }

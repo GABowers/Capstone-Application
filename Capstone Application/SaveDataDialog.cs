@@ -62,7 +62,7 @@ namespace Capstone_Application
                 }
                 resetIterationInput.Text = string.Join(", ", runSettings.ResetIterations);
                 pauseIterationInput.Text = string.Join(", ", runSettings.PauseIterations);
-                
+                pauseRunInput.Text = string.Join(", ", runSettings.PauseRuns);
             }
             else
             {
@@ -251,7 +251,6 @@ namespace Capstone_Application
                     runSettings.PauseIterations.Add(result);
                 }
             }
-
         }
 
         private void dataIncInput_TextChanged(object sender, EventArgs e)
@@ -346,6 +345,19 @@ namespace Capstone_Application
                 if (int.TryParse(text[i], out int result))
                 {
                     runSettings.TemplateIncs.Add(result);
+                }
+            }
+        }
+
+        private void pauseRunInput_TextChanged(object sender, EventArgs e)
+        {
+            runSettings.PauseRuns.Clear();
+            string[] text = pauseRunInput.Text.Split(',');
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (int.TryParse(text[i], out int result))
+                {
+                    runSettings.PauseRuns.Add(result);
                 }
             }
         }
