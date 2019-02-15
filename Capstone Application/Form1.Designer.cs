@@ -61,7 +61,6 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.resetButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.editGridButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.runLabel = new System.Windows.Forms.ToolStripLabel();
             this.runCountBox = new System.Windows.Forms.ToolStripLabel();
@@ -75,9 +74,10 @@
             this.decrease = new System.Windows.Forms.ToolStripButton();
             this.increase = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.editGridButton = new System.Windows.Forms.ToolStripButton();
+            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -355,14 +355,6 @@
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
-            // editGridButton
-            // 
-            this.editGridButton.Name = "editGridButton";
-            this.editGridButton.Size = new System.Drawing.Size(65, 22);
-            this.editGridButton.Text = "Edit Grid";
-            this.editGridButton.ToolTipText = "Edit Grid";
-            this.editGridButton.MouseHover += new System.EventHandler(this.editGridButton_MouseHover);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -459,6 +451,21 @@
             this.panel1.Size = new System.Drawing.Size(505, 505);
             this.panel1.TabIndex = 4;
             // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // editGridButton
+            // 
+            this.editGridButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.editGridButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.editGridButton.Name = "editGridButton";
+            this.editGridButton.Size = new System.Drawing.Size(56, 22);
+            this.editGridButton.Text = "Edit Grid";
+            this.editGridButton.ToolTipText = "Edit Grid";
+            this.editGridButton.Click += new System.EventHandler(this.editGridButton_Click);
+            // 
             // innerPictureBox
             // 
             this.innerPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -478,11 +485,6 @@
             this.innerPictureBox.MouseLeave += new System.EventHandler(this.innerPictureBox_MouseLeave);
             this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
             this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
-            // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // Form1
             // 
@@ -558,7 +560,7 @@
         private System.Windows.Forms.ToolStripMenuItem traceToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel runLabel;
         private System.Windows.Forms.ToolStripLabel speedLabel;
-        public System.Windows.Forms.ToolStripDropDownButton editGridButton;
+        public System.Windows.Forms.ToolStripButton editGridButton;
     }
 }
 

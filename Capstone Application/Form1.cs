@@ -24,12 +24,12 @@ namespace Capstone_Application
         int mouseDownX = 0;
         int mouseDownY = 0;
         int iterationSpeed = 0;
-        int editState = 0;
         int? runMax;
         public static RunSettings runSettings;
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
-        System.Timers.Timer edit_timer;
+        EditWindow editWindow;
+        //System.Timers.Timer edit_timer;
         //SaveDataDialog saveDialog;
         System.Timers.Timer text_timer = new System.Timers.Timer();
 
@@ -38,11 +38,11 @@ namespace Capstone_Application
         public Form1()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
             innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             locationTT = new ToolTip();
             text_timer.Interval = 5;
             text_timer.Elapsed += Timer_Tick;
-            this.SetDesktopLocation(0, 0);
         }
 
         private void Timer_Tick(object sender, System.EventArgs e)
@@ -225,11 +225,11 @@ namespace Capstone_Application
                 {
                     if(e.Button == MouseButtons.Left)
                     {
-                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 0, editState);
+                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 0, editWindow.EditState);
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
-                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 1, editState);
+                        controllerScript.EditGrid(mouseUpX, mouseUpY, innerPictureBox, 1, editWindow.EditState);
                     }
                 }
                 else if (mouseDownX != mouseUpX && mouseDownY != mouseUpY)
@@ -253,47 +253,17 @@ namespace Capstone_Application
                     Console.WriteLine(distanceX + "," + distanceY);
                     if (e.Button == MouseButtons.Left)
                     {
-                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 0, editState);
+                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 0, editWindow.EditState);
                     }
                     else if (e.Button == MouseButtons.Right)
                     {
-                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 1, editState);
+                        controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 1, editWindow.EditState);
                     }
                 }
                 UpdateImage();
             }
         }
-
-        public void UpdateIterationResetCell(int states)
-        {
-            for (int i = 0; i < states; i++)
-            {
-                string newname = "CellBox" + i.ToString();
-                string otherName = "Type " + i.ToString();
-                ToolStripTextBox textBox = new ToolStripTextBox(newname);
-                ToolStripMenuItem stateSelect = new ToolStripMenuItem(otherName);
-                stateSelect.Text = otherName;
-                stateSelect.Click += new System.EventHandler(stateSelect_Click);
-                this.editGridButton.DropDownItems.Add(stateSelect);
-            }
-        }
-
-        public void UpdateIterationPauseCell(int states)
-        {
-            for (int i = 0; i < states; i++)
-            {
-                string newname = "CellBox" + i.ToString();
-                ToolStripTextBox textBox = new ToolStripTextBox(newname);
-            }
-        }
-
-        private void stateSelect_Click(object sender, EventArgs e)
-        {
-            UncheckOtherToolStripMenuItems((ToolStripMenuItem)sender);
-            ToolStripMenuItem item = (ToolStripMenuItem)sender;
-            editState = int.Parse(item.Text.Remove(0, 5));
-        }
-
+        
         public void UncheckOtherToolStripMenuItems(ToolStripMenuItem selectedMenuItem)
         {
             selectedMenuItem.Checked = true;
@@ -710,36 +680,24 @@ namespace Capstone_Application
             showImageTrace.ShowDialog();
         }
 
-        private void editGridButton_MouseHover(object sender, EventArgs e)
+        private void editGridButton_Click(object sender, EventArgs e)
         {
-            
             if (controllerScript.AlreadyCA)
             {
                 if (running == false)
                 {
-                    editGridButton.DropDown.Show();
-                    //edit_timer.Interval = 200;
-                    //edit_timer.Elapsed += editTimer_Elapsed;
                     if (controllerScript.editModeOn == false)
                     {
-                        this.editGridButton.Text = "Editing";
-                        controllerScript.editModeOn = true;
+                        editWindow = new EditWindow(this);
+                        editWindow.Show();
                     }
                     else if (controllerScript.editModeOn == true)
                     {
-                        this.editGridButton.Text = "Edit Grid";
-                        controllerScript.editModeOn = false;
+                        editWindow.Close();
+                        editWindow.Dispose();
                     }
                 }
             }
-        }
-
-        private void editTimer_Elapsed(object sender, EventArgs e)
-        {
-            // get proper locations. Check mouse position. start from editGridButton.DropDown.Bounds.ToString()
-            editGridButton.DropDown.Hide();
-            this.editGridButton.Text = "Edit Grid";
-            controllerScript.editModeOn = false;
         }
     }
 }

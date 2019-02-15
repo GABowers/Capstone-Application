@@ -338,11 +338,6 @@ namespace Capstone_Application
 
             //add code to save all tab data to new class
 
-            if (editForm == false)
-            {
-                mainForm.UpdateIterationResetCell(int.Parse(stateNumberBox.Text));
-                mainForm.UpdateIterationPauseCell(int.Parse(stateNumberBox.Text));
-            }
             if(!editForm)
             {
                 Form1.runSettings = new RunSettings(amountOfStates);

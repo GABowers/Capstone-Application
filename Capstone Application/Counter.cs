@@ -17,11 +17,13 @@ namespace Capstone_Application
         int states;
         public Counter(Form1 outsideForm)
         {
+            this.StartPosition = FormStartPosition.Manual;
             form = outsideForm;
             InitializeComponent();
             // Check for CA
             AddInfo();
             SetSize();
+            this.SetDesktopLocation(outsideForm.Location.X + outsideForm.Width, outsideForm.Location.Y);
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -47,8 +49,30 @@ namespace Capstone_Application
                 for (int i = 0; i < states; i++)
                 {
                     dataGridView1[0, i].Value = (i + 1).ToString();
-                    dataGridView1[1, i].Value = controllerScript.myCA.StateCount[i];
-                    dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
+                    try
+                    {
+                        dataGridView1[1, i].Value = controllerScript.myCA.StateCount[i];
+                    }
+                    catch (Exception)
+                    {
+                        dataGridView1[1, i].Value = "N/A";
+                    }
+                    try
+                    {
+                        dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
+                    }
+                    catch (Exception)
+                    {
+                        dataGridView1[1, i].Value = "N/A";
+                    }
+                    try
+                    {
+                        dataGridView1[3, i].Value = controllerScript.myCA.CIndexes[i];
+                    }
+                    catch (Exception)
+                    {
+                        dataGridView1[3, i].Value = "N/A";
+                    }
                     //dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
                 }
                 //dataGridView1.Rows.Add(new DataGridViewRow());
