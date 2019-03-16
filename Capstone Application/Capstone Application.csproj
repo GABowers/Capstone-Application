@@ -91,6 +91,7 @@
       <DependentUpon>AdvancedCellPlacement.cs</DependentUpon>
     </Compile>
     <Compile Include="AgentController.cs" />
+    <Compile Include="Analysis.cs" />
     <Compile Include="BlankGrid.cs" />
     <Compile Include="CA.cs" />
     <Compile Include="CellState.cs" />

@@ -390,11 +390,7 @@ namespace Capstone_Application
 
         public void UpdateBoard(Form1 currentForm)
         {
-            //BitmapData bmp_data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, bmp.PixelFormat);
             Color tileColor;
-            //int bitsPerPixel_int = System.Drawing.Image.GetPixelFormatSize(bmp_data.PixelFormat);
-            //byte bitsPerPixel  = Convert.ToByte(bitsPerPixel_int);
-            //byte* scan0 = (byte*)bmp_data.Scan0.ToPointer();
             if (iterations == 0)
             {
                 for (int i = 0; i < localGridWidth; ++i)
@@ -414,7 +410,6 @@ namespace Capstone_Application
                     }
                 }
             }
-            //Rectangle cur_rest = currentForm.innerPictureBox.ClientRectangle;
             for (int i = 0; i < myCA.ActiveAgents.Count; i++)
             {
                 AgentController curAgent = myCA.ActiveAgents[i];
@@ -447,22 +442,13 @@ namespace Capstone_Application
                 bmp.SetPixel(newX, newY, tileColor);
 
             }
-            //if(currentForm.innerPictureBox != null)
-            //{
-            //    currentForm.innerPictureBox.Dispose();
-            //}
-            if(currentForm.innerPictureBox.Image != null)
+            lock (bmp)
             {
-                lock (currentForm.innerPictureBox.Image)
+                lock(currentForm.innerPictureBox)
                 {
                     currentForm.innerPictureBox.Image = bmp.Bitmap;
                 }
             }
-            else
-            {
-                currentForm.innerPictureBox.Image = bmp.Bitmap;
-            }
-            
         }
 
         public void ClearGrid()
@@ -798,10 +784,11 @@ namespace Capstone_Application
 
             if(runSettings.TemplateIncs.Count > 0)
             {
+                // This action should happen every time we reach a run with (run % templateInc) == 0
                 TemplateAdd();
                 for (int i = 0; i < runSettings.TemplateIncs.Count; i++)
                 {
-                    if (caRuns == runSettings.TemplateIncs[i])
+                    if (caRuns % runSettings.TemplateIncs[i] == 0)
                     {
                         TemplateSave(form, time);
                     }
@@ -811,12 +798,15 @@ namespace Capstone_Application
 
         public void CheckMaxRuns(Form1 form)
         {
-            for (int i = 0; i < runSettings.PauseRuns.Count; i++)
+            if(runSettings.PauseRuns != null)
             {
-                if (caRuns > runSettings.PauseRuns[i])
+                for (int i = 0; i < runSettings.PauseRuns.Count; i++)
                 {
-                    //CheckFinalDataSave(form, time);
-                    form.PauseUnpauseCA();
+                    if (caRuns > runSettings.PauseRuns[i])
+                    {
+                        //CheckFinalDataSave(form, time);
+                        form.PauseUnpauseCA();
+                    }
                 }
             }
         }
@@ -855,7 +845,8 @@ namespace Capstone_Application
             switch(mainPageInfo.template)
             {
                 case Template.Random_Walk:
-                    form.TemplateSave(templateObject, MainPageInfo.template, time, runSettings.TemplatePath);
+                    Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(templateObject, new Tuple<int, int>(localGridWidth, localGridHeight));
+                    form.TemplateSave((object)output, mainPageInfo.template, time, runSettings.TemplatePath);
                     break;
             }
         }

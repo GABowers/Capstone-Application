@@ -130,7 +130,7 @@ namespace Capstone_Application
                     templateSpecificLabel.Text = "You're not using a template. These options only appear when doing so.";
                     break;
                 case Template.Random_Walk:
-                    templateSpecificLabel.Text = "Save each agent's final location (excluding the preceeding path).";
+                    templateSpecificLabel.Text = "Save a histogram of each agent's final location over multiple runs.";
                     break;
             }
         }

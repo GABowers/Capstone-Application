@@ -638,35 +638,51 @@ namespace Capstone_Application
             UpdateImage();
         }
 
-        public void TemplateSave(List<object> templateList, Template template, string time, string path)
+        public void TemplateSave(object templateData, Template template, string time, string path)
         {
             switch(controllerScript.MainPageInfo.template)
             {
                 case Template.Random_Walk:
                     {
-                        List<Tuple<int, int, int>> cur = (List<Tuple<int, int, int>>)templateList[0];
+                        Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> cur = (Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>>)templateData;
+                        List<Tuple<int, int>> x_bins = cur.Item1;
+                        List<Tuple<int, int>> y_bins = cur.Item2;
+                        int y_num = y_bins.Count;
+                        int y_greater = y_num - x_bins.Count;
                         if (string.IsNullOrEmpty(Path.GetExtension(path)))
                         {
-                            path = path + "/" + time + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Data.csv";
+                            path = path + "/" + time + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Final Location Histograms.csv";
                         }
                         using (StreamWriter wt = new StreamWriter(path))
                         {
                             //pertinent info - run, iteration, time
-                            wt.Write("Final Positions");
+                            wt.Write("Final Positions Histograms");
                             wt.WriteLine();
                             wt.Write("Date,Runs");
                             wt.WriteLine();
                             string thing = time + "," + controllerScript.caRuns;
                             wt.Write(thing);
                             wt.WriteLine();
-                            wt.Write("Iteration, X, Y");
+                            wt.Write("Position (X), Count (X), Position (Y), Count (Y)");
                             wt.WriteLine();
-                            for (int i = 0; i < cur.Count - 1; ++i)
+                            for (int i = 0; i < x_bins.Count; i++)
                             {
-                                wt.Write(cur[i].Item3 + "," + cur[i].Item1 + "," +  cur[i].Item2);
+                                wt.Write(x_bins[i].Item1 + "," + x_bins[i].Item2);
+                                if(y_num > i)
+                                {
+                                    wt.Write("," + y_bins[i].Item1 + "," + y_bins[i].Item2);
+                                }
                                 wt.WriteLine();
                             }
-                            wt.Write(cur.Last().Item1 + "," + cur.Last().Item2);
+                            if(y_greater > 0)
+                            {
+                                for (int i = x_bins.Count; i < y_bins.Count; i++)
+                                {
+                                    wt.Write(",," + y_bins[i].Item1 + "," + y_bins[i].Item2);
+                                    wt.WriteLine();
+                                }
+                            }
+                            
                             wt.Close();
                         }
                     }
