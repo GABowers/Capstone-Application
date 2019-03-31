@@ -25,7 +25,8 @@ namespace Capstone_Application
         List<Tuple<int, List<int>>> fullCount;
         List<Tuple<int, List<int>>> fullTransitions;
         List<Tuple<int, List<double>>> fullIndex;
-        List<object> templateObject;
+        List<List<Tuple<int, int, int>>> paths = new List<List<Tuple<int, int, int>>>();
+        //List<object> templateObject;
 
         public bool editModeOn = false;
         bool createdCA = false;
@@ -52,6 +53,7 @@ namespace Capstone_Application
         public List<Tuple<int, List<double>>> FullIndex { get => fullIndex; set => fullIndex = value; }
         public bool CreatedCA { get => createdCA; set => createdCA = value; }
         public bool AlreadyCA { get => alreadyCA; set => alreadyCA = value; }
+        public List<List<Tuple<int, int, int>>> Paths { get => paths; set => paths = value; }
 
         static ControllerScript()
         {
@@ -455,9 +457,12 @@ namespace Capstone_Application
         {
             // clear grid allows CA settings to persist while removing this specific "run."
             iterations = 0;
-            FullCount.Clear();
-            FullTransitions.Clear();
-            FullIndex.Clear();
+            if(!runSettings.MetaStore)
+            {
+                FullCount.Clear();
+                FullTransitions.Clear();
+                FullIndex.Clear();
+            }
             myCA = null;
             AlreadyCA = false;
         }
@@ -735,6 +740,32 @@ namespace Capstone_Application
                     }
                 }
             }
+
+            if (runSettings.HistIncs.Count > 0)
+            {
+                // Check if iteration is the same as any in the list. If so, do the count save
+                for (int i = 0; i < runSettings.HistIncs.Count; i++)
+                {
+                    if (runSettings.HistIncs[i] == -1)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        int remainder = iterations % runSettings.HistIncs[i];
+                        if (remainder == 0 && runSettings.HistRunIncs.Any(x => caRuns % x == 0))
+                        {
+                            GetHist(time, iterations, form);
+                        }
+                    }
+                }
+            }
+        }
+
+        void GetHist(string time, int iteration, Form1 form)
+        {
+            Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(paths, new Tuple<int, int>(localGridWidth, localGridHeight), iteration);
+            form.SaveHist(output, time, runSettings.HistPath, iteration);
         }
 
         void CheckFinalDataSave(Form1 form, string time)
@@ -742,6 +773,10 @@ namespace Capstone_Application
             bool counts = runSettings.SaveCounts;
             bool trans = runSettings.SaveTrans;
             bool cIndex = runSettings.SaveIndex;
+            if(runSettings.SavePaths)
+            {
+                paths.AddRange(myCA.GetPaths());
+            }
             // This is for saving the cell counts in text file
             if (runSettings.DataIncs.Count > 0)
             {
@@ -782,18 +817,30 @@ namespace Capstone_Application
                 }
             }
 
-            if(runSettings.TemplateIncs.Count > 0)
+            if (runSettings.HistIncs.Count > 0)
             {
-                // This action should happen every time we reach a run with (run % templateInc) == 0
-                TemplateAdd();
-                for (int i = 0; i < runSettings.TemplateIncs.Count; i++)
+                // Check for code denoting save at reset. If so, do the image save
+                for (int i = 0; i < runSettings.HistIncs.Count; i++)
                 {
-                    if (caRuns % runSettings.TemplateIncs[i] == 0)
+                    if (runSettings.HistIncs[i] == -1 && runSettings.HistRunIncs.Any(x => caRuns % x == 0))
                     {
-                        TemplateSave(form, time);
+                        GetHist(time, iterations, form);
                     }
                 }
             }
+
+            //if(runSettings.TemplateIncs.Count > 0)
+            //{
+            //    // This action should happen every time we reach a run with (run % templateInc) == 0
+            //    TemplateAdd();
+            //    for (int i = 0; i < runSettings.TemplateIncs.Count; i++)
+            //    {
+            //        if (caRuns % runSettings.TemplateIncs[i] == 0)
+            //        {
+            //            TemplateSave(form, time);
+            //        }
+            //    }
+            //}
         }
 
         public void CheckMaxRuns(Form1 form)
@@ -811,44 +858,44 @@ namespace Capstone_Application
             }
         }
 
-        public void ResetTemplate()
-        {
-            templateObject = new List<object>();
-            TemplateInit();
-        }
+        //public void ResetTemplate()
+        //{
+        //    templateObject = new List<object>();
+        //    TemplateInit();
+        //}
 
-        void TemplateInit()
-        {
-            switch(mainPageInfo.template)
-            {
-                case Template.Random_Walk:
-                    templateObject.Add(new List<Tuple<int, int, int>>());
-                    break;
-            }
-        }
+        //void TemplateInit()
+        //{
+        //    switch(mainPageInfo.template)
+        //    {
+        //        case Template.Random_Walk:
+        //            templateObject.Add(new List<Tuple<int, int, int>>());
+        //            break;
+        //    }
+        //}
 
-        void TemplateAdd()
-        {
-            // do the custom actions of each template
-            switch(mainPageInfo.template)
-            {
-                case Template.Random_Walk:
-                    List<Tuple<int, int, int>> prev = (List<Tuple<int, int, int>>)templateObject[0];
-                    prev.AddRange(myCA.AddEnds().Select(x => new Tuple<int, int, int>(x.Item1, x.Item2, iterations)));
-                    templateObject[0] = prev;
-                    break;
-            }
-        }
+        //void TemplateAdd()
+        //{
+        //    // do the custom actions of each template
+        //    switch(mainPageInfo.template)
+        //    {
+        //        case Template.Random_Walk:
+        //            List<Tuple<int, int, int>> prev = (List<Tuple<int, int, int>>)templateObject[0];
+        //            prev.AddRange(myCA.AddEnds().Select(x => new Tuple<int, int, int>(x.Item1, x.Item2, iterations)));
+        //            templateObject[0] = prev;
+        //            break;
+        //    }
+        //}
 
-        void TemplateSave(Form1 form, string time)
-        {
-            switch(mainPageInfo.template)
-            {
-                case Template.Random_Walk:
-                    Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(templateObject, new Tuple<int, int>(localGridWidth, localGridHeight));
-                    form.TemplateSave((object)output, mainPageInfo.template, time, runSettings.TemplatePath);
-                    break;
-            }
-        }
+        //void TemplateSave(Form1 form, string time)
+        //{
+        //    switch(mainPageInfo.template)
+        //    {
+        //        case Template.Random_Walk:
+        //            Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(templateObject, new Tuple<int, int>(localGridWidth, localGridHeight));
+        //            form.TemplateSave((object)output, mainPageInfo.template, time, runSettings.TemplatePath);
+        //            break;
+        //    }
+        //}
     }
 }

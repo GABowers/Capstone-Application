@@ -8,9 +8,17 @@ namespace Capstone_Application
 {
     class Analysis
     {
-        public static Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> FinalLocationHistogram(List<object> data, Tuple<int, int> grid_dims)
+        public static Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> FinalLocationHistogram(List<List<Tuple<int, int, int>>> paths, Tuple<int, int> grid_dims, int iteration)
         {
-            List<Tuple<int, int, int>> ends = (List<Tuple<int, int, int>>)data[0];
+
+            List<Tuple<int, int, int>> ends = new List<Tuple<int, int, int>>();
+            for (int i = 0; i < paths.Count; i++)
+            {
+                if(paths[i].Count >= iteration)
+                {
+                    ends.Add(paths[i][iteration]);
+                }
+            }
             List<int> x_output = Enumerable.Repeat(0, grid_dims.Item1).ToList();
             List<int> y_output = Enumerable.Repeat(0, grid_dims.Item2).ToList();
             for (int i = 0; i < ends.Count; i++)

@@ -29,15 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveDataDialog));
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Count");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Transitions");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("C Index");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Data", new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode8,
-            treeNode9});
-            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Image");
-            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Paths");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Count");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Transitions");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("C Index");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Paths");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Image");
             this.outerPanel = new System.Windows.Forms.Panel();
             this.controlsPanel = new System.Windows.Forms.Panel();
             this.messageNextButton = new System.Windows.Forms.Button();
@@ -74,6 +70,11 @@
             this.templatePath = new System.Windows.Forms.TextBox();
             this.templateSpecificLabel = new System.Windows.Forms.Label();
             this.tempTabExplain = new System.Windows.Forms.Label();
+            this.generalTab = new System.Windows.Forms.TabPage();
+            this.metaSaveCheckBox = new System.Windows.Forms.CheckBox();
+            this.analysisTab = new System.Windows.Forms.TabPage();
+            this.histBox = new System.Windows.Forms.TextBox();
+            this.histLabel = new System.Windows.Forms.Label();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.resetTabControl = new System.Windows.Forms.TabControl();
             this.resetTab = new System.Windows.Forms.TabPage();
@@ -84,14 +85,18 @@
             this.resetIntroLabel = new System.Windows.Forms.Label();
             this.pauseTabControl = new System.Windows.Forms.TabControl();
             this.pauseTab = new System.Windows.Forms.TabPage();
+            this.pauseRunLabel = new System.Windows.Forms.Label();
+            this.pauseRunInput = new System.Windows.Forms.TextBox();
             this.pauseAgentPanel = new System.Windows.Forms.Panel();
             this.pauseAgentLabel = new System.Windows.Forms.Label();
             this.pauseIterationLabel = new System.Windows.Forms.Label();
             this.pauseIterationInput = new System.Windows.Forms.TextBox();
             this.pauseIntroLabel = new System.Windows.Forms.Label();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.pauseRunInput = new System.Windows.Forms.TextBox();
-            this.pauseRunLabel = new System.Windows.Forms.Label();
+            this.histPathBox = new System.Windows.Forms.TextBox();
+            this.histSaveLabel = new System.Windows.Forms.Label();
+            this.histRunBox = new System.Windows.Forms.TextBox();
+            this.histRunLabel = new System.Windows.Forms.Label();
             this.outerPanel.SuspendLayout();
             this.controlsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -107,6 +112,8 @@
             this.imageTab.SuspendLayout();
             this.pathTab.SuspendLayout();
             this.templateTab.SuspendLayout();
+            this.generalTab.SuspendLayout();
+            this.analysisTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
@@ -231,22 +238,22 @@
             this.saveOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.saveOptions.Location = new System.Drawing.Point(0, 0);
             this.saveOptions.Name = "saveOptions";
-            treeNode7.Name = "countChild";
-            treeNode7.Text = "Count";
-            treeNode8.Name = "transitionsChild";
-            treeNode8.Text = "Transitions";
-            treeNode9.Name = "cIndexChild";
-            treeNode9.Text = "C Index";
-            treeNode10.Name = "dataRoot";
-            treeNode10.Text = "Data";
-            treeNode11.Name = "imageRoot";
-            treeNode11.Text = "Image";
-            treeNode12.Name = "pathsRoot";
-            treeNode12.Text = "Paths";
+            treeNode1.Name = "countNode";
+            treeNode1.Text = "Count";
+            treeNode2.Name = "transNode";
+            treeNode2.Text = "Transitions";
+            treeNode3.Name = "indexNode";
+            treeNode3.Text = "C Index";
+            treeNode4.Name = "pathsNode";
+            treeNode4.Text = "Paths";
+            treeNode5.Name = "imageNode";
+            treeNode5.Text = "Image";
             this.saveOptions.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode10,
-            treeNode11,
-            treeNode12});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5});
             this.saveOptions.Size = new System.Drawing.Size(150, 223);
             this.saveOptions.TabIndex = 0;
             this.saveOptions.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.saveOptions_AfterCheck);
@@ -257,6 +264,8 @@
             this.saveTabsControl.Controls.Add(this.imageTab);
             this.saveTabsControl.Controls.Add(this.pathTab);
             this.saveTabsControl.Controls.Add(this.templateTab);
+            this.saveTabsControl.Controls.Add(this.generalTab);
+            this.saveTabsControl.Controls.Add(this.analysisTab);
             this.saveTabsControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.saveTabsControl.Location = new System.Drawing.Point(0, 0);
             this.saveTabsControl.Name = "saveTabsControl";
@@ -276,7 +285,7 @@
             this.dataTab.Padding = new System.Windows.Forms.Padding(3);
             this.dataTab.Size = new System.Drawing.Size(288, 197);
             this.dataTab.TabIndex = 0;
-            this.dataTab.Text = "Save Data";
+            this.dataTab.Text = "Data";
             this.dataTab.UseVisualStyleBackColor = true;
             // 
             // dataIncInput
@@ -335,7 +344,7 @@
             this.imageTab.Padding = new System.Windows.Forms.Padding(3);
             this.imageTab.Size = new System.Drawing.Size(288, 197);
             this.imageTab.TabIndex = 1;
-            this.imageTab.Text = "Save Image";
+            this.imageTab.Text = "Image";
             this.imageTab.UseVisualStyleBackColor = true;
             // 
             // imageIncInput
@@ -392,7 +401,7 @@
             this.pathTab.Padding = new System.Windows.Forms.Padding(3);
             this.pathTab.Size = new System.Drawing.Size(288, 197);
             this.pathTab.TabIndex = 2;
-            this.pathTab.Text = "Save Paths";
+            this.pathTab.Text = "Paths";
             this.pathTab.UseVisualStyleBackColor = true;
             // 
             // pathsIncInput
@@ -504,6 +513,60 @@
             this.tempTabExplain.TabIndex = 3;
             this.tempTabExplain.Text = "Save information for a specific template being used.";
             // 
+            // generalTab
+            // 
+            this.generalTab.Controls.Add(this.metaSaveCheckBox);
+            this.generalTab.Location = new System.Drawing.Point(4, 22);
+            this.generalTab.Name = "generalTab";
+            this.generalTab.Padding = new System.Windows.Forms.Padding(3);
+            this.generalTab.Size = new System.Drawing.Size(288, 197);
+            this.generalTab.TabIndex = 4;
+            this.generalTab.Text = "General";
+            this.generalTab.UseVisualStyleBackColor = true;
+            // 
+            // metaSaveCheckBox
+            // 
+            this.metaSaveCheckBox.AutoSize = true;
+            this.metaSaveCheckBox.Location = new System.Drawing.Point(5, 5);
+            this.metaSaveCheckBox.Name = "metaSaveCheckBox";
+            this.metaSaveCheckBox.Size = new System.Drawing.Size(132, 17);
+            this.metaSaveCheckBox.TabIndex = 1;
+            this.metaSaveCheckBox.Text = "Store data across runs";
+            this.metaSaveCheckBox.UseVisualStyleBackColor = true;
+            this.metaSaveCheckBox.CheckedChanged += new System.EventHandler(this.metaSaveCheckBox_CheckedChanged);
+            // 
+            // analysisTab
+            // 
+            this.analysisTab.Controls.Add(this.histRunLabel);
+            this.analysisTab.Controls.Add(this.histRunBox);
+            this.analysisTab.Controls.Add(this.histSaveLabel);
+            this.analysisTab.Controls.Add(this.histPathBox);
+            this.analysisTab.Controls.Add(this.histBox);
+            this.analysisTab.Controls.Add(this.histLabel);
+            this.analysisTab.Location = new System.Drawing.Point(4, 22);
+            this.analysisTab.Name = "analysisTab";
+            this.analysisTab.Size = new System.Drawing.Size(288, 197);
+            this.analysisTab.TabIndex = 5;
+            this.analysisTab.Text = "Analysis";
+            this.analysisTab.UseVisualStyleBackColor = true;
+            // 
+            // histBox
+            // 
+            this.histBox.Location = new System.Drawing.Point(8, 36);
+            this.histBox.Name = "histBox";
+            this.histBox.Size = new System.Drawing.Size(121, 20);
+            this.histBox.TabIndex = 5;
+            this.histBox.TextChanged += new System.EventHandler(this.histBox_TextChanged);
+            // 
+            // histLabel
+            // 
+            this.histLabel.Location = new System.Drawing.Point(5, 5);
+            this.histLabel.Name = "histLabel";
+            this.histLabel.Size = new System.Drawing.Size(280, 28);
+            this.histLabel.TabIndex = 0;
+            this.histLabel.Text = "Paths histogram iterative increment - store the histogram of locations at a speci" +
+    "fic iteration (-1 is end of run)";
+            // 
             // splitContainer3
             // 
             this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -589,8 +652,8 @@
             this.resetIntroLabel.Name = "resetIntroLabel";
             this.resetIntroLabel.Size = new System.Drawing.Size(209, 39);
             this.resetIntroLabel.TabIndex = 0;
-            this.resetIntroLabel.Text = "Auto-reset the CA upon either threshoold type below. If there are multiple inputs" +
-    ", the first threshold crossed will cause a reset.";
+            this.resetIntroLabel.Text = "Auto-reset the CA upon either threshold type below. If there are multiple inputs," +
+    " the first threshold crossed will cause a reset.";
             // 
             // pauseTabControl
             // 
@@ -618,6 +681,23 @@
             this.pauseTab.TabIndex = 0;
             this.pauseTab.Text = "Auto Pause";
             this.pauseTab.UseVisualStyleBackColor = true;
+            // 
+            // pauseRunLabel
+            // 
+            this.pauseRunLabel.AutoSize = true;
+            this.pauseRunLabel.Location = new System.Drawing.Point(109, 46);
+            this.pauseRunLabel.Name = "pauseRunLabel";
+            this.pauseRunLabel.Size = new System.Drawing.Size(27, 13);
+            this.pauseRunLabel.TabIndex = 11;
+            this.pauseRunLabel.Text = "Run";
+            // 
+            // pauseRunInput
+            // 
+            this.pauseRunInput.Location = new System.Drawing.Point(112, 63);
+            this.pauseRunInput.Name = "pauseRunInput";
+            this.pauseRunInput.Size = new System.Drawing.Size(100, 20);
+            this.pauseRunInput.TabIndex = 10;
+            this.pauseRunInput.TextChanged += new System.EventHandler(this.pauseRunInput_TextChanged);
             // 
             // pauseAgentPanel
             // 
@@ -660,25 +740,41 @@
             this.pauseIntroLabel.Name = "pauseIntroLabel";
             this.pauseIntroLabel.Size = new System.Drawing.Size(209, 39);
             this.pauseIntroLabel.TabIndex = 5;
-            this.pauseIntroLabel.Text = "Auto-pause the CA upon either threshoold type below. If there are multiple inputs" +
-    ", ALL thresholds crossed will cause a pause.";
+            this.pauseIntroLabel.Text = "Auto-pause the CA upon either threshold type below. If there are multiple inputs," +
+    " ALL thresholds crossed will cause a pause.";
             // 
-            // pauseRunInput
+            // histPathBox
             // 
-            this.pauseRunInput.Location = new System.Drawing.Point(112, 63);
-            this.pauseRunInput.Name = "pauseRunInput";
-            this.pauseRunInput.Size = new System.Drawing.Size(100, 20);
-            this.pauseRunInput.TabIndex = 10;
-            this.pauseRunInput.TextChanged += new System.EventHandler(this.pauseRunInput_TextChanged);
+            this.histPathBox.Location = new System.Drawing.Point(8, 129);
+            this.histPathBox.Name = "histPathBox";
+            this.histPathBox.Size = new System.Drawing.Size(242, 20);
+            this.histPathBox.TabIndex = 6;
+            this.histPathBox.TextChanged += new System.EventHandler(this.histPathBox_TextChanged);
             // 
-            // pauseRunLabel
+            // histSaveLabel
             // 
-            this.pauseRunLabel.AutoSize = true;
-            this.pauseRunLabel.Location = new System.Drawing.Point(109, 46);
-            this.pauseRunLabel.Name = "pauseRunLabel";
-            this.pauseRunLabel.Size = new System.Drawing.Size(27, 13);
-            this.pauseRunLabel.TabIndex = 11;
-            this.pauseRunLabel.Text = "Run";
+            this.histSaveLabel.AutoSize = true;
+            this.histSaveLabel.Location = new System.Drawing.Point(5, 113);
+            this.histSaveLabel.Name = "histSaveLabel";
+            this.histSaveLabel.Size = new System.Drawing.Size(104, 13);
+            this.histSaveLabel.TabIndex = 7;
+            this.histSaveLabel.Text = "Histogram save path";
+            // 
+            // histRunBox
+            // 
+            this.histRunBox.Location = new System.Drawing.Point(8, 90);
+            this.histRunBox.Name = "histRunBox";
+            this.histRunBox.Size = new System.Drawing.Size(121, 20);
+            this.histRunBox.TabIndex = 8;
+            this.histRunBox.TextChanged += new System.EventHandler(this.histRunBox_TextChanged);
+            // 
+            // histRunLabel
+            // 
+            this.histRunLabel.Location = new System.Drawing.Point(5, 59);
+            this.histRunLabel.Name = "histRunLabel";
+            this.histRunLabel.Size = new System.Drawing.Size(280, 28);
+            this.histRunLabel.TabIndex = 9;
+            this.histRunLabel.Text = "Histogram run increment - store the histogram of locations every X runs";
             // 
             // SaveDataDialog
             // 
@@ -707,6 +803,10 @@
             this.pathTab.PerformLayout();
             this.templateTab.ResumeLayout(false);
             this.templateTab.PerformLayout();
+            this.generalTab.ResumeLayout(false);
+            this.generalTab.PerformLayout();
+            this.analysisTab.ResumeLayout(false);
+            this.analysisTab.PerformLayout();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
@@ -778,5 +878,14 @@
         private System.Windows.Forms.TextBox templatePath;
         private System.Windows.Forms.Label pauseRunLabel;
         private System.Windows.Forms.TextBox pauseRunInput;
+        private System.Windows.Forms.TabPage generalTab;
+        private System.Windows.Forms.CheckBox metaSaveCheckBox;
+        private System.Windows.Forms.TabPage analysisTab;
+        private System.Windows.Forms.TextBox histBox;
+        private System.Windows.Forms.Label histLabel;
+        private System.Windows.Forms.Label histSaveLabel;
+        private System.Windows.Forms.TextBox histPathBox;
+        private System.Windows.Forms.Label histRunLabel;
+        private System.Windows.Forms.TextBox histRunBox;
     }
 }

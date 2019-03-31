@@ -342,7 +342,7 @@ namespace Capstone_Application
             {
                 Form1.runSettings = new RunSettings(amountOfStates);
                 controllerScript.runSettings = Form1.runSettings;
-                controllerScript.ResetTemplate();
+                //controllerScript.ResetTemplate();
                 controllerScript.ResetRuns();
             }
             

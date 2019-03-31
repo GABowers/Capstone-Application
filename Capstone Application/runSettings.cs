@@ -27,6 +27,12 @@ namespace Capstone_Application
         bool saveCounts;
         bool saveTrans;
         bool saveIndex;
+        bool savePaths;
+        bool saveImage;
+        bool metaStore;
+        List<int> histIncs;
+        List<int> histRunIncs;
+        string histPath;
 
         public string DataPath { get => dataPath; set => dataPath = value; }
         public List<int> DataIncs { get => dataIncs; set => dataIncs = value; }
@@ -47,6 +53,12 @@ namespace Capstone_Application
         public string TemplatePath { get => templatePath; set => templatePath = value; }
         public bool Fresh { get => fresh; set => fresh = value; }
         public List<int> PauseRuns { get => pauseRuns; set => pauseRuns = value; }
+        public bool MetaStore { get => metaStore; set => metaStore = value; }
+        public bool SavePaths { get => savePaths; set => savePaths = value; }
+        public bool SaveImage { get => saveImage; set => saveImage = value; }
+        public List<int> HistIncs { get => histIncs; set => histIncs = value; }
+        public string HistPath { get => histPath; set => histPath = value; }
+        public List<int> HistRunIncs { get => histRunIncs; set => histRunIncs = value; }
 
         public RunSettings(int agents)
         {
@@ -58,6 +70,8 @@ namespace Capstone_Application
             PauseIterations = new List<int>();
             ResetCounts = new List<int>();
             PauseCounts = new List<int>();
+            HistIncs = new List<int>();
+            HistRunIncs = new List<int>();
             for (int i = 0; i < agents; i++)
             {
                 ResetCounts.Add(-1);

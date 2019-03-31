@@ -638,55 +638,47 @@ namespace Capstone_Application
             UpdateImage();
         }
 
-        public void TemplateSave(object templateData, Template template, string time, string path)
+        public void SaveHist(Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> input, string time, string path, int iteration)
         {
-            switch(controllerScript.MainPageInfo.template)
+            List<Tuple<int, int>> x_bins = input.Item1;
+            List<Tuple<int, int>> y_bins = input.Item2;
+            int y_num = y_bins.Count;
+            int y_greater = y_num - x_bins.Count;
+            if (string.IsNullOrEmpty(Path.GetExtension(path)))
             {
-                case Template.Random_Walk:
+                path = path + "/" + time + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Final Location Histograms.csv";
+            }
+            using (StreamWriter wt = new StreamWriter(path))
+            {
+                //pertinent info - run, iteration, time
+                wt.Write("Final Positions Histograms {0} Iterations", iteration);
+                wt.WriteLine();
+                wt.Write("Date,Runs");
+                wt.WriteLine();
+                string thing = time + "," + controllerScript.caRuns;
+                wt.Write(thing);
+                wt.WriteLine();
+                wt.Write("Position (X), Count (X), Position (Y), Count (Y)");
+                wt.WriteLine();
+                for (int i = 0; i < x_bins.Count; i++)
+                {
+                    wt.Write(x_bins[i].Item1 + "," + x_bins[i].Item2);
+                    if(y_num > i)
                     {
-                        Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> cur = (Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>>)templateData;
-                        List<Tuple<int, int>> x_bins = cur.Item1;
-                        List<Tuple<int, int>> y_bins = cur.Item2;
-                        int y_num = y_bins.Count;
-                        int y_greater = y_num - x_bins.Count;
-                        if (string.IsNullOrEmpty(Path.GetExtension(path)))
-                        {
-                            path = path + "/" + time + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Final Location Histograms.csv";
-                        }
-                        using (StreamWriter wt = new StreamWriter(path))
-                        {
-                            //pertinent info - run, iteration, time
-                            wt.Write("Final Positions Histograms");
-                            wt.WriteLine();
-                            wt.Write("Date,Runs");
-                            wt.WriteLine();
-                            string thing = time + "," + controllerScript.caRuns;
-                            wt.Write(thing);
-                            wt.WriteLine();
-                            wt.Write("Position (X), Count (X), Position (Y), Count (Y)");
-                            wt.WriteLine();
-                            for (int i = 0; i < x_bins.Count; i++)
-                            {
-                                wt.Write(x_bins[i].Item1 + "," + x_bins[i].Item2);
-                                if(y_num > i)
-                                {
-                                    wt.Write("," + y_bins[i].Item1 + "," + y_bins[i].Item2);
-                                }
-                                wt.WriteLine();
-                            }
-                            if(y_greater > 0)
-                            {
-                                for (int i = x_bins.Count; i < y_bins.Count; i++)
-                                {
-                                    wt.Write(",," + y_bins[i].Item1 + "," + y_bins[i].Item2);
-                                    wt.WriteLine();
-                                }
-                            }
-                            
-                            wt.Close();
-                        }
+                        wt.Write("," + y_bins[i].Item1 + "," + y_bins[i].Item2);
                     }
-                    break;
+                    wt.WriteLine();
+                }
+                if(y_greater > 0)
+                {
+                    for (int i = x_bins.Count; i < y_bins.Count; i++)
+                    {
+                        wt.Write(",," + y_bins[i].Item1 + "," + y_bins[i].Item2);
+                        wt.WriteLine();
+                    }
+                }
+                            
+                wt.Close();
             }
         }
 

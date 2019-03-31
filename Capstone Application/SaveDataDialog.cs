@@ -131,6 +131,14 @@ namespace Capstone_Application
                     break;
                 case Template.Random_Walk:
                     templateSpecificLabel.Text = "Save a histogram of each agent's final location over multiple runs.";
+                    metaSaveCheckBox.Checked = true;
+                    for (int i = 0; i < saveOptions.Nodes.Count; i++)
+                    {
+                        if(saveOptions.Nodes[i].Text.Contains("Path"))
+                        {
+                            saveOptions.Nodes[i].Checked = true;
+                        }
+                    }
                     break;
             }
         }
@@ -218,24 +226,45 @@ namespace Capstone_Application
 
         private void saveOptions_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (!checking)
+            //if (!checking)
+            //{
+            //    checking = true;
+            //    RecursiveCheck(saveOptions.SelectedNode, saveOptions.SelectedNode.Checked);
+            //    checking = false;
+            //}
+            for (int i = 0; i < saveOptions.Nodes.Count; i++)
             {
-                checking = true;
-                RecursiveCheck(saveOptions.SelectedNode, saveOptions.SelectedNode.Checked);
-                checking = false;
+                string name = saveOptions.Nodes[i].Text;
+                if(name.Contains("Count"))
+                {
+                    runSettings.SaveCounts = saveOptions.Nodes[i].Checked;
+                }
+                else if (name.Contains("Trans"))
+                {
+                    runSettings.SaveTrans = saveOptions.Nodes[i].Checked;
+                }
+                else if (name.Contains("Index"))
+                {
+                    runSettings.SaveIndex = saveOptions.Nodes[i].Checked;
+                }
+                else if (name.Contains("Path"))
+                {
+                    runSettings.SavePaths = saveOptions.Nodes[i].Checked;
+                }
+                else if (name.Contains("Image"))
+                {
+                    runSettings.SaveImage = saveOptions.Nodes[i].Checked;
+                }
             }
-            runSettings.SaveCounts = saveOptions.Nodes[0].Nodes[0].Checked;
-            runSettings.SaveTrans = saveOptions.Nodes[0].Nodes[1].Checked;
-            runSettings.SaveIndex = saveOptions.Nodes[0].Nodes[2].Checked;
         }
 
         void RecursiveCheck(TreeNode parent, bool checkState)
         {
-            Console.WriteLine("Parent: " + parent);
+            //Console.WriteLine("Parent: " + parent);
             parent.Checked = checkState;
             foreach(TreeNode sub in parent.Nodes)
             {
-                Console.WriteLine("Sub: " + sub);
+                //Console.WriteLine("Sub: " + sub);
                 RecursiveCheck(sub, checkState);
             }
         }
@@ -358,6 +387,48 @@ namespace Capstone_Application
                 if (int.TryParse(text[i], out int result))
                 {
                     runSettings.PauseRuns.Add(result);
+                }
+            }
+        }
+
+        private void metaSaveCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            runSettings.MetaStore = metaSaveCheckBox.Checked;
+        }
+
+        private void histBox_TextChanged(object sender, EventArgs e)
+        {
+            runSettings.HistIncs.Clear();
+            string[] text = histBox.Text.Split(',');
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (int.TryParse(text[i], out int result))
+                {
+                    runSettings.HistIncs.Add(result);
+                }
+            }
+        }
+
+        private void histPathBox_TextChanged(object sender, EventArgs e)
+        {
+            string filepath = histPathBox.Text;
+            bool real = Directory.Exists(filepath);
+            if (!real)
+            {
+                messages.Add("Path doesn't exist. It will be created.");
+            }
+            runSettings.HistPath = histPathBox.Text;
+        }
+
+        private void histRunBox_TextChanged(object sender, EventArgs e)
+        {
+            runSettings.HistRunIncs.Clear();
+            string[] text = histRunBox.Text.Split(',');
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (int.TryParse(text[i], out int result))
+                {
+                    runSettings.HistRunIncs.Add(result);
                 }
             }
         }

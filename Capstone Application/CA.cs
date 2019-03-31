@@ -392,6 +392,16 @@ public class CA
         }
     }
 
+    public List<List<Tuple<int, int, int>>> GetPaths()
+    {
+        List<List<Tuple<int, int, int>>> paths = new List<List<Tuple<int, int, int>>>();
+        for (int i = 0; i < ActiveAgents.Count; i++)
+        {
+            paths.Add(ActiveAgents[i].History);
+        }
+        return paths;
+    }
+
     void DLARoutine()
     {
         
