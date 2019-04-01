@@ -190,6 +190,11 @@ namespace Capstone_Application
                     }
                     break;
                 case Template.Random_Walk:
+                    {
+                        RandomTemplateUC ranUC = new RandomTemplateUC();
+                        templatePanel.Controls.Add(ranUC);
+                        templateUC = ranUC;
+                    }
                     break;
             }
         }
@@ -200,13 +205,19 @@ namespace Capstone_Application
             {
                 case Template.Random_Walk:
                     {
+                        RandomTemplateUC ranUC = (RandomTemplateUC)templateUC;
+                        bool _1d = ranUC.radio1D.Checked;
                         controllerScript.UpdateMainTemplateInfo(template_reset);
-                        int hori = 101;
+                        int hori = 51;
+                        double up = _1d? 0 : 0.25;
+                        double down = _1d ? 0 : 0.25;
+                        double left = _1d ? 0.50 : 0.25;
+                        double right = _1d ? 0.50 : 0.25;
                         if (int.TryParse(gridSizeHori.Text, out int result1))
                         {
                             hori = result1;
                         }
-                        int vert = 101;
+                        int vert = _1d ? 1 : 51;
                         if (int.TryParse(gridSizeVert.Text, out int result2))
                         {
                             vert = result2;
@@ -219,7 +230,7 @@ namespace Capstone_Application
                         List<List<List<double>>> tempProbs = new List<List<List<double>>>();
                         controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.White,
                             new List<Tuple<int, int>>() { new Tuple<int, int>(halfHori, halfVert)}, 0, 1, 
-                            tempProbs, true, 0, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
+                            tempProbs, true, 0, new List<double>() { up, right, down, left },
                             true, new List<double>() { 0, 0 }, false, false, false, new List<Tuple<string, double>>());
                     }
                     break;
