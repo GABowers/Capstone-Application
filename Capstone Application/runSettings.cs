@@ -72,6 +72,7 @@ namespace Capstone_Application
             PauseCounts = new List<int>();
             HistIncs = new List<int>();
             HistRunIncs = new List<int>();
+            PauseRuns = new List<int>();
             for (int i = 0; i < agents; i++)
             {
                 ResetCounts.Add(-1);

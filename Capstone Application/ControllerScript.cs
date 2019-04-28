@@ -462,6 +462,7 @@ namespace Capstone_Application
                 FullCount.Clear();
                 FullTransitions.Clear();
                 FullIndex.Clear();
+                Paths.Clear();
             }
             myCA = null;
             AlreadyCA = false;
@@ -773,10 +774,12 @@ namespace Capstone_Application
             bool counts = runSettings.SaveCounts;
             bool trans = runSettings.SaveTrans;
             bool cIndex = runSettings.SaveIndex;
-            if(runSettings.SavePaths)
+
+            if (runSettings.SavePaths)
             {
                 paths.AddRange(myCA.GetPaths());
             }
+
             // This is for saving the cell counts in text file
             if (runSettings.DataIncs.Count > 0)
             {

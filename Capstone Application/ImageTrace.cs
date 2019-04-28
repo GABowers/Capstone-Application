@@ -56,7 +56,7 @@ namespace Capstone_Application
 
         void AddAgents()
         {
-            int agentCount = controllerScript.myCA.ActiveAgents.Count;
+            int agentCount = controllerScript.Paths.Count + controllerScript.myCA.ActiveAgents.Count;
             for(int i = 0; i < agentCount; i++)
             {
                 CheckBox newBox = new CheckBox();
@@ -113,10 +113,11 @@ namespace Capstone_Application
                     agent_locations.Add(i);
                 }
             }
-
+            List<List<Tuple<int, int, int>>> all_agents = controllerScript.Paths;
+            all_agents.AddRange(controllerScript.myCA.GetPaths());
             for (int i = 0; i < agent_locations.Count; i++)
             {
-                locations.AddRange(controllerScript.myCA.ActiveAgents[agent_locations[i]].History.Select(x => x).ToList());
+                locations.AddRange(all_agents[i]);
             }
             List<int> states = locations.Select(x => x.Item3).ToList();
             
@@ -124,7 +125,7 @@ namespace Capstone_Application
             List<Tuple<int, int>> already_colored = new List<Tuple<int, int>>();
             for (int i = 0; i < unique_states.Count; i++)
             {
-                List<Tuple<int, int>> unique_locations = locations.Where(x => x.Item3.Equals(i)).Select(y => new Tuple<int, int>(y.Item1, y.Item2)).Distinct().ToList();
+                List<Tuple<int, int, int>> unique_locations = locations.Where(x => x.Item3.Equals(i)).Select(y => new Tuple<int, int, int>(y.Item1, y.Item2, i)).Distinct().ToList();
                 List<int> location_counts = unique_locations.Select(x => locations.Count(y => y.Equals(x))).ToList();
                 double max = location_counts.Max();
                 List<double> scaled_values = location_counts.Select(x => x / max).ToList();
@@ -133,7 +134,7 @@ namespace Capstone_Application
                     double fraction = scaled_values[j] * 255;
                     int rightColor = Convert.ToInt32(fraction);
                     Color tempColor = Color.FromArgb(rightColor, rightColor, rightColor);
-                    Tuple<int, int> cur_loc = new Tuple<int, int>(unique_locations[i].Item1, unique_locations[i].Item2);
+                    Tuple<int, int> cur_loc = new Tuple<int, int>(unique_locations[j].Item1, unique_locations[j].Item2);
                     if (already_colored.Contains(cur_loc))
                     {
                         Blend(cur_loc, tempColor);
@@ -141,7 +142,7 @@ namespace Capstone_Application
                     else
                     {
                         bmp.SetPixel(unique_locations[j].Item1, unique_locations[j].Item2, tempColor);
-                        already_colored.Add(new Tuple<int, int>(unique_locations[j].Item1, unique_locations[i].Item2));
+                        already_colored.Add(new Tuple<int, int>(unique_locations[j].Item1, unique_locations[j].Item2));
                     }
                     
                 }
@@ -169,7 +170,7 @@ namespace Capstone_Application
             List<Tuple<int, int>> already_colored = new List<Tuple<int, int>>();
             for (int i = 0; i < agent_locations.Count; i++)
             {
-                List<Tuple<int, int, int>> history = controllerScript.myCA.ActiveAgents[agent_locations[i]].History;
+                List<Tuple<int, int, int>> history = controllerScript.Paths[agent_locations[i]];
                 List<Tuple<int, int, int>> unique_history = history.Distinct().ToList();
                 List<Tuple<int, int>> unique_history_locations = unique_history.Select(x => new Tuple<int, int>(x.Item1, x.Item2)).ToList();
 
