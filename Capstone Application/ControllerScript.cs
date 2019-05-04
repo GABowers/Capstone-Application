@@ -444,12 +444,18 @@ namespace Capstone_Application
                 bmp.SetPixel(newX, newY, tileColor);
 
             }
-            lock (bmp)
+            UpdateImage(currentForm, bmp.Bitmap);
+        }
+
+        void UpdateImage(Form1 currentForm, Bitmap bmp)
+        {
+            try
             {
-                lock(currentForm.innerPictureBox)
-                {
-                    currentForm.innerPictureBox.Image = bmp.Bitmap;
-                }
+                currentForm.innerPictureBox.Image = bmp;
+            }
+            catch(InvalidOperationException)
+            {
+                UpdateImage(currentForm, bmp);
             }
         }
 
