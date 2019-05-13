@@ -39,17 +39,17 @@ namespace Capstone_Application
                 imageIncInput.Text = string.Join(", ", runSettings.ImageIncs);
                 saveDataFolderInput.Text = runSettings.DataPath;
                 dataIncInput.Text = string.Join(", ", runSettings.DataIncs);
-                saveOptions.SelectedNode = saveOptions.Nodes[0].Nodes[0];
-                saveOptions.Nodes[0].Nodes[0].Checked = runSettings.SaveCounts;
-                saveOptions.SelectedNode = saveOptions.Nodes[0].Nodes[1];
-                saveOptions.Nodes[0].Nodes[1].Checked = runSettings.SaveTrans;
-                saveOptions.SelectedNode = saveOptions.Nodes[0].Nodes[2];
-                saveOptions.Nodes[0].Nodes[2].Checked = runSettings.SaveIndex;
-                if(runSettings.SaveCounts || runSettings.SaveTrans || runSettings.SaveIndex)
-                {
-                    saveOptions.SelectedNode = saveOptions.Nodes[0];
-                    saveOptions.Nodes[0].Checked = true;
-                }
+                saveOptions.SelectedNode = saveOptions.Nodes[0];
+                saveOptions.Nodes[0].Checked = runSettings.SaveCounts;
+                saveOptions.SelectedNode = saveOptions.Nodes[1];
+                saveOptions.Nodes[1].Checked = runSettings.SaveTrans;
+                saveOptions.SelectedNode = saveOptions.Nodes[2];
+                saveOptions.Nodes[2].Checked = runSettings.SaveIndex;
+                //if(runSettings.SaveCounts || runSettings.SaveTrans || runSettings.SaveIndex)
+                //{
+                //    saveOptions.SelectedNode = saveOptions.Nodes[0];
+                //    saveOptions.Nodes[0].Checked = true;
+                //}
                 int num = controller.amountOfCellTypes;
                 for (int i = 0; i < num; i++)
                 {
