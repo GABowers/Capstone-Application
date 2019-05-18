@@ -771,7 +771,7 @@ namespace Capstone_Application
 
         void GetHist(string time, int iteration, Form1 form)
         {
-            Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(paths, new Tuple<int, int>(localGridWidth, localGridHeight), iteration);
+            Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(paths, new Tuple<int, int>(localGridWidth, localGridHeight), iteration);
             form.SaveHist(output, time, runSettings.HistPath, iteration);
         }
 

@@ -8,7 +8,7 @@ namespace Capstone_Application
 {
     class Analysis
     {
-        public static Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>> FinalLocationHistogram(List<List<Tuple<int, int, int>>> paths, Tuple<int, int> grid_dims, int iteration)
+        public static Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> FinalLocationHistogram(List<List<Tuple<int, int, int>>> paths, Tuple<int, int> grid_dims, int iteration)
         {
 
             List<Tuple<int, int, int>> ends = new List<Tuple<int, int, int>>();
@@ -19,6 +19,7 @@ namespace Capstone_Application
                     ends.Add(paths[i][iteration]);
                 }
             }
+            List<Tuple<int, int>> ends_stateless = ends.Select(x => new Tuple<int, int>(x.Item1, x.Item2)).ToList();
             List<int> x_output = Enumerable.Repeat(0, grid_dims.Item1).ToList();
             List<int> y_output = Enumerable.Repeat(0, grid_dims.Item2).ToList();
             for (int i = 0; i < ends.Count; i++)
@@ -38,7 +39,8 @@ namespace Capstone_Application
             {
                 y_bins.Add(new Tuple<int, int>(i - y_minus, y_output[i]));
             }
-            return new Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>>(x_bins, y_bins);
+            Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> counts_n_hist = new Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>>(ends_stateless, x_bins, y_bins);
+            return counts_n_hist;
         }
     }
 }
