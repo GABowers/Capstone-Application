@@ -297,27 +297,34 @@ namespace Capstone_Application
 
         public void AutoPathSave(string time, string folder_path)
         {
-            string countName = time + " Run " + controllerScript.caRuns + " Iteration " + controllerScript.iterations + " Agent Paths.txt";
+            string countName = time + " Iteration " + controllerScript.iterations + " Agent Paths.csv";
             string fileName = (folder_path + "/" + countName);
             string agent = "Agent ";
             using (StreamWriter wt = new StreamWriter(fileName))
             {
-                int maxLength = (controllerScript.myCA.gridWidth.ToString().Length * 2) + 4;
-
-                if ((controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6 > maxLength)
+                wt.Write("Date,Run,Iterations");
+                wt.WriteLine();
+                string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + "," + controllerScript.caRuns + "," + controllerScript.iterations;
+                wt.Write(thing);
+                wt.WriteLine();
+                List<int> lengths = controllerScript.Paths.Select(x => x.Count).ToList();
+                for (int i = 0; i < controllerScript.Paths.Count; i++)
                 {
-                    maxLength = (controllerScript.myCA.ActiveAgents.Count.ToString().Length) + 6;
-                }
-                for (int i = 0; i < controllerScript.myCA.ActiveAgents.Count; ++i)
-                {
-                    wt.Write(agent.PadRight(maxLength - (i + 1).ToString().Length) + (i + 1) + "|");
+                    wt.Write(agent + (i + 1).ToString() + "," + ",");
                 }
                 wt.WriteLine();
-                for (int i = 0; i < (controllerScript.iterations + 1); i++)
+                for (int i = 0; i < lengths.Max(); i++)
                 {
-                    for (int j = 0; j < controllerScript.myCA.ActiveAgents.Count; j++)
+                    for (int j = 0; j < controllerScript.Paths.Count; j++)
                     {
-                        wt.Write(controllerScript.myCA.ActiveAgents[j].History[i].ToString().PadRight(maxLength) + "|");
+                        if(controllerScript.Paths[j].Count >= i)
+                        {
+                            wt.Write(controllerScript.Paths[j][i].Item1 + "," + controllerScript.Paths[j][i].Item2 + ",");
+                        }
+                        else
+                        {
+                            wt.Write("," + ",");
+                        }
                     }
                     wt.WriteLine();
                 }
