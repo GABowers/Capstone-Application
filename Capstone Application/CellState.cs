@@ -14,6 +14,7 @@ public class CellState
     public bool mobile;
     public int mobileNeighborhood;
     public List<Tuple<int, int>> startingLocations;
+    public List<Capstone_Application.AgentContainerSetting> containerSettings;
 
     public CellState(int totalStates, int neighborState, int neighborSize, double[][][] probs, List<double> incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, int incomingNeighborhood, bool incMobile, List<Tuple<int, int>> incomingStartingLocations)
     {

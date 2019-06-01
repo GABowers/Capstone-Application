@@ -32,6 +32,7 @@ namespace Capstone_Application
         public List<Tuple<int, int>> startingLocations;
         public List<Tuple<string, double>> storageObjects;
         public int? neighbors;
+        public List<AgentContainerSetting> containerSettings;
 
         public List<object> template_objects;
 

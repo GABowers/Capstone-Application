@@ -84,11 +84,13 @@
     <Compile Include="AdvancedCellPlacement.Designer.cs">
       <DependentUpon>AdvancedCellPlacement.cs</DependentUpon>
     </Compile>
+    <Compile Include="AgentContainerSetting.cs" />
     <Compile Include="AgentController.cs" />
     <Compile Include="Analysis.cs" />
     <Compile Include="BlankGrid.cs" />
     <Compile Include="CA.cs" />
     <Compile Include="CellState.cs" />
+    <Compile Include="ContainerController.cs" />
     <Compile Include="ControllerScript.cs" />
     <Compile Include="Counter.cs">
       <SubType>Form</SubType>
@@ -102,6 +104,18 @@
     </Compile>
     <Compile Include="EditWindow.Designer.cs">
       <DependentUpon>EditWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExtraFeature.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ExtraFeature.Designer.cs">
+      <DependentUpon>ExtraFeature.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExtraPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ExtraPanel.Designer.cs">
+      <DependentUpon>ExtraPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -184,6 +198,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EditWindow.resx">
       <DependentUpon>EditWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtraFeature.resx">
+      <DependentUpon>ExtraFeature.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtraPanel.resx">
+      <DependentUpon>ExtraPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

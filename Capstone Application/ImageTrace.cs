@@ -255,7 +255,7 @@ namespace Capstone_Application
             if(hsl.s == 0)
             {
                 int L = (int)hsl.v;
-                return Color.FromArgb(2555, L, L, L);
+                return Color.FromArgb(255, L, L, L);
             }
 
             double min, max, h;

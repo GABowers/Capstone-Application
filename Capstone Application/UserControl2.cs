@@ -12,6 +12,7 @@ namespace Capstone_Application
 {
     public partial class UserControl2 : UserControl
     {
+        ExtraPanel e;
         StatePageInfo parent;
         int neighborStateXPosition = 0;
         Color color;
@@ -25,7 +26,7 @@ namespace Capstone_Application
         bool sticking = false;
         bool mobile = false;
         bool storage = false;
-        bool ai = false; // think about what type of search the ai will have - what range?
+        bool extra = false; // think about what type of search the ai will have - what range?
         bool growth = false;
         NType nType;
         GridType gType;
@@ -85,10 +86,10 @@ namespace Capstone_Application
             {
                 storage = parent.storage.Value;
             }
-            if (parent.ai.HasValue)
-            {
-                ai = parent.ai.Value;
-            }
+            //if (parent.ai.HasValue)
+            //{
+            //    ai = parent.ai.Value;
+            //}
             if (parent.growth.HasValue)
             {
                 growth = parent.growth.Value;
@@ -442,6 +443,21 @@ namespace Capstone_Application
             // populate fields with prob data
         }
 
+        void RefreshExtraButtons()
+        {
+            if(extra)
+            {
+                //Console.WriteLine(extraPanel.Size.Width + ", " + extraPanel.Size.Height);
+                extraPanel.Controls.Clear();
+                e = new ExtraPanel
+                {
+                    Location = new System.Drawing.Point(0, 0)
+                };
+                extraPanel.Controls.Add(e);
+                //Console.WriteLine(extraPanel.Size.Width + ", " + extraPanel.Size.Height);
+            }
+        }
+
         public void UpdateProbFields(int currentState, int amountOfStates)
         {
             for (int otherState = 0; otherState < amountOfStates; otherState++)
@@ -485,7 +501,7 @@ namespace Capstone_Application
             sticking = info.sticking.Value;
             moveProbs = info.moveProbs;
             storage = info.storage.Value;
-            ai = info.ai.Value;
+            //ai = info.ai.Value;
             growth = info.growth.Value;
             storageObjects = info.storageObjects;
             startingLocations = info.startingLocations;
@@ -560,9 +576,13 @@ namespace Capstone_Application
             info.sticking = sticking;
             info.moveProbs = moveProbs;
             info.storage = storage;
-            info.ai = ai;
+            //info.ai = ai;
             info.growth = growth;
             info.storageObjects = storageObjects;
+            if(extra)
+            {
+                info.containerSettings = e.Retrieve();
+            }
         }
 
         private void label3_Click(object sender, EventArgs e)
@@ -657,6 +677,20 @@ namespace Capstone_Application
         private void colorBox_BackColorChanged(object sender, EventArgs e)
         {
             color = colorBox.BackColor;
+        }
+
+        private void extraBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch(extraBox.SelectedIndex)
+            {
+                case 0:
+                    extra = false;
+                    break;
+                case 1:
+                    extra = true;
+                    break;
+            }
+            RefreshExtraButtons();
         }
     }
 }

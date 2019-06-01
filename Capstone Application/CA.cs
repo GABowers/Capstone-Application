@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 public class CA
 {
 
-    RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+    //RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
     ControllerScript controller;
     Template template;
     bool template_reset = false;
+    bool containerObjects = false;
     public static MobileCA mobileCA = new MobileCA();
     //int caType = 0;
     List<AgentController> activeAgents = new List<AgentController>();
@@ -93,10 +94,13 @@ public class CA
                 Transitions.Add(0);
             }
             generics.Add(info[i].template_objects);
+            if(info[i].containerSettings != null && info[i].containerSettings.Count > 0)
+            {
+                containerObjects = true;
+                states[i].containerSettings = info[i].containerSettings;
+            }
         }
-
         TemplateCheck();
-        
     }
 
     void TemplateCheck()
@@ -200,11 +204,12 @@ public class CA
                         int y = states[i].startingLocations[j].Item2;
                         int combination = (x * gridWidth) + y;
                         grid[x, y] = new BlankGrid();
-                        grid[x, y].AddAgent(x, y, new AgentController(x, y, i));
+                        grid[x, y].AddAgent(x, y, new AgentController(x, y, i, this, grid));
                         grid[x, y].ContainsAgent = true;
                         grid[x, y].agent.currentState = i;
                         grid[x, y].agent.xLocation = x;
                         grid[x, y].agent.yLocation = y;
+                        grid[x, y].agent.AddContainer(states[i].containerSettings);
                         AddAgent(grid[x, y].agent);
                         separateAgents[i].Add(grid[x, y].agent);
 
@@ -237,11 +242,12 @@ public class CA
             int yValue = (increment % gridWidth);
             
             grid[xValue, yValue] = new BlankGrid();
-            grid[xValue, yValue].AddAgent(xValue, yValue, new AgentController(xValue, yValue, state));
+            grid[xValue, yValue].AddAgent(xValue, yValue, new AgentController(xValue, yValue, state, this, grid));
             grid[xValue, yValue].ContainsAgent = true;
             grid[xValue, yValue].agent.currentState = state;
             grid[xValue, yValue].agent.xLocation = xValue;
             grid[xValue, yValue].agent.yLocation = yValue;
+            grid[xValue, yValue].agent.AddContainer(states[state].containerSettings);
             AddAgent(grid[xValue, yValue].agent);
             separateAgents[state].Add(grid[xValue, yValue].agent);
 
@@ -376,6 +382,10 @@ public class CA
                     CheckTransitions(oldState, newState);
                     StateCount[newState] += 1;
                 }
+                if(containerObjects)
+                {
+                    ActiveAgents[x].HandleContainer();
+                }
             }
             for (int i = 0; i < numStates; i++)
             {
@@ -421,7 +431,7 @@ public class CA
             locations.Shuffle();
             int x = locations[0].Item1;
             int y = locations[0].Item2;
-            grid[x, y].AddAgent(x, y, new AgentController(x, y, 1));
+            grid[x, y].AddAgent(x, y, new AgentController(x, y, 1, this, grid));
             grid[x, y].ContainsAgent = true;
             grid[x, y].agent.currentState = 1;
             grid[x, y].agent.xLocation = x;
@@ -1201,7 +1211,7 @@ public class CA
             return true;
     }
 
-    List<Tuple<int, int>> GetNeighborhood(AgentController agent)
+    public List<Tuple<int, int>> GetNeighborhood(AgentController agent)
     {
         List<Tuple<int, int>> neighborList = new List<Tuple<int, int>>();
         switch(states[agent.currentState].mobileNeighborhood)

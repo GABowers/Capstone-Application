@@ -113,11 +113,11 @@
             // 
             // extraPanel
             // 
-            this.extraPanel.AutoScroll = true;
             this.extraPanel.AutoSize = true;
+            this.extraPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.extraPanel.Controls.Add(this.extraInputPanel);
             this.extraPanel.Controls.Add(this.extraButtonPanel);
-            this.extraPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.extraPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.extraPanel.Location = new System.Drawing.Point(0, 0);
             this.extraPanel.Name = "extraPanel";
             this.extraPanel.Size = new System.Drawing.Size(0, 0);
@@ -277,6 +277,7 @@
             this.extraBox.Name = "extraBox";
             this.extraBox.Size = new System.Drawing.Size(121, 21);
             this.extraBox.TabIndex = 34;
+            this.extraBox.SelectedIndexChanged += new System.EventHandler(this.extraBox_SelectedIndexChanged);
             // 
             // UserControl2
             // 
