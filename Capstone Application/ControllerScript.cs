@@ -309,9 +309,14 @@ namespace Capstone_Application
         public void CreateCA(Form1 form)
         {
             local_form = form;
-            if (CreatedCA == false)
-            {
-                reshade = statePageInfo.Any(xyz => xyz.containerSettings.Any(abc => abc.Shade == true) == true);
+                if(statePageInfo.Any(x => x.containerSettings != null))
+                {
+                    reshade = statePageInfo.Any(xyz => xyz.containerSettings.Any(abc => abc.Shade == true) == true);
+                }
+                else
+                {
+                    reshade = false;
+                }
                 iterations = 0;
                 editModeOn = false;
                 grids = new List<GridType>();
@@ -349,7 +354,6 @@ namespace Capstone_Application
                 }
                 myCA.InitializeGrid(cellAmounts);
                 CreatedCA = true;
-            }
         }
 
         public void Pause()
@@ -371,7 +375,7 @@ namespace Capstone_Application
             if (AlreadyCA == false)
             {
                 iterations = 0;
-                Console.WriteLine(localGridWidth + "," +  localGridHeight);
+                //Console.WriteLine(localGridWidth + "," +  localGridHeight);
                 bmp = new 
                     DirectBitmap(localGridWidth, localGridHeight);
                 //currentForm.innerPictureBox.Image = bmp.Bitmap;
@@ -396,6 +400,7 @@ namespace Capstone_Application
 
         public void UpdateBoard(Form1 currentForm)
         {
+            //Console.WriteLine("Count: " + pixelChanges.Count);
             pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
             if (iterations == 0)
             {
@@ -444,9 +449,12 @@ namespace Capstone_Application
                             // check for container that shades color
                             tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
                             frac = 1.0;
-                            for (int j = 0; j < myCA.grid[oldX, oldY].agent.Containers.Count; j++)
+                            if(myCA.grid[oldX, oldY].agent.Containers != null)
                             {
-                                frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].agent.Containers[j].Value / myCA.grid[oldX, oldY].agent.Containers[j].Threshold));
+                                for (int j = 0; j < myCA.grid[oldX, oldY].agent.Containers.Count; j++)
+                                {
+                                    frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].agent.Containers[j].Value / myCA.grid[oldX, oldY].agent.Containers[j].Threshold));
+                                }
                             }
                             newColor = Color.FromArgb((int)(frac*tileColor.R), (int)(frac*tileColor.G), (int)(frac*tileColor.B));
                             pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, newColor));
@@ -462,17 +470,23 @@ namespace Capstone_Application
                 int newY = curAgent.yLocation;
                 tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
                 frac = 1.0;
-                for (int j = 0; j < curAgent.Containers.Count; j++)
+                if(curAgent.Containers != null)
                 {
-                    frac = frac * Math.Min(1, (curAgent.Containers[j].Value / curAgent.Containers[j].Threshold));
+                    for (int j = 0; j < curAgent.Containers.Count; j++)
+                    {
+                        frac = frac * Math.Min(1, (curAgent.Containers[j].Value / curAgent.Containers[j].Threshold));
+                    }
                 }
                 newColor = Color.FromArgb((int)(tileColor.R*frac), (int)(frac*tileColor.G), (int)(frac*tileColor.B));
                 //Console.WriteLine("frac," + frac.ToString() + "color," + newColor.ToString());
-                //Console.WriteLine("index," + i + ",state," + curAgent.currentState + ",state color," + tileColor.ToString() + ",subColor," + newColor.ToString());
+                //if(iterations == 999)
+                //{
+                //    Console.WriteLine("index," + i + ",state," + curAgent.currentState + ",state color," + tileColor.ToString() + ",subColor," + newColor.ToString() + ",prop" + (curAgent.Containers[0].Value / curAgent.Containers[0].Threshold));
+                //}
                 pixelChanges.Add(new Tuple<int, int, Color>(newX, newY, newColor));
 
             });
-            //Console.WriteLine("Count: " + pixelChanges.Count);
+            
             while(pixelChanges.Count > 0)
             {
                 if(pixelChanges.TryTake(out Tuple<int, int, Color> result))
@@ -566,9 +580,9 @@ namespace Capstone_Application
             ClearGrid();
         }
 
-        public void ResetRuns()
+        public void ResetRuns(int val)
         {
-            caRuns = 1;
+            caRuns = val;
         }
 
         public Tuple<int, int> TrueLocation(int xValue, int yValue, PictureBoxWithInterpolationMode container)
@@ -822,7 +836,7 @@ namespace Capstone_Application
                         if (remainder == 0)
                         {
                             // Auto image save
-                            form.AutoPathSave(time, runSettings.PathsPath);
+                            form.AutoPathSave(time, runSettings.PathsPath, true);
                         }
                     }
                 }
@@ -842,17 +856,17 @@ namespace Capstone_Application
                         int remainder = iterations % runSettings.HistIncs[i];
                         if (remainder == 0 && runSettings.HistRunIncs.Any(x => caRuns % x == 0))
                         {
-                            GetHist(time, iterations, form);
+                            GetHist(time, form, runSettings.HistPath);
                         }
                     }
                 }
             }
         }
 
-        void GetHist(string time, int iteration, Form1 form)
+        public void GetHist(string time, Form1 form, string filePath)
         {
-            Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(paths, new Tuple<int, int>(localGridWidth, localGridHeight), iteration);
-            form.SaveHist(output, time, runSettings.HistPath, iteration);
+            Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(paths, new Tuple<int, int>(localGridWidth, localGridHeight));
+            form.SaveHist(output, time, filePath, paths.Select(x => x.Count() - 1).ToList(), paths.Count);
         }
 
         void CheckFinalDataSave(Form1 form, string time)
@@ -901,7 +915,7 @@ namespace Capstone_Application
                 {
                     if (runSettings.PathsIncs[i] == -1)
                     {
-                        form.AutoPathSave(time, runSettings.PathsPath);
+                        form.AutoPathSave(time, runSettings.PathsPath, true);
                     }
                 }
             }
@@ -913,7 +927,7 @@ namespace Capstone_Application
                 {
                     if (runSettings.HistIncs[i] == -1 && runSettings.HistRunIncs.Any(x => caRuns % x == 0))
                     {
-                        GetHist(time, iterations, form);
+                        GetHist(time, form, runSettings.HistPath);
                     }
                 }
             }

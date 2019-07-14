@@ -353,10 +353,17 @@ namespace Capstone_Application
             {
                 Form1.runSettings = new RunSettings(amountOfStates);
                 controllerScript.runSettings = Form1.runSettings;
+                controllerScript.AlreadyCA = false;
+                mainForm.StartCA();
                 //controllerScript.ResetTemplate();
-                controllerScript.ResetRuns();
             }
-            
+            //else
+            //{
+            //    controllerScript.AlreadyCA = false;
+            //    controllerScript.ResetRuns(0);
+            //    mainForm.ResetCA();
+            //}
+
             this.Close();
         }
 

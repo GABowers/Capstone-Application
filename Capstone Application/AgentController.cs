@@ -90,6 +90,7 @@ namespace Capstone_Application
                 var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
                 Double randomDouble = ul / (Double)(1UL << 53);
                 int answer = (int)Math.Floor(randomDouble * values.Count);
+                //Console.WriteLine("double," + randomDouble+",values,"+string.Join(",",values)+",answer,"+answer);
                 value = values[answer];
                 if (value > Containers[i].Threshold)
                 {

@@ -11,16 +11,13 @@ namespace Capstone_Application
     {
         struct HSV { public float h; public float s; public float v; };
 
-        public static Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> FinalLocationHistogram(List<List<Tuple<int, int, int>>> paths, Tuple<int, int> grid_dims, int iteration)
+        public static Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> FinalLocationHistogram(List<List<Tuple<int, int, int>>> paths, Tuple<int, int> grid_dims)
         {
 
             List<Tuple<int, int, int>> ends = new List<Tuple<int, int, int>>();
             for (int i = 0; i < paths.Count; i++)
             {
-                if(paths[i].Count >= iteration)
-                {
-                    ends.Add(paths[i][iteration]);
-                }
+                ends.Add(paths[i].Last());
             }
             List<Tuple<int, int>> ends_stateless = ends.Select(x => new Tuple<int, int>(x.Item1, x.Item2)).ToList();
             List<int> x_output = Enumerable.Repeat(0, grid_dims.Item1).ToList();

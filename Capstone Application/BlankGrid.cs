@@ -33,5 +33,10 @@ namespace Capstone_Application
         {
             agent = prevAgent;
         }
+
+        public void RemoveAgent()
+        {
+            agent = null;
+        }
     }
 }

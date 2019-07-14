@@ -70,6 +70,11 @@ namespace Capstone_Application
 
         private void toolStripLabel1_Click(object sender, EventArgs e)
         {
+            StartCA();
+        }
+
+        public void StartCA()
+        {
             controllerScript.CreateCA((this));
             controllerScript.StartCA(this);
             UpdateRunBox();
@@ -295,14 +300,18 @@ namespace Capstone_Application
             innerPictureBox.Image.Save(fileName);
         }
 
-        public void AutoPathSave(string time, string folder_path)
+        public void AutoPathSave(string time, string folder_path, bool addToName)
         {
             string countName = time + " Iteration " + controllerScript.iterations + " Agent Paths.csv";
-            string fileName = (folder_path + "/" + countName);
+            string fileName = folder_path;
+            if (addToName)
+            {
+                fileName += "/" + countName;
+            }
             string agent = "Agent ";
             using (StreamWriter wt = new StreamWriter(fileName))
             {
-                wt.Write("Date,Run,Iterations");
+                wt.Write("Date,Runs,Iterations");
                 wt.WriteLine();
                 string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + "," + controllerScript.caRuns + "," + controllerScript.iterations;
                 wt.Write(thing);
@@ -568,7 +577,7 @@ namespace Capstone_Application
 
         private void resetCountToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            controllerScript.ResetRuns();
+            controllerScript.ResetRuns(1);
             UpdateRunBox();
         }
         
@@ -636,7 +645,7 @@ namespace Capstone_Application
             ResetCA();
         }
 
-        private void ResetCA()
+        public void ResetCA()
         {
             controllerScript.ResetGrid(this);
             controllerScript.CreateCA(this);
@@ -645,7 +654,7 @@ namespace Capstone_Application
             UpdateImage();
         }
 
-        public void SaveHist(Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> input, string time, string path, int iteration)
+        public void SaveHist(Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> input, string time, string path, List<int> finalIterations, int runs)
         {
             List<Tuple<int, int>> ends = input.Item1;
             List<Tuple<int, int>> x_bins = input.Item2;
@@ -656,25 +665,20 @@ namespace Capstone_Application
             int y_greater = y_num - ends.Count - x_greater;
             if (string.IsNullOrEmpty(Path.GetExtension(path)))
             {
-                path = path + "/" + time + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Final Location Histograms.csv";
+                path = path + "/" + time + " Runs " + runs + " Iterations " + controllerScript.iterations + " Final Location Histograms.csv";
             }
             using (StreamWriter wt = new StreamWriter(path))
             {
                 //pertinent info - run, iteration, time
-                wt.Write("Final Positions Histograms {0} Iterations", iteration);
-                wt.WriteLine();
-                wt.Write("Date,Runs");
-                wt.WriteLine();
-                string thing = time + "," + controllerScript.caRuns;
-                wt.Write(thing);
-                wt.WriteLine();
-                wt.Write("Final Counts, , X Axis Histogram, , Y Axis Histogram");
-                wt.WriteLine();
-                wt.Write("Position (X), Position (Y), Position (X), Count (X), Position (Y), Count (Y)");
-                wt.WriteLine();
+                wt.WriteLine("Final Positions Histograms");
+                wt.WriteLine("Date,Runs");
+                string thing = time + "," + runs;
+                wt.WriteLine(thing);
+                wt.WriteLine("Final Iteration, Final Position, , X Axis Histogram, , Y Axis Histogram");
+                wt.WriteLine("Iteration, Position (X), Position (Y), Position (X), Count (X), Position (Y), Count (Y)");
                 for (int i = 0; i < ends.Count; i++)
                 {
-                    wt.Write(ends[i].Item1 + "," + ends[i].Item2);
+                    wt.Write(finalIterations[i] + "," + ends[i].Item1 + "," + ends[i].Item2);
                     if (x_num > i)
                     {
                         wt.Write("," + x_bins[i].Item1 + "," + x_bins[i].Item2);
@@ -732,6 +736,24 @@ namespace Capstone_Application
                         editWindow.Dispose();
                     }
                 }
+            }
+        }
+
+        private void pathToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog ofd = new SaveFileDialog() { Filter = "CSV Files (*.csv)|*.csv|All files (*.*)|*.*" };
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                AutoPathSave(System.DateTime.Now.ToString("o").Replace(':', '.'), ofd.FileName, false);
+            }
+        }
+
+        private void finalLocationsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog ofd = new SaveFileDialog() { Filter = "CSV Files (*.csv)|*.csv|All files (*.*)|*.*" };
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                controllerScript.GetHist(System.DateTime.Now.ToString("o").Replace(':', '.'), this, ofd.FileName);
             }
         }
     }
