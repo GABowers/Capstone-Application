@@ -205,7 +205,7 @@ namespace Capstone_Application
             {
                 case Template.Random_Walk:
                     {
-                        RandomTemplateUC ranUC = (RandomTemplateUC)templateUC;
+                        RandomTemplateUC ranUC = templateUC as RandomTemplateUC;
                         bool _1d = ranUC.radio1D.Checked;
                         controllerScript.UpdateMainTemplateInfo(template_reset);
                         int hori = 51;
@@ -231,7 +231,7 @@ namespace Capstone_Application
                         controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.White,
                             new List<Tuple<int, int>>() { new Tuple<int, int>(halfHori, halfVert)}, 0, 1, 
                             tempProbs, true, 0, new List<double>() { up, right, down, left },
-                            true, new List<double>() { 0, 0 }, false, false, false, new List<Tuple<string, double>>());
+                            true, new List<double>() { 0 }, false, false, false, new List<Tuple<string, double>>());
                     }
                     break;
 

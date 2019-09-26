@@ -33,12 +33,9 @@
             this.colorLabel = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.colorBox = new System.Windows.Forms.Label();
-            this.inputPanel = new System.Windows.Forms.Panel();
             this.extraPanel = new System.Windows.Forms.Panel();
             this.extraInputPanel = new System.Windows.Forms.Panel();
             this.extraButtonPanel = new System.Windows.Forms.Panel();
-            this.neighborhoodPanel = new System.Windows.Forms.Panel();
-            this.mobilityPanel = new System.Windows.Forms.Panel();
             this.mobilityInputPanel = new System.Windows.Forms.Panel();
             this.mobilityButtonsPanel = new System.Windows.Forms.Panel();
             this.colorDialog2 = new System.Windows.Forms.ColorDialog();
@@ -50,8 +47,11 @@
             this.edgeBox = new System.Windows.Forms.ComboBox();
             this.extraLabel = new System.Windows.Forms.Label();
             this.extraBox = new System.Windows.Forms.ComboBox();
-            this.inputPanel.SuspendLayout();
+            this.inputPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.mobilityPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.neighborhoodPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.extraPanel.SuspendLayout();
+            this.inputPanel.SuspendLayout();
             this.mobilityPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -98,19 +98,6 @@
             this.colorBox.BackColorChanged += new System.EventHandler(this.colorBox_BackColorChanged);
             this.colorBox.Click += new System.EventHandler(this.colorBox_Click);
             // 
-            // inputPanel
-            // 
-            this.inputPanel.AutoScroll = true;
-            this.inputPanel.AutoSize = true;
-            this.inputPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.inputPanel.Controls.Add(this.extraPanel);
-            this.inputPanel.Controls.Add(this.neighborhoodPanel);
-            this.inputPanel.Controls.Add(this.mobilityPanel);
-            this.inputPanel.Location = new System.Drawing.Point(0, 154);
-            this.inputPanel.Name = "inputPanel";
-            this.inputPanel.Size = new System.Drawing.Size(0, 0);
-            this.inputPanel.TabIndex = 26;
-            // 
             // extraPanel
             // 
             this.extraPanel.AutoSize = true;
@@ -118,9 +105,9 @@
             this.extraPanel.Controls.Add(this.extraInputPanel);
             this.extraPanel.Controls.Add(this.extraButtonPanel);
             this.extraPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.extraPanel.Location = new System.Drawing.Point(0, 0);
+            this.extraPanel.Location = new System.Drawing.Point(3, 27);
             this.extraPanel.Name = "extraPanel";
-            this.extraPanel.Size = new System.Drawing.Size(0, 0);
+            this.extraPanel.Size = new System.Drawing.Size(6, 0);
             this.extraPanel.TabIndex = 2;
             // 
             // extraInputPanel
@@ -130,7 +117,7 @@
             this.extraInputPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.extraInputPanel.Location = new System.Drawing.Point(0, 0);
             this.extraInputPanel.Name = "extraInputPanel";
-            this.extraInputPanel.Size = new System.Drawing.Size(0, 0);
+            this.extraInputPanel.Size = new System.Drawing.Size(6, 0);
             this.extraInputPanel.TabIndex = 1;
             // 
             // extraButtonPanel
@@ -140,37 +127,15 @@
             this.extraButtonPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.extraButtonPanel.Location = new System.Drawing.Point(0, 0);
             this.extraButtonPanel.Name = "extraButtonPanel";
-            this.extraButtonPanel.Size = new System.Drawing.Size(0, 0);
+            this.extraButtonPanel.Size = new System.Drawing.Size(6, 0);
             this.extraButtonPanel.TabIndex = 0;
-            // 
-            // neighborhoodPanel
-            // 
-            this.neighborhoodPanel.AutoSize = true;
-            this.neighborhoodPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.neighborhoodPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.neighborhoodPanel.Location = new System.Drawing.Point(0, 0);
-            this.neighborhoodPanel.Name = "neighborhoodPanel";
-            this.neighborhoodPanel.Size = new System.Drawing.Size(0, 0);
-            this.neighborhoodPanel.TabIndex = 1;
-            // 
-            // mobilityPanel
-            // 
-            this.mobilityPanel.AutoSize = true;
-            this.mobilityPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.mobilityPanel.Controls.Add(this.mobilityInputPanel);
-            this.mobilityPanel.Controls.Add(this.mobilityButtonsPanel);
-            this.mobilityPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mobilityPanel.Location = new System.Drawing.Point(0, 0);
-            this.mobilityPanel.Name = "mobilityPanel";
-            this.mobilityPanel.Size = new System.Drawing.Size(0, 0);
-            this.mobilityPanel.TabIndex = 0;
             // 
             // mobilityInputPanel
             // 
             this.mobilityInputPanel.AutoSize = true;
             this.mobilityInputPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mobilityInputPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mobilityInputPanel.Location = new System.Drawing.Point(0, 0);
+            this.mobilityInputPanel.Location = new System.Drawing.Point(3, 9);
             this.mobilityInputPanel.Name = "mobilityInputPanel";
             this.mobilityInputPanel.Size = new System.Drawing.Size(0, 0);
             this.mobilityInputPanel.TabIndex = 1;
@@ -180,7 +145,7 @@
             this.mobilityButtonsPanel.AutoSize = true;
             this.mobilityButtonsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.mobilityButtonsPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.mobilityButtonsPanel.Location = new System.Drawing.Point(0, 0);
+            this.mobilityButtonsPanel.Location = new System.Drawing.Point(3, 3);
             this.mobilityButtonsPanel.Name = "mobilityButtonsPanel";
             this.mobilityButtonsPanel.Size = new System.Drawing.Size(0, 0);
             this.mobilityButtonsPanel.TabIndex = 0;
@@ -279,11 +244,48 @@
             this.extraBox.TabIndex = 34;
             this.extraBox.SelectedIndexChanged += new System.EventHandler(this.extraBox_SelectedIndexChanged);
             // 
+            // inputPanel
+            // 
+            this.inputPanel.AutoSize = true;
+            this.inputPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.inputPanel.Controls.Add(this.mobilityPanel);
+            this.inputPanel.Controls.Add(this.neighborhoodPanel);
+            this.inputPanel.Controls.Add(this.extraPanel);
+            this.inputPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.inputPanel.Location = new System.Drawing.Point(0, 154);
+            this.inputPanel.Name = "inputPanel";
+            this.inputPanel.Size = new System.Drawing.Size(12, 30);
+            this.inputPanel.TabIndex = 35;
+            // 
+            // mobilityPanel
+            // 
+            this.mobilityPanel.AutoSize = true;
+            this.mobilityPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.mobilityPanel.Controls.Add(this.mobilityButtonsPanel);
+            this.mobilityPanel.Controls.Add(this.mobilityInputPanel);
+            this.mobilityPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.mobilityPanel.Location = new System.Drawing.Point(3, 3);
+            this.mobilityPanel.Name = "mobilityPanel";
+            this.mobilityPanel.Size = new System.Drawing.Size(6, 12);
+            this.mobilityPanel.TabIndex = 3;
+            // 
+            // neighborhoodPanel
+            // 
+            this.neighborhoodPanel.AutoSize = true;
+            this.neighborhoodPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.neighborhoodPanel.Location = new System.Drawing.Point(3, 21);
+            this.neighborhoodPanel.Name = "neighborhoodPanel";
+            this.neighborhoodPanel.Size = new System.Drawing.Size(0, 0);
+            this.neighborhoodPanel.TabIndex = 4;
+            // 
             // UserControl2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Controls.Add(this.inputPanel);
             this.Controls.Add(this.extraBox);
             this.Controls.Add(this.extraLabel);
             this.Controls.Add(this.edgeBox);
@@ -292,17 +294,16 @@
             this.Controls.Add(this.edgeLabel);
             this.Controls.Add(this.neighborLabel);
             this.Controls.Add(this.mobilityLabel);
-            this.Controls.Add(this.inputPanel);
             this.Controls.Add(this.colorBox);
             this.Controls.Add(this.agentCount);
             this.Controls.Add(this.numberLabel);
             this.Controls.Add(this.colorLabel);
             this.Name = "UserControl2";
-            this.Size = new System.Drawing.Size(584, 501);
-            this.inputPanel.ResumeLayout(false);
-            this.inputPanel.PerformLayout();
+            this.Size = new System.Drawing.Size(563, 187);
             this.extraPanel.ResumeLayout(false);
             this.extraPanel.PerformLayout();
+            this.inputPanel.ResumeLayout(false);
+            this.inputPanel.PerformLayout();
             this.mobilityPanel.ResumeLayout(false);
             this.mobilityPanel.PerformLayout();
             this.ResumeLayout(false);
@@ -316,7 +317,6 @@
         private System.Windows.Forms.Label colorLabel;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Label colorBox;
-        private System.Windows.Forms.Panel inputPanel;
         private System.Windows.Forms.ColorDialog colorDialog2;
         private System.Windows.Forms.Label mobilityLabel;
         private System.Windows.Forms.Label neighborLabel;
@@ -324,8 +324,6 @@
         private System.Windows.Forms.ComboBox neighborBox;
         private System.Windows.Forms.ComboBox mobilityBox;
         private System.Windows.Forms.ComboBox edgeBox;
-        private System.Windows.Forms.Panel neighborhoodPanel;
-        private System.Windows.Forms.Panel mobilityPanel;
         private System.Windows.Forms.Panel mobilityInputPanel;
         private System.Windows.Forms.Panel mobilityButtonsPanel;
         private System.Windows.Forms.Panel extraPanel;
@@ -333,5 +331,8 @@
         private System.Windows.Forms.Panel extraButtonPanel;
         private System.Windows.Forms.Label extraLabel;
         private System.Windows.Forms.ComboBox extraBox;
+        private System.Windows.Forms.FlowLayoutPanel inputPanel;
+        private System.Windows.Forms.FlowLayoutPanel mobilityPanel;
+        private System.Windows.Forms.FlowLayoutPanel neighborhoodPanel;
     }
 }

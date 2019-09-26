@@ -44,9 +44,6 @@ namespace Capstone_Application
             curState = thisState;
             InitializeComponent();
             this.Dock = DockStyle.Fill;
-            mobilityBox.SelectedIndex = 0;
-            neighborBox.SelectedIndex = 0;
-            edgeBox.SelectedIndex = 0;
             extraBox.SelectedIndex = 0;
             SetSettings();
             SetUI();
@@ -209,6 +206,15 @@ namespace Capstone_Application
                 
                 mobilityButtonsPanel.Controls.Add(mNeighborPickLabel);
                 mobilityButtonsPanel.Controls.Add(mNeighborPick);
+                //this.PerformLayout();
+                //Console.WriteLine("What the ever-loving F is going on here.");
+                //for (int i = 0; i < mobilityButtonsPanel.Controls.Count; i++)
+                //{
+                //    var control = mobilityButtonsPanel.Controls[i];
+                //    Console.WriteLine("Control: " + control.Name + " Width: " + control.Width + " Height: " + control.Height);
+                //}
+                //Console.WriteLine("Panel: " + mobilityButtonsPanel.Name + " Width: " + mobilityButtonsPanel.Width + " Height: " + mobilityButtonsPanel.Height);
+                //mobilityButtonsPanel.Update();
                 mNeighborPick.SelectedIndex = mobileN;
             }
         }
@@ -216,7 +222,7 @@ namespace Capstone_Application
         void RefreshMobilityFields()
         {
             mobilityInputPanel.Controls.Clear();
-            string[] directions = new string[] { "left", "up", "right", "down", "up-left", "up-right", "down-right", "down-left"};
+            string[] directions = new string[] { "up", "right", "down", "left", "up-left", "up-right", "down-right", "down-left"};
             if (mobile == true)
             {
                 int xLabel = 3;
@@ -233,15 +239,15 @@ namespace Capstone_Application
                     {
                         stickingProbsTemp[i] = stickingProbs[i];
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        throw;
+                        Console.WriteLine(e.Message + System.Environment.NewLine + e.StackTrace);
                     }
                 }
                 stickingProbs = stickingProbsTemp;
                 for (int i = 0; i < states; i++)
                 {
-                    stickingProbsTemp.Add(0);
+                    //stickingProbsTemp.Add(0);
                     string stickState = (i + 1).ToString();
                     Label mStickyLabel = new Label() { Name = $"mStickyLabel{i}", Text = $"Sticking probability: the agent's propensity for sticking to other agents of type {stickState}.", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
                     TextBox mStickyPick = new TextBox() { Name = $"mStickyPick{i}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20), Text = stickingProbs[i].ToString() };
@@ -279,15 +285,15 @@ namespace Capstone_Application
                 {
                     moveProbsTemp.Add(0);
                 }
-                for (int i = 0; i < moveProbs.Count; i++)
+                for (int i = 0; i < moveProbsTemp.Count; i++)
                 {
                     try
                     {
                         moveProbsTemp[i] = moveProbs[i];
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        throw;
+                        Console.WriteLine(e.Message + System.Environment.NewLine + e.StackTrace);
                     }
                 }
                 moveProbs = moveProbsTemp;
@@ -317,17 +323,17 @@ namespace Capstone_Application
                     mobilityInputPanel.Controls.Add(mMoveLabel);
                     mobilityInputPanel.Controls.Add(mMovePick);
                 }
-                Button calc = new Button() { Name = "calcButton", Location = new System.Drawing.Point(338, yPosCalc), Size = new Size(95, 21), Text = "Calculate Others" };
+                Button calc = new Button() { Name = "calcButton", Location = new System.Drawing.Point(338, yPosCalc - 26), Size = new Size(95, 21), Text = "Calculate Others" };
                 calc.Click += (sender, e) =>
                 {
-                    TextBox down = (TextBox)mobilityInputPanel.Controls["mMovePick3"];
+                    TextBox down = (TextBox)mobilityInputPanel.Controls["mMovePick2"];
                     if(double.TryParse(down.Text, out double result))
                     {
                         double rem = 1 - result;
                         double div = rem / (loop - 1);
                         for (int i = 0; i < loop; i++)
                         {
-                            if(i == 3)
+                            if(i == 2)
                             {
                                 continue;
                             }

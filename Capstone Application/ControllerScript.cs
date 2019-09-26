@@ -207,29 +207,32 @@ namespace Capstone_Application
 
         public void OneIteration(Form1 currentForm)
         {
-            //running = true;
-            myCA.OneIteration();
-            iterations++;
-            // move these to check settings?
-            List<int> currentCellCount = new List<int>();
-            currentCellCount.AddRange(myCA.StateCount);
+            if(alreadyCA)
+            {
+                //running = true;
+                myCA.OneIteration();
+                iterations++;
+                // move these to check settings?
+                List<int> currentCellCount = new List<int>();
+                currentCellCount.AddRange(myCA.StateCount);
 
-            if (CheckCount(new List<int>(currentCellCount)))
-            {
-                FullCount.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentCellCount)));
-            }
-            List<int> currentTransitions = new List<int>();
-            currentTransitions.AddRange(myCA.Transitions);
-            if (CheckTrans(new List<int>(currentTransitions)))
-            {
-                FullTransitions.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentTransitions)));
-            }
-            
-            List<double> currentIndex = new List<double>();
-            currentIndex.AddRange(myCA.CIndexes);
-            if (CheckIndex(new List<double>(currentIndex)))
-            {
-                FullIndex.Add(new Tuple<int, List<double>>(iterations, new List<double>(currentIndex)));
+                if (CheckCount(new List<int>(currentCellCount)))
+                {
+                    FullCount.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentCellCount)));
+                }
+                List<int> currentTransitions = new List<int>();
+                currentTransitions.AddRange(myCA.Transitions);
+                if (CheckTrans(new List<int>(currentTransitions)))
+                {
+                    FullTransitions.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentTransitions)));
+                }
+
+                List<double> currentIndex = new List<double>();
+                currentIndex.AddRange(myCA.CIndexes);
+                if (CheckIndex(new List<double>(currentIndex)))
+                {
+                    FullIndex.Add(new Tuple<int, List<double>>(iterations, new List<double>(currentIndex)));
+                }
             }
         }
 
@@ -400,27 +403,95 @@ namespace Capstone_Application
 
         public void UpdateBoard(Form1 currentForm)
         {
-            //Console.WriteLine("Count: " + pixelChanges.Count);
-            pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
-            if (iterations == 0)
+            if(alreadyCA)
             {
-                Color tileColor;
-                for (int i = 0; i < localGridWidth; ++i)
+                //Console.WriteLine("Count: " + pixelChanges.Count);
+                pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
+                if (iterations == 0)
                 {
-                    for (int j = 0; j < localGridHeight; ++j)
+                    Color tileColor;
+                    for (int i = 0; i < localGridWidth; ++i)
                     {
-                        if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                        for (int j = 0; j < localGridHeight; ++j)
                         {
-                           tileColor  = PreMultiplyAlpha(colors[myCA.GetCellState(i, j)]);
-                            pixelChanges.Add(new Tuple<int, int, Color>(i, j, tileColor));
+                            if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                            {
+                                tileColor = PreMultiplyAlpha(colors[myCA.GetCellState(i, j)]);
+                                pixelChanges.Add(new Tuple<int, int, Color>(i, j, tileColor));
+                            }
+                            else
+                            {
+                                tileColor = PreMultiplyAlpha(Color.Black);
+                                pixelChanges.Add(new Tuple<int, int, Color>(i, j, tileColor));
+                            }
                         }
-                        else
+                    }
+                    while (pixelChanges.Count > 0)
+                    {
+                        if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
                         {
-                            tileColor = PreMultiplyAlpha(Color.Black);
-                            pixelChanges.Add(new Tuple<int, int, Color>(i, j, tileColor));
+                            //Console.WriteLine(result.Item3.ToString());
+                            bmp.SetPixel(result.Item1, result.Item2, result.Item3);
                         }
                     }
                 }
+                Parallel.For(0, myCA.ActiveAgents.Count, (i) =>
+                {
+                    Color tileColor;
+                    AgentController curAgent = myCA.ActiveAgents[i];
+                    int oldX;
+                    int oldY;
+                    double frac = 1.0;
+                    Color newColor;
+                    if (curAgent.History.Count > 1)
+                    {
+                        if (curAgent.HistoryChange)
+                        {
+                            oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
+                            oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
+                            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
+                            {
+                                // check for container that shades color
+                                tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
+                                frac = 1.0;
+                                if (myCA.grid[oldX, oldY].agent.Containers != null)
+                                {
+                                    for (int j = 0; j < myCA.grid[oldX, oldY].agent.Containers.Count; j++)
+                                    {
+                                        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].agent.Containers[j].Value / myCA.grid[oldX, oldY].agent.Containers[j].Threshold));
+                                    }
+                                }
+                                newColor = Color.FromArgb((int)(frac * tileColor.R), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
+                                pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, newColor));
+                            }
+                            else
+                            {
+                                tileColor = PreMultiplyAlpha(Color.Black);
+                                pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, tileColor));
+                            }
+                        }
+                    }
+                    int newX = curAgent.xLocation;
+                    int newY = curAgent.yLocation;
+                    tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
+                    frac = 1.0;
+                    if (curAgent.Containers != null)
+                    {
+                        for (int j = 0; j < curAgent.Containers.Count; j++)
+                        {
+                            frac = frac * Math.Min(1, (curAgent.Containers[j].Value / curAgent.Containers[j].Threshold));
+                        }
+                    }
+                    newColor = Color.FromArgb((int)(tileColor.R * frac), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
+                    //Console.WriteLine("frac," + frac.ToString() + "color," + newColor.ToString());
+                    //if(iterations == 999)
+                    //{
+                    //    Console.WriteLine("index," + i + ",state," + curAgent.currentState + ",state color," + tileColor.ToString() + ",subColor," + newColor.ToString() + ",prop" + (curAgent.Containers[0].Value / curAgent.Containers[0].Threshold));
+                    //}
+                    pixelChanges.Add(new Tuple<int, int, Color>(newX, newY, newColor));
+
+                });
+
                 while (pixelChanges.Count > 0)
                 {
                     if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
@@ -429,116 +500,8 @@ namespace Capstone_Application
                         bmp.SetPixel(result.Item1, result.Item2, result.Item3);
                     }
                 }
+                UpdateImage(currentForm, bmp.Bitmap);
             }
-            Parallel.For(0, myCA.ActiveAgents.Count, (i) =>
-            {
-                Color tileColor;
-                AgentController curAgent = myCA.ActiveAgents[i];
-                int oldX;
-                int oldY;
-                double frac = 1.0;
-                Color newColor;
-                if (curAgent.History.Count > 1)
-                {
-                    if (curAgent.HistoryChange)
-                    {
-                        oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
-                        oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
-                        if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
-                        {
-                            // check for container that shades color
-                            tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
-                            frac = 1.0;
-                            if(myCA.grid[oldX, oldY].agent.Containers != null)
-                            {
-                                for (int j = 0; j < myCA.grid[oldX, oldY].agent.Containers.Count; j++)
-                                {
-                                    frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].agent.Containers[j].Value / myCA.grid[oldX, oldY].agent.Containers[j].Threshold));
-                                }
-                            }
-                            newColor = Color.FromArgb((int)(frac*tileColor.R), (int)(frac*tileColor.G), (int)(frac*tileColor.B));
-                            pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, newColor));
-                        }
-                        else
-                        {
-                            tileColor = PreMultiplyAlpha(Color.Black);
-                            pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, tileColor));
-                        }
-                    }
-                }
-                int newX = curAgent.xLocation;
-                int newY = curAgent.yLocation;
-                tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
-                frac = 1.0;
-                if(curAgent.Containers != null)
-                {
-                    for (int j = 0; j < curAgent.Containers.Count; j++)
-                    {
-                        frac = frac * Math.Min(1, (curAgent.Containers[j].Value / curAgent.Containers[j].Threshold));
-                    }
-                }
-                newColor = Color.FromArgb((int)(tileColor.R*frac), (int)(frac*tileColor.G), (int)(frac*tileColor.B));
-                //Console.WriteLine("frac," + frac.ToString() + "color," + newColor.ToString());
-                //if(iterations == 999)
-                //{
-                //    Console.WriteLine("index," + i + ",state," + curAgent.currentState + ",state color," + tileColor.ToString() + ",subColor," + newColor.ToString() + ",prop" + (curAgent.Containers[0].Value / curAgent.Containers[0].Threshold));
-                //}
-                pixelChanges.Add(new Tuple<int, int, Color>(newX, newY, newColor));
-
-            });
-            
-            while(pixelChanges.Count > 0)
-            {
-                if(pixelChanges.TryTake(out Tuple<int, int, Color> result))
-                {
-                    //Console.WriteLine(result.Item3.ToString());
-                    bmp.SetPixel(result.Item1, result.Item2, result.Item3);
-                }
-            }
-
-            //for (int i = 0; i < myCA.ActiveAgents.Count; i++)
-            //{
-            //    Color tileColor;
-            //    AgentController curAgent = myCA.ActiveAgents[i];
-            //    int oldX;
-            //    int oldY;
-            //    if (curAgent.History.Count > 1)
-            //    {
-            //        if (curAgent.HistoryChange)
-            //        {
-            //            oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
-            //            oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
-            //            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
-            //            {
-            //                // check for container that shades color
-            //                tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
-            //                for (int j = 0; j < myCA.grid[oldX, oldY].agent.Containers.Count; j++)
-            //                {
-            //                    tileColor = Analysis.Blend(tileColor, Color.FromArgb((int)((myCA.grid[oldX, oldY].agent.Containers[j].Value / myCA.grid[oldX, oldY].agent.Containers[j].Threshold) * 256), tileColor.R, tileColor.G, tileColor.B));
-            //                }
-            //                bmp.SetPixel(oldX, oldY, tileColor);
-            //            }
-            //            else
-            //            {
-            //                tileColor = PreMultiplyAlpha(Color.Black);
-            //                bmp.SetPixel(oldX, oldY, tileColor);
-            //            }
-            //        }
-            //    }
-
-            //    int newX = curAgent.xLocation;
-            //    int newY = curAgent.yLocation;
-
-
-            //    tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
-            //    for (int j = 0; j < myCA.grid[newX, newY].agent.Containers.Count; j++)
-            //    {
-            //        tileColor = Analysis.Blend(tileColor, Color.FromArgb((int)((myCA.grid[newX, newY].agent.Containers[j].Value / myCA.grid[newX, newY].agent.Containers[j].Threshold) * 256), tileColor.R, tileColor.G, tileColor.B));
-            //    }
-            //    bmp.SetPixel(newX, newY, tileColor);
-
-            //}
-            UpdateImage(currentForm, bmp.Bitmap);
         }
 
         void UpdateImage(Form1 currentForm, Bitmap bmp)
@@ -570,14 +533,17 @@ namespace Capstone_Application
 
         public void ResetGrid(Form1 form)
         {
-            // this should be for reseting everything, including CA settings
-            string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
-            CheckFinalDataSave(form, time);
-            caRuns++;
-            CreatedCA = false;
-            editModeOn = false;
-            reset_now = false;
-            ClearGrid();
+            if(alreadyCA)
+            {
+                // this should be for reseting everything, including CA settings
+                string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
+                CheckFinalDataSave(form, time);
+                caRuns++;
+                CreatedCA = false;
+                editModeOn = false;
+                reset_now = false;
+                ClearGrid();
+            }
         }
 
         public void ResetRuns(int val)
@@ -710,63 +676,67 @@ namespace Capstone_Application
 
         public void CheckSettings(Form1 form)
         {
-            //Get system time here
-
-            string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
-
-            CheckDataSave(form, time);
-
-            //Console.WriteLine("Reset: " + runSettings.AutoReset);
-            // Reset CA options
-            if (runSettings.ResetIterations.Count > 0 || runSettings.ResetCounts.Count > 0)
+            if(alreadyCA)
             {
-                // Iteration-based
-                for (int i = 0; i < runSettings.ResetIterations.Count; i++)
-                {
-                    if (runSettings.ResetIterations[i] == iterations)
-                    {
-                        //CheckFinalDataSave(form, time);
-                        form.AutoReset();
-                    }
-                }
-                // Cell count based
-                for(int i = 0; i < runSettings.ResetCounts.Count; i++)
-                {
-                    if (myCA.StateCount[i] == runSettings.ResetCounts[i])
-                    {
-                        //CheckFinalDataSave(form, time);
-                        form.AutoReset();
-                    }
-                }
-            }
+                //Get system time here
 
-            // spur-of-the-moment reset based on template call
-            if(reset_now)
-            {
-                form.AutoReset();
-            }
+                string time = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff");
 
-            // Pause CA options
-            if (runSettings.PauseIterations.Count > 0 || runSettings.PauseCounts.Count > 0)
-            {
-                // Iteration-based
-                for (int i = 0; i < runSettings.PauseIterations.Count; i++)
+                CheckDataSave(form, time);
+
+                //Console.WriteLine("Reset: " + runSettings.AutoReset);
+                // Reset CA options
+                if (runSettings.ResetIterations.Count > 0 || runSettings.ResetCounts.Count > 0)
                 {
-                    if (runSettings.PauseIterations[i] == iterations)
+                    // Iteration-based
+                    for (int i = 0; i < runSettings.ResetIterations.Count; i++)
                     {
-                        //CheckFinalDataSave(form, time);
-                        form.PauseUnpauseCA();
+                        if (runSettings.ResetIterations[i] == iterations)
+                        {
+                            //CheckFinalDataSave(form, time);
+                            form.AutoReset();
+                        }
+                    }
+                    // Cell count based
+                    for (int i = 0; i < runSettings.ResetCounts.Count; i++)
+                    {
+                        if (myCA.StateCount[i] == runSettings.ResetCounts[i])
+                        {
+                            //CheckFinalDataSave(form, time);
+                            form.AutoReset();
+                        }
                     }
                 }
-                // Cell count based
-                for (int i = 0; i < runSettings.PauseCounts.Count; i++)
+
+                // spur-of-the-moment reset based on template call
+                if (reset_now)
                 {
-                    if (myCA.StateCount[i] == runSettings.PauseCounts[i])
+                    form.AutoReset();
+                }
+
+                // Pause CA options
+                if (runSettings.PauseIterations.Count > 0 || runSettings.PauseCounts.Count > 0)
+                {
+                    // Iteration-based
+                    for (int i = 0; i < runSettings.PauseIterations.Count; i++)
                     {
-                        //CheckFinalDataSave(form, time);
-                        form.PauseUnpauseCA();
+                        if (runSettings.PauseIterations[i] == iterations)
+                        {
+                            //CheckFinalDataSave(form, time);
+                            form.PauseUnpauseCA();
+                        }
+                    }
+                    // Cell count based
+                    for (int i = 0; i < runSettings.PauseCounts.Count; i++)
+                    {
+                        if (myCA.StateCount[i] == runSettings.PauseCounts[i])
+                        {
+                            //CheckFinalDataSave(form, time);
+                            form.PauseUnpauseCA();
+                        }
                     }
                 }
+
             }
         }
         

@@ -542,16 +542,18 @@ namespace Capstone_Application
 
         private void speedInput_TextChanged(object sender, EventArgs e)
         {
-            int speed = int.Parse(this.speedInput.Text);
-            if (speed == 0)
+            if(int.TryParse(speedInput.Text, out int speed))
             {
-                iterationSpeed = 0;
-            }
-            else if (speed > 0)
-            {
-                double temp = 1 / (double)speed;
-                double temp2 = temp * 1000;
-                iterationSpeed = (int)temp2;
+                if (speed == 0)
+                {
+                    iterationSpeed = 0;
+                }
+                else if (speed > 0)
+                {
+                    double temp = 1 / (double)speed;
+                    double temp2 = temp * 1000;
+                    iterationSpeed = (int)temp2;
+                }
             }
         }
 
@@ -636,13 +638,23 @@ namespace Capstone_Application
 
         private void runSettingsButton_Click(object sender, EventArgs e)
         {
-            SaveDataDialog saveDialog = new SaveDataDialog();
-            saveDialog.Show();
+            if(runSettings != null)
+            {
+                SaveDataDialog saveDialog = new SaveDataDialog();
+                saveDialog.Show();
+            }
+            else
+            {
+                MessageBox.Show("Create a CA Model first.");
+            }
         }
 
         private void resetButton_Click(object sender, EventArgs e)
         {
-            ResetCA();
+            if(runSettings != null)
+            {
+                ResetCA();
+            }
         }
 
         public void ResetCA()
@@ -659,10 +671,7 @@ namespace Capstone_Application
             List<Tuple<int, int>> ends = input.Item1;
             List<Tuple<int, int>> x_bins = input.Item2;
             List<Tuple<int, int>> y_bins = input.Item3;
-            int x_num = x_bins.Count;
-            int y_num = y_bins.Count;
-            int x_greater = x_num - ends.Count;
-            int y_greater = y_num - ends.Count - x_greater;
+            int max = Math.Max(Math.Max(ends.Count, x_bins.Count), y_bins.Count);
             if (string.IsNullOrEmpty(Path.GetExtension(path)))
             {
                 path = path + "/" + time + " Runs " + runs + " Iterations " + controllerScript.iterations + " Final Location Histograms.csv";
@@ -676,39 +685,48 @@ namespace Capstone_Application
                 wt.WriteLine(thing);
                 wt.WriteLine("Final Iteration, Final Position, , X Axis Histogram, , Y Axis Histogram");
                 wt.WriteLine("Iteration, Position (X), Position (Y), Position (X), Count (X), Position (Y), Count (Y)");
-                for (int i = 0; i < ends.Count; i++)
+                for (int i = 0; i < max; i++)
                 {
-                    wt.Write(finalIterations[i] + "," + ends[i].Item1 + "," + ends[i].Item2);
-                    if (x_num > i)
-                    {
-                        wt.Write("," + x_bins[i].Item1 + "," + x_bins[i].Item2);
-                    }
-                    if (y_num > i)
-                    {
-                        wt.Write("," + y_bins[i].Item1 + "," + y_bins[i].Item2);
-                    }
-                    wt.WriteLine();
+                    string iteration = (finalIterations.Count > i) ? finalIterations[i].ToString() : "";
+                    string end_x = (ends.Count > i) ? ends[i].Item1.ToString() : "";
+                    string end_y = (ends.Count > i) ? ends[i].Item2.ToString() : "";
+                    string bin_x = (x_bins.Count > i) ? x_bins[i].Item1.ToString() + "," + x_bins[i].Item2.ToString() : ",";
+                    string bin_y = (y_bins.Count > i) ? y_bins[i].Item1.ToString() + "," + y_bins[i].Item2.ToString() : ",";
+                    wt.WriteLine(iteration + "," + end_x + "," + end_y + "," + bin_x + "," + bin_y);
                 }
-                if (x_greater > 0)
-                {
-                    for (int i = ends.Count; i < x_bins.Count; i++)
-                    {
-                        wt.Write(",," + y_bins[i].Item1 + "," + y_bins[i].Item2);
-                        if (y_num > i)
-                        {
-                            wt.Write("," + y_bins[i].Item1 + "," + y_bins[i].Item2);
-                        }
-                        wt.WriteLine();
-                    }
-                }
-                if(y_greater > 0)
-                {
-                    for (int i = ends.Count + x_bins.Count; i < y_bins.Count; i++)
-                    {
-                        wt.Write(",," + y_bins[i].Item1 + "," + y_bins[i].Item2);
-                        wt.WriteLine();
-                    }
-                }        
+                //for (int i = 0; i < ends.Count; i++)
+                //{
+                //    wt.Write(finalIterations[i] + "," + ends[i].Item1 + "," + ends[i].Item2);
+                //    if (x_num > i)
+                //    {
+                //        wt.Write("," + x_bins[i].Item1 + "," + x_bins[i].Item2);
+                //    }
+                //    if (y_num > i)
+                //    {
+                //        wt.Write("," + y_bins[i].Item1 + "," + y_bins[i].Item2);
+                //    }
+                //    wt.WriteLine();
+                //}
+                //if (x_greater > 0)
+                //{
+                //    for (int i = ends.Count; i < x_bins.Count; i++)
+                //    {
+                //        wt.Write(",," + y_bins[i].Item1 + "," + y_bins[i].Item2);
+                //        if (y_num > i)
+                //        {
+                //            wt.Write("," + y_bins[i].Item1 + "," + y_bins[i].Item2);
+                //        }
+                //        wt.WriteLine();
+                //    }
+                //}
+                //if(y_greater > 0)
+                //{
+                //    for (int i = ends.Count + x_bins.Count; i < y_bins.Count; i++)
+                //    {
+                //        wt.Write(",," + y_bins[i].Item1 + "," + y_bins[i].Item2);
+                //        wt.WriteLine();
+                //    }
+                //}        
                 wt.Close();
             }
         }
