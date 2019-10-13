@@ -20,7 +20,22 @@ namespace Capstone_Application
         ToolTip locationTT;
         //bool unpaused;
         public bool counterFormOpen = false;
-        bool running = false;
+        private bool running;
+        bool Running
+        {
+            get
+            {
+                return running;
+            }
+            set
+            {
+                running = value;
+                if(IsHandleCreated)
+                {
+                    Invoke(new Action(() => UpdateRunning()));
+                }
+            }
+        }
         int mouseDownX = 0;
         int mouseDownY = 0;
         int iterationSpeed = 0;
@@ -38,6 +53,7 @@ namespace Capstone_Application
         public Form1()
         {
             InitializeComponent();
+            Running = false;
             this.StartPosition = FormStartPosition.CenterScreen;
             innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             locationTT = new ToolTip();
@@ -45,9 +61,17 @@ namespace Capstone_Application
             text_timer.Elapsed += Timer_Tick;
         }
 
+        private void UpdateRunning()
+        {
+            PauseButton.Text = running ? "Pause" : "Unpause";
+        }
+
         private void Timer_Tick(object sender, System.EventArgs e)
         {
-            Invoke(new Action(() => UpdateIterationBox()));
+            if(this != null)
+            {
+                Invoke(new Action(() => UpdateIterationBox()));
+            }
         }
 
         private void newModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -106,14 +130,14 @@ namespace Capstone_Application
         {
             if(controllerScript.CreatedCA)
             {
-                running = !running;
-                if (running == true)
+                Running = !Running;
+                if (Running == true)
                 {
                     backgroundWorker1.RunWorkerAsync();
                     text_timer.Enabled = true;
                     //text_timer.Start();
                 }
-                else if(running == false)
+                else if(Running == false)
                 {
                     //text_timer.Stop();
                     text_timer.Enabled = false;
@@ -145,12 +169,13 @@ namespace Capstone_Application
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (running == true)
+            while (Running == true)
             {
                 if(iterationSpeed == 0)
                 {
                     RunCA();
                     Invoke(new Action(() => UpdateImage()));
+                    Invoke(new Action(() => UpdateIterationBox()));
                     controllerScript.CheckSettings(this);
                 }
                 else if(iterationSpeed > 0)
@@ -158,6 +183,7 @@ namespace Capstone_Application
                     DateTime time_start = DateTime.Now;
                     RunCA();
                     Invoke(new Action(() => UpdateImage()));
+                    Invoke(new Action(() => UpdateIterationBox()));
                     controllerScript.CheckSettings(this);
                     DateTime time_end = DateTime.Now;
                     System.Threading.Thread.Sleep(Math.Max((iterationSpeed - Convert.ToInt32((time_end - time_start).TotalMilliseconds)), 0));
@@ -302,6 +328,8 @@ namespace Capstone_Application
 
         public void AutoPathSave(string time, string folder_path, bool addToName)
         {
+            var paths = controllerScript.Paths;
+            paths.AddRange(controllerScript.myCA.GetPaths());
             string countName = time + " Iteration " + controllerScript.iterations + " Agent Paths.csv";
             string fileName = folder_path;
             if (addToName)
@@ -316,19 +344,21 @@ namespace Capstone_Application
                 string thing = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + "," + controllerScript.caRuns + "," + controllerScript.iterations;
                 wt.Write(thing);
                 wt.WriteLine();
-                List<int> lengths = controllerScript.Paths.Select(x => x.Count).ToList();
-                for (int i = 0; i < controllerScript.Paths.Count; i++)
+                wt.Write("Iteration,");
+                List<int> lengths = paths.Select(x => x.Count).ToList();
+                for (int i = 0; i < paths.Count; i++)
                 {
                     wt.Write(agent + (i + 1).ToString() + "," + ",");
                 }
                 wt.WriteLine();
                 for (int i = 0; i < lengths.Max(); i++)
                 {
-                    for (int j = 0; j < controllerScript.Paths.Count; j++)
+                    wt.Write(i + ",");
+                    for (int j = 0; j < paths.Count; j++)
                     {
                         if(controllerScript.Paths[j].Count >= i)
                         {
-                            wt.Write(controllerScript.Paths[j][i].Item1 + "," + controllerScript.Paths[j][i].Item2 + ",");
+                            wt.Write(paths[j][i].Item1 + "," + paths[j][i].Item2 + ",");
                         }
                         else
                         {
@@ -337,7 +367,6 @@ namespace Capstone_Application
                     }
                     wt.WriteLine();
                 }
-
                 wt.Close();
             }
         }
@@ -640,8 +669,12 @@ namespace Capstone_Application
         {
             if(runSettings != null)
             {
-                SaveDataDialog saveDialog = new SaveDataDialog();
-                saveDialog.Show();
+                if (!Running)
+                {
+                    SaveDataDialog saveDialog = new SaveDataDialog();
+                    saveDialog.Show();
+                }
+
             }
             else
             {
@@ -663,6 +696,7 @@ namespace Capstone_Application
             controllerScript.CreateCA(this);
             controllerScript.StartCA(this);
             UpdateRunBox();
+            UpdateIterationBox();
             UpdateImage();
         }
 
@@ -741,7 +775,7 @@ namespace Capstone_Application
         {
             if (controllerScript.AlreadyCA)
             {
-                if (running == false)
+                if (Running == false)
                 {
                     if (controllerScript.editModeOn == false)
                     {
@@ -772,6 +806,18 @@ namespace Capstone_Application
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 controllerScript.GetHist(System.DateTime.Now.ToString("o").Replace(':', '.'), this, ofd.FileName);
+            }
+        }
+
+        private void resetRunsButton_Click(object sender, EventArgs e)
+        {
+            if (runSettings != null)
+            {
+                ResetCA();
+                controllerScript.ResetRuns(1);
+                UpdateRunBox();
+                UpdateIterationBox();
+                UpdateImage();
             }
         }
     }

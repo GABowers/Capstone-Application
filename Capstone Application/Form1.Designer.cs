@@ -42,6 +42,7 @@
             this.pathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.visualizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.finalLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dansNeighborAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.randomWalkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +60,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.PauseButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.resetButton = new System.Windows.Forms.ToolStripButton();
+            this.resetRunButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.editGridButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -77,8 +78,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.finalLocationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
+            this.resetRunsButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -97,7 +98,7 @@
             this.runSettingsButton});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(505, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(600, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -171,30 +172,37 @@
             // imageToolStripMenuItem
             // 
             this.imageToolStripMenuItem.Name = "imageToolStripMenuItem";
-            this.imageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.imageToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.imageToolStripMenuItem.Text = "Image";
             this.imageToolStripMenuItem.Click += new System.EventHandler(this.imageToolStripMenuItem_Click);
             // 
             // pathToolStripMenuItem
             // 
             this.pathToolStripMenuItem.Name = "pathToolStripMenuItem";
-            this.pathToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pathToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.pathToolStripMenuItem.Text = "Path";
             this.pathToolStripMenuItem.Click += new System.EventHandler(this.pathToolStripMenuItem_Click);
             // 
             // visualizationToolStripMenuItem
             // 
             this.visualizationToolStripMenuItem.Name = "visualizationToolStripMenuItem";
-            this.visualizationToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.visualizationToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.visualizationToolStripMenuItem.Text = "Visualization";
             this.visualizationToolStripMenuItem.Click += new System.EventHandler(this.visualizationToolStripMenuItem_Click);
             // 
             // dataToolStripMenuItem
             // 
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.dataToolStripMenuItem.Text = "Data";
             this.dataToolStripMenuItem.Click += new System.EventHandler(this.dataToolStripMenuItem_Click);
+            // 
+            // finalLocationsToolStripMenuItem
+            // 
+            this.finalLocationsToolStripMenuItem.Name = "finalLocationsToolStripMenuItem";
+            this.finalLocationsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.finalLocationsToolStripMenuItem.Text = "Final Locations";
+            this.finalLocationsToolStripMenuItem.Click += new System.EventHandler(this.finalLocationsToolStripMenuItem_Click);
             // 
             // analysisToolStripMenuItem
             // 
@@ -291,7 +299,8 @@
             this.toolStripSeparator1,
             this.PauseButton,
             this.toolStripSeparator2,
-            this.resetButton,
+            this.resetRunButton,
+            this.resetRunsButton,
             this.toolStripSeparator5,
             this.editGridButton,
             this.toolStripSeparator3,
@@ -308,7 +317,7 @@
             this.increase});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(505, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(600, 25);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -336,8 +345,8 @@
             this.PauseButton.Image = ((System.Drawing.Image)(resources.GetObject("PauseButton.Image")));
             this.PauseButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.PauseButton.Name = "PauseButton";
-            this.PauseButton.Size = new System.Drawing.Size(42, 22);
-            this.PauseButton.Text = "Pause";
+            this.PauseButton.Size = new System.Drawing.Size(57, 22);
+            this.PauseButton.Text = "Unpause";
             this.PauseButton.Click += new System.EventHandler(this.toolStripLabel2_Click);
             // 
             // toolStripSeparator2
@@ -345,15 +354,15 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // resetButton
+            // resetRunButton
             // 
-            this.resetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.resetButton.Image = ((System.Drawing.Image)(resources.GetObject("resetButton.Image")));
-            this.resetButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.resetButton.Name = "resetButton";
-            this.resetButton.Size = new System.Drawing.Size(39, 22);
-            this.resetButton.Text = "Reset";
-            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+            this.resetRunButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.resetRunButton.Image = ((System.Drawing.Image)(resources.GetObject("resetRunButton.Image")));
+            this.resetRunButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.resetRunButton.Name = "resetRunButton";
+            this.resetRunButton.Size = new System.Drawing.Size(63, 22);
+            this.resetRunButton.Text = "Run Reset";
+            this.resetRunButton.Click += new System.EventHandler(this.resetButton_Click);
             // 
             // toolStripSeparator5
             // 
@@ -425,14 +434,14 @@
             // speedLabel
             // 
             this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(39, 22);
+            this.speedLabel.Size = new System.Drawing.Size(39, 15);
             this.speedLabel.Text = "Speed";
             // 
             // speedInput
             // 
             this.speedInput.MaxLength = 3;
             this.speedInput.Name = "speedInput";
-            this.speedInput.Size = new System.Drawing.Size(25, 25);
+            this.speedInput.Size = new System.Drawing.Size(25, 23);
             this.speedInput.Text = "0";
             this.speedInput.TextChanged += new System.EventHandler(this.speedInput_TextChanged);
             // 
@@ -441,7 +450,7 @@
             this.decrease.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.decrease.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.decrease.Name = "decrease";
-            this.decrease.Size = new System.Drawing.Size(23, 22);
+            this.decrease.Size = new System.Drawing.Size(23, 19);
             this.decrease.Text = "-";
             this.decrease.Click += new System.EventHandler(this.decrease_Click);
             // 
@@ -450,7 +459,7 @@
             this.increase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.increase.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.increase.Name = "increase";
-            this.increase.Size = new System.Drawing.Size(23, 22);
+            this.increase.Size = new System.Drawing.Size(23, 19);
             this.increase.Text = "+";
             this.increase.Click += new System.EventHandler(this.increase_Click);
             // 
@@ -463,20 +472,13 @@
             this.panel1.Location = new System.Drawing.Point(0, 49);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(505, 505);
+            this.panel1.Size = new System.Drawing.Size(600, 600);
             this.panel1.TabIndex = 4;
             // 
             // backgroundWorker1
             // 
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
-            // finalLocationsToolStripMenuItem
-            // 
-            this.finalLocationsToolStripMenuItem.Name = "finalLocationsToolStripMenuItem";
-            this.finalLocationsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.finalLocationsToolStripMenuItem.Text = "Final Locations";
-            this.finalLocationsToolStripMenuItem.Click += new System.EventHandler(this.finalLocationsToolStripMenuItem_Click);
             // 
             // innerPictureBox
             // 
@@ -487,9 +489,8 @@
             this.innerPictureBox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             this.innerPictureBox.Location = new System.Drawing.Point(0, 0);
             this.innerPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.innerPictureBox.MaximumSize = new System.Drawing.Size(1000, 1000);
             this.innerPictureBox.Name = "innerPictureBox";
-            this.innerPictureBox.Size = new System.Drawing.Size(505, 505);
+            this.innerPictureBox.Size = new System.Drawing.Size(600, 600);
             this.innerPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.innerPictureBox.TabIndex = 3;
             this.innerPictureBox.TabStop = false;
@@ -498,11 +499,22 @@
             this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
             this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
             // 
+            // resetRunsButton
+            // 
+            this.resetRunsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.resetRunsButton.Image = ((System.Drawing.Image)(resources.GetObject("resetRunsButton.Image")));
+            this.resetRunsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.resetRunsButton.Name = "resetRunsButton";
+            this.resetRunsButton.Size = new System.Drawing.Size(61, 22);
+            this.resetRunsButton.Text = "Full Reset";
+            this.resetRunsButton.Click += new System.EventHandler(this.resetRunsButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(505, 554);
+            this.AutoSize = true;
+            this.ClientSize = new System.Drawing.Size(600, 649);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -549,7 +561,7 @@
         private System.Windows.Forms.ToolStripLabel iterationCountBox;
         private System.Windows.Forms.ToolStripButton toolStripLabel1;
         private System.Windows.Forms.ToolStripButton PauseButton;
-        private System.Windows.Forms.ToolStripButton resetButton;
+        private System.Windows.Forms.ToolStripButton resetRunButton;
         public PictureBoxWithInterpolationMode innerPictureBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
@@ -574,6 +586,7 @@
         private System.Windows.Forms.ToolStripLabel speedLabel;
         public System.Windows.Forms.ToolStripButton editGridButton;
         private System.Windows.Forms.ToolStripMenuItem finalLocationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton resetRunsButton;
     }
 }
 

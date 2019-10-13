@@ -549,6 +549,7 @@ namespace Capstone_Application
         public void ResetRuns(int val)
         {
             caRuns = val;
+            paths = new List<List<Tuple<int, int, int>>>();
         }
 
         public Tuple<int, int> TrueLocation(int xValue, int yValue, PictureBoxWithInterpolationMode container)
@@ -837,6 +838,14 @@ namespace Capstone_Application
         {
             Tuple<List<Tuple<int, int>>, List<Tuple<int, int>>, List<Tuple<int, int>>> output = Analysis.FinalLocationHistogram(paths, new Tuple<int, int>(localGridWidth, localGridHeight));
             form.SaveHist(output, time, filePath, paths.Select(x => x.Count() - 1).ToList(), paths.Count);
+        }
+
+        public void UpdatePaths()
+        {
+            if (runSettings.SavePaths)
+            {
+                paths.AddRange(myCA.GetPaths());
+            }
         }
 
         void CheckFinalDataSave(Form1 form, string time)
