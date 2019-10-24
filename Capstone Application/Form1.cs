@@ -346,17 +346,18 @@ namespace Capstone_Application
                 wt.WriteLine();
                 wt.Write("Iteration,");
                 List<int> lengths = paths.Select(x => x.Count).ToList();
+                int max = lengths.Max();
                 for (int i = 0; i < paths.Count; i++)
                 {
                     wt.Write(agent + (i + 1).ToString() + "," + ",");
                 }
                 wt.WriteLine();
-                for (int i = 0; i < lengths.Max(); i++)
+                for (int i = 0; i < max; i++)
                 {
                     wt.Write(i + ",");
                     for (int j = 0; j < paths.Count; j++)
                     {
-                        if(controllerScript.Paths[j].Count >= i)
+                        if(paths[j].Count > i)
                         {
                             wt.Write(paths[j][i].Item1 + "," + paths[j][i].Item2 + ",");
                         }

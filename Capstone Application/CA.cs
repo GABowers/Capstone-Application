@@ -105,7 +105,7 @@ public class CA
 
     void TemplateCheck()
     {
-        Console.WriteLine("TEMPLAtae: " + template);
+        //Console.WriteLine("TEMPLAtae: " + template);
         switch(template)
         {
             case Template.DLA:

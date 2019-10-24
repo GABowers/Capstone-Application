@@ -61,6 +61,7 @@
             this.PauseButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.resetRunButton = new System.Windows.Forms.ToolStripButton();
+            this.resetRunsButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.editGridButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -76,10 +77,9 @@
             this.decrease = new System.Windows.Forms.ToolStripButton();
             this.increase = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
-            this.resetRunsButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -364,6 +364,16 @@
             this.resetRunButton.Text = "Run Reset";
             this.resetRunButton.Click += new System.EventHandler(this.resetButton_Click);
             // 
+            // resetRunsButton
+            // 
+            this.resetRunsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.resetRunsButton.Image = ((System.Drawing.Image)(resources.GetObject("resetRunsButton.Image")));
+            this.resetRunsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.resetRunsButton.Name = "resetRunsButton";
+            this.resetRunsButton.Size = new System.Drawing.Size(61, 22);
+            this.resetRunsButton.Text = "Full Reset";
+            this.resetRunsButton.Click += new System.EventHandler(this.resetRunsButton_Click);
+            // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
@@ -434,14 +444,14 @@
             // speedLabel
             // 
             this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(39, 15);
+            this.speedLabel.Size = new System.Drawing.Size(39, 22);
             this.speedLabel.Text = "Speed";
             // 
             // speedInput
             // 
             this.speedInput.MaxLength = 3;
             this.speedInput.Name = "speedInput";
-            this.speedInput.Size = new System.Drawing.Size(25, 23);
+            this.speedInput.Size = new System.Drawing.Size(25, 25);
             this.speedInput.Text = "0";
             this.speedInput.TextChanged += new System.EventHandler(this.speedInput_TextChanged);
             // 
@@ -450,7 +460,7 @@
             this.decrease.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.decrease.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.decrease.Name = "decrease";
-            this.decrease.Size = new System.Drawing.Size(23, 19);
+            this.decrease.Size = new System.Drawing.Size(23, 22);
             this.decrease.Text = "-";
             this.decrease.Click += new System.EventHandler(this.decrease_Click);
             // 
@@ -459,7 +469,7 @@
             this.increase.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.increase.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.increase.Name = "increase";
-            this.increase.Size = new System.Drawing.Size(23, 19);
+            this.increase.Size = new System.Drawing.Size(23, 22);
             this.increase.Text = "+";
             this.increase.Click += new System.EventHandler(this.increase_Click);
             // 
@@ -474,11 +484,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(600, 600);
             this.panel1.TabIndex = 4;
-            // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // innerPictureBox
             // 
@@ -499,15 +504,10 @@
             this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
             this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
             // 
-            // resetRunsButton
+            // backgroundWorker1
             // 
-            this.resetRunsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.resetRunsButton.Image = ((System.Drawing.Image)(resources.GetObject("resetRunsButton.Image")));
-            this.resetRunsButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.resetRunsButton.Name = "resetRunsButton";
-            this.resetRunsButton.Size = new System.Drawing.Size(61, 22);
-            this.resetRunsButton.Text = "Full Reset";
-            this.resetRunsButton.Click += new System.EventHandler(this.resetRunsButton_Click);
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // Form1
             // 
