@@ -19,12 +19,15 @@ namespace Capstone_Application
         List<string> messages = new List<string>();
         bool checking = false;
 
+        private bool finishedLoading = false;
+
         public SaveDataDialog()
         {
             InitializeComponent();
             GenFields();
             splitContainer2.Panel1.AutoScroll = true;
             RetrieveOrCreate();
+            finishedLoading = true;
         }
 
         void RetrieveOrCreate()
@@ -226,34 +229,31 @@ namespace Capstone_Application
 
         private void saveOptions_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            //if (!checking)
-            //{
-            //    checking = true;
-            //    RecursiveCheck(saveOptions.SelectedNode, saveOptions.SelectedNode.Checked);
-            //    checking = false;
-            //}
-            for (int i = 0; i < saveOptions.Nodes.Count; i++)
+            if (finishedLoading)
             {
-                string name = saveOptions.Nodes[i].Text;
-                if(name.Contains("Count"))
+                for (int i = 0; i < saveOptions.Nodes.Count; i++)
                 {
-                    runSettings.SaveCounts = saveOptions.Nodes[i].Checked;
-                }
-                else if (name.Contains("Trans"))
-                {
-                    runSettings.SaveTrans = saveOptions.Nodes[i].Checked;
-                }
-                else if (name.Contains("Index"))
-                {
-                    runSettings.SaveIndex = saveOptions.Nodes[i].Checked;
-                }
-                else if (name.Contains("Path"))
-                {
-                    runSettings.SavePaths = saveOptions.Nodes[i].Checked;
-                }
-                else if (name.Contains("Image"))
-                {
-                    runSettings.SaveImage = saveOptions.Nodes[i].Checked;
+                    string name = saveOptions.Nodes[i].Text;
+                    if (name.Contains("Count"))
+                    {
+                        runSettings.SaveCounts = saveOptions.Nodes[i].Checked;
+                    }
+                    else if (name.Contains("Trans"))
+                    {
+                        runSettings.SaveTrans = saveOptions.Nodes[i].Checked;
+                    }
+                    else if (name.Contains("Index"))
+                    {
+                        runSettings.SaveIndex = saveOptions.Nodes[i].Checked;
+                    }
+                    else if (name.Contains("Path"))
+                    {
+                        runSettings.SavePaths = saveOptions.Nodes[i].Checked;
+                    }
+                    else if (name.Contains("Image"))
+                    {
+                        runSettings.SaveImage = saveOptions.Nodes[i].Checked;
+                    }
                 }
             }
         }

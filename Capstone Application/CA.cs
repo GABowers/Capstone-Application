@@ -955,27 +955,27 @@ public class CA
         double[] probChances = new double[numStates];
         double totalProb = 0;
 
-        for (int p = 0; p < numStates; ++p)
+        for (int toState = 0; toState < numStates; toState++)
         {
             double prob = 0;
             //skip if we are on the state of the current cell
             //we'll figure it out after we find out all the other probs
-            if (p == currentState)
+            if (toState == currentState)
                 continue;
 
             //the neighbor probabilities of different states are considered ADDITIVE
             //They will combine to form one probability to that other state
 
-            for (int nP = 0; nP < numStates; ++nP)
+            for (int neighborState = 0; neighborState < numStates; neighborState++)
             {
                 double tempProb = 0;
-                if (nP == currentState)
-                    continue;
-                tempProb = states[currentState].prob[p, nP, neighborStateCount[nP]];
+                //if (neighborState == currentState)
+                //    continue;
+                tempProb = states[currentState].prob[toState, neighborState, neighborStateCount[neighborState]];
                 
                 prob += tempProb;
             }
-            probChances[p] = prob;
+            probChances[toState] = prob;
             totalProb += prob;
         }
         // the chance of us not changing is the product of all the other states not happening

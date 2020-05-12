@@ -418,6 +418,10 @@ namespace Capstone_Application
                         {
                             for (int k = 0; k < neighbors + 1; k++)
                             {
+                                int _i = i;
+                                int _j = j;
+                                int _k = k;
+                                //Console.WriteLine("Positions: {0}, {1}", xLabel, yPos);
                                 string neighbors = k.ToString();
                                 Label neighborsLabel = new Label() { Name = $"mNeighborLabel{i}.{j}.{k}", Text = $"Probability of change from state {fromState} to state {toState}, with {k} neighbors of state {neighborState}.", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
                                 TextBox neighborsPick = new TextBox() { Name = $"mNeighborPick{i}.{j}.{k}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20), Text = probs[i][j][k].ToString() };
@@ -431,7 +435,7 @@ namespace Capstone_Application
                                     int third = int.Parse(final);
                                     if (double.TryParse(neighborsPick.Text, out double result))
                                     {
-                                        probs[first][second][third] = result;
+                                        probs[_i][_j][_k] = result;
                                     }
                                     else
                                     {
@@ -495,6 +499,7 @@ namespace Capstone_Application
                 }
 
                 toStateYPosition += (nextStatePanel.Size.Height + 5);
+                Console.WriteLine("Positions: {0}, {1}", toStateXPosition, toStateYPosition);
             }
         }
 

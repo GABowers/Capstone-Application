@@ -351,11 +351,30 @@ namespace Capstone_Application
 
             if(!editForm)
             {
-                Form1.runSettings = new RunSettings(amountOfStates);
-                controllerScript.runSettings = Form1.runSettings;
-                controllerScript.AlreadyCA = false;
-                mainForm.StartCA();
+                if (template == Template.None)
+                {
+                    if (tabControl1.TabPages.Count == 1)
+                    {
+                        MessageBox.Show("You haven't initialized the agent properties.");
+                    }
+                    else
+                    {
+                        Form1.runSettings = new RunSettings(amountOfStates);
+                        controllerScript.runSettings = Form1.runSettings;
+                        controllerScript.AlreadyCA = false;
+                        mainForm.StartCA();
+                        this.Close();
+                    }
+                }
+                else
+                {
+                    this.Close();
+                }
                 //controllerScript.ResetTemplate();
+            }
+            else
+            {
+                this.Close();
             }
             //else
             //{
@@ -364,7 +383,6 @@ namespace Capstone_Application
             //    mainForm.ResetCA();
             //}
 
-            this.Close();
         }
 
         private void Form2_Load(object sender, EventArgs e)
