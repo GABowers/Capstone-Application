@@ -273,6 +273,7 @@
             // 
             this.neighborhoodPanel.AutoSize = true;
             this.neighborhoodPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.neighborhoodPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.neighborhoodPanel.Location = new System.Drawing.Point(3, 21);
             this.neighborhoodPanel.Name = "neighborhoodPanel";
             this.neighborhoodPanel.Size = new System.Drawing.Size(0, 0);
