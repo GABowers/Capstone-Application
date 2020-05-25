@@ -260,6 +260,7 @@ namespace Capstone_Application
                 return true;
             }
         }
+
         bool CheckTrans(List<int> curTrans)
         {
             if (iterations > 1)
@@ -284,6 +285,7 @@ namespace Capstone_Application
                 return true;
             }
         }
+
         bool CheckIndex(List<double> curIndex)
         {
             if (iterations > 1)

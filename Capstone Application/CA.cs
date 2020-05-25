@@ -1413,6 +1413,7 @@ public class UnorderedTupleComparer<T> : IEqualityComparer<Tuple<T, T>>
         return comparer.GetHashCode(obj.Item1) ^ comparer.GetHashCode(obj.Item2);
     }
 }
+
 // Had to comment this out?? Not sure what's to blame.
 //public enum GridType
 //{

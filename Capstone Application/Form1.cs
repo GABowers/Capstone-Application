@@ -384,14 +384,15 @@ namespace Capstone_Application
             {
                 iterations.AddRange(controllerScript.FullCount.Select(x => x.Item1));
             }
-            if (counts)
-            {
-                iterations.AddRange(controllerScript.FullIndex.Select(x => x.Item1));
-            }
-            if (counts)
+            if (trans)
             {
                 iterations.AddRange(controllerScript.FullTransitions.Select(x => x.Item1));
             }
+            if (cIndex)
+            {
+                iterations.AddRange(controllerScript.FullIndex.Select(x => x.Item1));
+            }
+
             iterations = iterations.Distinct().ToList();
             iterations.Sort();
             using (StreamWriter wt = new StreamWriter(path))
@@ -415,8 +416,15 @@ namespace Capstone_Application
                 {
                     for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                     {
-                        string cellTypeString = (j + 1).ToString();
-                        wt.Write("Transitions Type " + cellTypeString + ",");
+                        for (int k = 0; k < controllerScript.amountOfCellTypes; k++)
+                        {
+                            if(j == k)
+                            {
+                                continue;
+                            }
+                            string write = "Transitions " + (j + 1).ToString() + " ->" + (k + 1).ToString();
+                            wt.Write(write + ",");
+                        }
                     }
                 }
                 if (cIndex)
@@ -472,19 +480,27 @@ namespace Capstone_Application
                     List<Tuple<int, List<int>>> local_trans = controllerScript.FullTransitions;
                     if (trans_val <= local_trans.Count - 1)
                     {
+                        int localTrans = 0;
                         if (local_trans[trans_val].Item1 == it)
                         {
-                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                            {
-                                currentLine += local_trans[trans_val].Item2[j].ToString() + ",";
-                            }
+                            localTrans = trans_val;
                             trans_val += 1;
                         }
                         else
                         {
-                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                            localTrans = trans_val - 1;
+                        }
+                        int val = 0;
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
+                        {
+                            for (int k = 0; k < controllerScript.amountOfCellTypes; k++)
                             {
-                                currentLine += local_trans[trans_val - 1].Item2[j].ToString() + ",";
+                                if(j == k)
+                                {
+                                    continue;
+                                }
+                                currentLine += local_trans[localTrans].Item2[val].ToString() + ",";
+                                val++;
                             }
                         }
                     }

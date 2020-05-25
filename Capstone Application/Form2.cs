@@ -21,6 +21,7 @@ namespace Capstone_Application
         bool editForm;
         bool template_reset = false;
         bool finalized = false;
+
         public Form2(string name, Form1 main, bool edit)
         {
             editForm = edit;
@@ -401,16 +402,20 @@ namespace Capstone_Application
 
         private void templateBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch(templateBox.SelectedIndex)
+            foreach(Control control in templatePanel.Controls)
             {
-                case 0:
+                templatePanel.Controls.Remove(control);
+            }
+            switch (templateBox.SelectedIndex)
+            {
+                case 0: // None
                     controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = true;
                     stateNumberBox.Text = 0.ToString();
                     template = Template.None;
                     DisableTemplateResetInfo();
                     break;
-                case 1:
+                case 1: // Random Walk
                     controllerScript.SetupStateInfo();
                     stateNumberBox.Enabled = false;
                     stateNumberBox.Text = 1.ToString();
@@ -477,6 +482,7 @@ namespace Capstone_Application
         }
     }
 }
+
 public enum GridType
 {
     Box,
