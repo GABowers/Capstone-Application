@@ -44,3 +44,5 @@ Add ability to set chemical type. Calculate things like v(rms), and allow for re
 MOVE TO WPF. Seriously, how does WinForms feel so backwards.
 
 container - change threshold to behavior at certain values (less than 0, more than 100, etc.). "triggers"
+
+CA for visualization of perceptron? 
