@@ -169,24 +169,30 @@ namespace Capstone_Application
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            double totalDuration = 0;
             while (Running == true)
             {
+                DateTime start = DateTime.Now;
                 if(iterationSpeed == 0)
                 {
                     RunCA();
-                    Invoke(new Action(() => UpdateImage()));
-                    Invoke(new Action(() => UpdateIterationBox()));
                     controllerScript.CheckSettings(this);
                 }
                 else if(iterationSpeed > 0)
                 {
                     DateTime time_start = DateTime.Now;
                     RunCA();
-                    Invoke(new Action(() => UpdateImage()));
-                    Invoke(new Action(() => UpdateIterationBox()));
                     controllerScript.CheckSettings(this);
                     DateTime time_end = DateTime.Now;
                     System.Threading.Thread.Sleep(Math.Max((iterationSpeed - Convert.ToInt32((time_end - time_start).TotalMilliseconds)), 0));
+                }
+                totalDuration += (DateTime.Now - start).TotalSeconds;
+                if(totalDuration > (1/60.0))
+                {
+                    // update
+                    Invoke(new Action(() => UpdateImage()));
+                    Invoke(new Action(() => UpdateIterationBox()));
+                    totalDuration = 0;
                 }
             }
         }
