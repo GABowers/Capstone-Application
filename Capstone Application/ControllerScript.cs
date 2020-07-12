@@ -327,7 +327,7 @@ namespace Capstone_Application
                 grids = new List<GridType>();
                 nTypes = new List<NType>();
                 colors = new List<Color>();
-                cellAmounts = new List<int>();
+            cellAmounts = Enumerable.Repeat(0, statePageInfo.Count).ToList();
                 fullCount = new List<Tuple<int, List<int>>>();
                 fullTransitions = new List<Tuple<int, List<int>>>();
                 fullIndex = new List<Tuple<int, List<double>>>();
@@ -354,7 +354,7 @@ namespace Capstone_Application
                 myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, grids, statePageInfo, template, reset);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
-                    cellAmounts.Add(statePageInfo[h].startingAmount.Value);
+                    cellAmounts[h] = statePageInfo[h].startingAmount.Value;
                     colors.Add(statePageInfo[h].color.Value);
                 }
                 myCA.InitializeGrid(cellAmounts);
