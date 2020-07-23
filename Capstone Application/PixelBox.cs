@@ -11,8 +11,13 @@ namespace Capstone_Application
     /// <summary>
     /// Inherits from PictureBox; adds Interpolation Mode Setting
     /// </summary>
-    public class PictureBoxWithInterpolationMode : PictureBox
+    public class PixelBox : PictureBox
     {
+
+        public PixelBox()
+        {
+            InterpolationMode = InterpolationMode.Default;
+        }
         public InterpolationMode InterpolationMode { get; set; }
 
         protected override void OnPaint(PaintEventArgs paintEventArgs)

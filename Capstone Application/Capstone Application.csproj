@@ -213,7 +213,7 @@
       <DependentUpon>Neighbor State Entry.cs</DependentUpon>
     </Compile>
     <Compile Include="Neighborhood.cs" />
-    <Compile Include="PictureBoxWithInterpolationMode.cs">
+    <Compile Include="PixelBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Point.cs" />

@@ -44,6 +44,8 @@ namespace Capstone_Application
         public static ControllerScript controllerScript = new ControllerScript();
         Counter counterWindow;
         EditWindow editWindow;
+        public PixelBox innerPictureBox;
+
         //System.Timers.Timer edit_timer;
         //SaveDataDialog saveDialog;
         System.Timers.Timer text_timer = new System.Timers.Timer();
@@ -55,6 +57,15 @@ namespace Capstone_Application
             InitializeComponent();
             Running = false;
             this.StartPosition = FormStartPosition.CenterScreen;
+            innerPictureBox = new PixelBox();
+            this.innerPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.innerPictureBox.Location = new System.Drawing.Point(0, 0);
+            this.innerPictureBox.Name = "pictureBox";
+            this.innerPictureBox.Size = new System.Drawing.Size(600, 600);
+            this.innerPictureBox.TabIndex = 0;
+            this.innerPictureBox.TabStop = false;
+            this.panel1.Controls.Add(this.innerPictureBox);
+
             innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             locationTT = new ToolTip();
             text_timer.Interval = 5;
@@ -842,6 +853,11 @@ namespace Capstone_Application
                 UpdateIterationBox();
                 UpdateImage();
             }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

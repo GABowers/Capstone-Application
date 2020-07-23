@@ -77,13 +77,10 @@
             this.decrease = new System.Windows.Forms.ToolStripButton();
             this.increase = new System.Windows.Forms.ToolStripButton();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.innerPictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -131,6 +128,7 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.ToolTipText = "Exit the program.";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
@@ -477,32 +475,12 @@
             // 
             this.panel1.AutoSize = true;
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panel1.Controls.Add(this.innerPictureBox);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 49);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(600, 600);
             this.panel1.TabIndex = 4;
-            // 
-            // innerPictureBox
-            // 
-            this.innerPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.innerPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.innerPictureBox.ErrorImage = null;
-            this.innerPictureBox.InitialImage = null;
-            this.innerPictureBox.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.innerPictureBox.Location = new System.Drawing.Point(0, 0);
-            this.innerPictureBox.Margin = new System.Windows.Forms.Padding(0);
-            this.innerPictureBox.Name = "innerPictureBox";
-            this.innerPictureBox.Size = new System.Drawing.Size(600, 600);
-            this.innerPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.innerPictureBox.TabIndex = 3;
-            this.innerPictureBox.TabStop = false;
-            this.innerPictureBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseDown);
-            this.innerPictureBox.MouseLeave += new System.EventHandler(this.innerPictureBox_MouseLeave);
-            this.innerPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseMove);
-            this.innerPictureBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.innerPictureBox_MouseUp);
             // 
             // backgroundWorker1
             // 
@@ -527,8 +505,6 @@
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.innerPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -562,7 +538,6 @@
         private System.Windows.Forms.ToolStripButton toolStripLabel1;
         private System.Windows.Forms.ToolStripButton PauseButton;
         private System.Windows.Forms.ToolStripButton resetRunButton;
-        public PictureBoxWithInterpolationMode innerPictureBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
@@ -587,6 +562,7 @@
         public System.Windows.Forms.ToolStripButton editGridButton;
         private System.Windows.Forms.ToolStripMenuItem finalLocationsToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton resetRunsButton;
+        //private System.Windows.Forms.PictureBox pictureBox;
     }
 }
 

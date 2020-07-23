@@ -554,7 +554,7 @@ namespace Capstone_Application
             paths = new List<List<Tuple<int, int, int>>>();
         }
 
-        public Tuple<int, int> TrueLocation(int xValue, int yValue, PictureBoxWithInterpolationMode container)
+        public Tuple<int, int> TrueLocation(int xValue, int yValue, PixelBox container)
         {
             Double tempX = Convert.ToDouble(xValue);
             Double tempY = Convert.ToDouble(yValue);
@@ -563,7 +563,7 @@ namespace Capstone_Application
             return new Tuple<int, int>(xProper, yProper);
         }
 
-        public void EditGrid(int xValue, int yValue, PictureBoxWithInterpolationMode container, int buttonPressed, int state)
+        public void EditGrid(int xValue, int yValue, PixelBox container, int buttonPressed, int state)
         {
             if(editModeOn == true)
             {
@@ -604,7 +604,7 @@ namespace Capstone_Application
             }
         }
 
-        public void EditGrid(int[] rangeX, int[] rangeY, PictureBoxWithInterpolationMode container, int buttonPressed, int state)
+        public void EditGrid(int[] rangeX, int[] rangeY, PixelBox container, int buttonPressed, int state)
         {
             if (editModeOn == true)
             {

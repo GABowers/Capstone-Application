@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tracePictureBox = new Capstone_Application.PictureBoxWithInterpolationMode();
+            this.tracePictureBox = new Capstone_Application.PixelBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.RunButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
@@ -150,7 +150,7 @@
 
         #endregion
 
-        private PictureBoxWithInterpolationMode tracePictureBox;
+        private PixelBox tracePictureBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton pathTraceRadio;
         private System.Windows.Forms.RadioButton freqTraceRadio;
