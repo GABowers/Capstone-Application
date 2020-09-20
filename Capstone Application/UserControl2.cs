@@ -18,7 +18,7 @@ namespace Capstone_Application
         Color color;
         int toStateXPosition = 0;
         int toStateYPosition = 0;
-        int mobileN = 0;
+        MoveType mobileN = MoveType.None;
         int states;
         int curState;
         int neighbors = 0;
@@ -188,19 +188,13 @@ namespace Capstone_Application
                 int xInput = 439;
                 int yPos = 5;
                 Label mNeighborPickLabel = new Label() { Name = "mNeighborPickLabel", Text = "Set the neighborhood of the mobile agent--or what directions it can move", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
-                ComboBox mNeighborPick = new ComboBox() { Name = "mNeighborPick", Items = { "von Neumann" }, Location = new System.Drawing.Point(xInput, yPos) };
+                var moveNeighbors = Enum.GetNames(typeof(MoveType));
+                ComboBox mNeighborPick = new ComboBox() { Name = "mNeighborPick", Location = new System.Drawing.Point(xInput, yPos) };
+                mNeighborPick.Items.AddRange(moveNeighbors);
                 mNeighborPick.DropDownStyle = ComboBoxStyle.DropDownList;
                 mNeighborPick.SelectedIndexChanged += (sender, e) =>
                 {
-                    switch (mNeighborPick.SelectedIndex)
-                    {
-                        case 0:
-                            mobileN = 0;
-                            break;
-                        default:
-                            mobileN = 0;
-                            break;
-                    }
+                    mobileN = (MoveType)(mNeighborPick.SelectedIndex);
                     RefreshMobilityFields();
                 };
                 
@@ -215,7 +209,7 @@ namespace Capstone_Application
                 //}
                 //Console.WriteLine("Panel: " + mobilityButtonsPanel.Name + " Width: " + mobilityButtonsPanel.Width + " Height: " + mobilityButtonsPanel.Height);
                 //mobilityButtonsPanel.Update();
-                mNeighborPick.SelectedIndex = mobileN;
+                mNeighborPick.SelectedIndex = 0;
             }
         }
 

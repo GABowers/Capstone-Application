@@ -258,7 +258,7 @@ namespace Capstone_Application
                         }
                         controllerScript.MainPageNext(1, hori, vert, Template.Gas);
                         controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.White,
-                            new List<Tuple<int, int>>(), 0, 0, new List<List<List<double>>>(), true, 4, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
+                            new List<Tuple<int, int>>(), 0, 0, new List<List<List<double>>>(), true, MoveType.VonNeumann, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
                             false, new List<double>(), false, false, false, new List<Tuple<string, double>>());
                         double full_vol = ((hori) * (vert) * mol_vol);
                         template_storage.Add(t);

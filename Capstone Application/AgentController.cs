@@ -9,14 +9,14 @@ namespace Capstone_Application
 {
     public class AgentController
     {
-        CA parent;
-        BlankGrid[,] grid;
+        public CA Parent { get; private set; }
+        public BlankGrid Cell { get; private set; }
         RNGCryptoServiceProvider rng;
         //ControllerScript controllerScript = Form1.controllerScript;
         //CA caScript = Form1.controllerScript.myCA;
         public int currentState;
-        public int xLocation;
-        public int yLocation;
+        public int X { get; private set; }
+        public int Y { get; private set; }
         public int iterations_alive = 0;
         public double[] walkProbs;
         private bool historyChange = false;
@@ -29,10 +29,10 @@ namespace Capstone_Application
         public bool HistoryChange { get => historyChange; set => historyChange = value; }
         internal List<ContainerController> Containers { get => containers; set => containers = value; }
 
-        public AgentController(int agentX, int agentY, int state, CA parent, BlankGrid[,] grid)
+        public AgentController(int agentX, int agentY, int state, CA parent, BlankGrid cell)
         {
-            this.parent = parent;
-            this.grid = grid;
+            this.Parent = parent;
+            this.Cell = cell;
             History.Add(Tuple.Create(agentX, agentY, state));
             rng = new RNGCryptoServiceProvider();
         }
@@ -111,10 +111,12 @@ namespace Capstone_Application
             switch(Containers[i].ThresholdBehavior)
             {
                 case AgentContainerThresholdBehavior.Overflow:
-                    List<Tuple<int, int>> a = parent.GetNeighborhood(this);
+                    List<Tuple<int, int>> a = StaticMethods.GetMoveNeighborLocations(Parent.GetStateInfo(currentState), new Tuple<int, int>(X, Y), new Tuple<int, int>(Parent.gridWidth, Parent.gridHeight));
+                    a = a.Where(x => Parent.grid[x.Item1, x.Item2].ContainsAgent).ToList();
                     for (int j = 0; j < a.Count; j++)
                     {
-                        grid[a[j].Item1, a[j].Item2].agent.AddContainerValue(input / a.Count, i);
+
+                        Parent.grid[a[j].Item1, a[j].Item2].Agent.AddContainerValue(input / a.Count, i);
                         output -= input / a.Count;
                     }
                     break;
@@ -122,16 +124,23 @@ namespace Capstone_Application
             return output;
         }
 
+        public void Update(BlankGrid cell)
+        {
+            this.Cell = cell;
+            this.X = Cell.X;
+            this.Y = Cell.Y;
+        }
+
         public void AddHistory()
         {
-            History.Add(Tuple.Create(xLocation, yLocation, currentState));
+            History.Add(Tuple.Create(X, Y, currentState));
             HistoryChange = true;
         }
 
         public void AddDLAHistory()
         {
             iterations_alive += 1;
-            History.Add(Tuple.Create(xLocation, yLocation, currentState));
+            History.Add(Tuple.Create(X, Y, currentState));
             if (History.Count > 2)
             {
                 History.RemoveAt(0);
@@ -147,18 +156,6 @@ namespace Capstone_Application
         public void MovementCheck()
         {
 
-        }
-
-        public Tuple<bool, int> NeighborCheck(BlankGrid[,] grid, int x, int y)
-        {
-            if(grid[x, y].ContainsAgent == false)
-            {
-                return new Tuple<bool, int>(false, -1);
-            }
-            else
-            {
-                return new Tuple<bool, int>(true, grid[x, y].agent.currentState);
-            }
         }
     }
 

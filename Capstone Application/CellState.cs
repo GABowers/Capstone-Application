@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Capstone_Application;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,12 +13,14 @@ public class CellState
     public double[] stickingProbs;
     public bool sticking;
     public bool mobile;
-    public int mobileNeighborhood;
+    public MoveType mobileNeighborhood;
+    public GridType gridType;
     public List<Tuple<int, int>> startingLocations;
     public List<Capstone_Application.AgentContainerSetting> containerSettings;
 
-    public CellState(int totalStates, int neighborState, int neighborSize, double[][][] probs, List<double> incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, int incomingNeighborhood, bool incMobile, List<Tuple<int, int>> incomingStartingLocations)
+    public CellState(int totalStates, int neighborState, int neighborSize, double[][][] probs, List<double> incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, MoveType incomingNeighborhood, bool incMobile, List<Tuple<int, int>> incomingStartingLocations, GridType gType)
     {
+        this.gridType = gType;
         advProbs = new double[totalStates, totalStates][,];
         prob = new double[totalStates, neighborState, neighborSize + 1];
         for (int i = 0; i < probs.Length; i++)

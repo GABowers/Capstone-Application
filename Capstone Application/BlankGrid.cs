@@ -8,20 +8,28 @@ namespace Capstone_Application
 {
     public class BlankGrid
     {
-        bool containsAgent = false;
-        public AgentController agent;
+        public int X { get; private set; }
+        public int Y { get; private set; }
+        public AgentController Agent { get; private set; }
 
         // Use this for initialization
-        void Start()
-        {
+        //void Start()
+        //{
 
+        //}
+
+        public BlankGrid(int x, int y)
+        {
+            X = x;
+            Y = y;
         }
 
-        public bool ContainsAgent
+        public BlankGrid(int x, int y, AgentController agent):this(x, y)
         {
-            get { return containsAgent; }
-            set { containsAgent = value; }
+            AddAgent(agent);
         }
+
+        public bool ContainsAgent { get; private set; }
 
         //public AgentController AgentController
         //{
@@ -29,14 +37,17 @@ namespace Capstone_Application
         //    set { agent = value; }
         //}
 
-        public void AddAgent(int xLocation, int yLocation, AgentController prevAgent)
+        public void AddAgent(AgentController prevAgent)
         {
-            agent = prevAgent;
+            Agent = prevAgent;
+            Agent.Update(this);
+            ContainsAgent = true;
         }
 
         public void RemoveAgent()
         {
-            agent = null;
+            Agent = null;
+            ContainsAgent = false;
         }
     }
 }

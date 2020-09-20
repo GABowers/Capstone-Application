@@ -21,7 +21,6 @@ namespace Capstone_Application
         public bool reset_now = false;
         bool reshade = false;
         List<NType> nTypes;
-        List<GridType> grids;
         public List<Color> colors;
         List<int> cellAmounts;
         List<Tuple<int, List<int>>> fullCount;
@@ -131,7 +130,7 @@ namespace Capstone_Application
 
         public void StateInfoDirectEdit(int infoState, NType nType, GridType gridType, Color color,
             List<Tuple<int, int>> startingLocations, int neighbors,  int startingAmount, List<List<List<double>>> probs,
-            bool mobile, int mobileN, List<double> moveProbs, bool sticking,List<double> stickingProbs, bool storage,
+            bool mobile, MoveType mobileN, List<double> moveProbs, bool sticking,List<double> stickingProbs, bool storage,
             bool ai, bool growth, List<Tuple<string, double>> storageObjects)
         {
             statePageInfo[infoState].nType = nType;
@@ -324,7 +323,6 @@ namespace Capstone_Application
                 }
                 iterations = 0;
                 editModeOn = false;
-                grids = new List<GridType>();
                 nTypes = new List<NType>();
                 colors = new List<Color>();
             cellAmounts = Enumerable.Repeat(0, statePageInfo.Count).ToList();
@@ -343,15 +341,10 @@ namespace Capstone_Application
                 {
                     nTypes.Add(statePageInfo[i].nType.Value);
                 }
-                
-                for (int i = 0; i < statePageInfo.Count; i++)
-                {
-                    grids.Add(statePageInfo[i].gridType.Value);
-                }
-                
+                                
                 localGridWidth = mainPageInfo.gridWidth;
                 localGridHeight = mainPageInfo.gridHeight;
-                myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, grids, statePageInfo, template, reset);
+                myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, statePageInfo, template, reset);
                 for (int h = 0; h < statePageInfo.Count; ++h)
                 {
                     cellAmounts[h] = statePageInfo[h].startingAmount.Value;
@@ -416,9 +409,9 @@ namespace Capstone_Application
                     {
                         for (int j = 0; j < localGridHeight; ++j)
                         {
-                            if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].agent, null) == false))
+                            if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].Agent, null) == false))
                             {
-                                tileColor = PreMultiplyAlpha(colors[myCA.GetCellState(i, j)]);
+                                tileColor = PreMultiplyAlpha(colors[myCA.grid[i, j].Agent.currentState]);
                                 pixelChanges.Add(new Tuple<int, int, Color>(i, j, tileColor));
                             }
                             else
@@ -451,16 +444,16 @@ namespace Capstone_Application
                         {
                             oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
                             oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
-                            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].agent, null) == false))
+                            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].Agent, null) == false))
                             {
                                 // check for container that shades color
-                                tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
+                                tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].Agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
                                 frac = 1.0;
-                                if (myCA.grid[oldX, oldY].agent.Containers != null)
+                                if (myCA.grid[oldX, oldY].Agent.Containers != null)
                                 {
-                                    for (int j = 0; j < myCA.grid[oldX, oldY].agent.Containers.Count; j++)
+                                    for (int j = 0; j < myCA.grid[oldX, oldY].Agent.Containers.Count; j++)
                                     {
-                                        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].agent.Containers[j].Value / myCA.grid[oldX, oldY].agent.Containers[j].Threshold));
+                                        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].Agent.Containers[j].Value / myCA.grid[oldX, oldY].Agent.Containers[j].Threshold));
                                     }
                                 }
                                 newColor = Color.FromArgb((int)(frac * tileColor.R), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
@@ -473,8 +466,8 @@ namespace Capstone_Application
                             }
                         }
                     }
-                    int newX = curAgent.xLocation;
-                    int newY = curAgent.yLocation;
+                    int newX = curAgent.X;
+                    int newY = curAgent.Y;
                     tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
                     frac = 1.0;
                     if (curAgent.Containers != null)
@@ -575,7 +568,7 @@ namespace Capstone_Application
                 {
                     if (myCA.grid[xProper, yProper].ContainsAgent == true)
                     {
-                        myCA.grid[xProper, yProper].agent.currentState = state;
+                        myCA.grid[xProper, yProper].Agent.currentState = state;
                         //if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
                         //{
                         //    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
@@ -586,18 +579,13 @@ namespace Capstone_Application
                 {
                     if (myCA.grid[xProper, yProper].ContainsAgent == true)
                     {
-                        myCA.grid[xProper, yProper].ContainsAgent = false;
-                        myCA.grid[xProper, yProper].agent = null;
+                        myCA.grid[xProper, yProper].RemoveAgent();
                         myCA.RemoveAgent(xProper, yProper);
                     }
                     else if(myCA.grid[xProper, yProper].ContainsAgent == false)
                     {
-                        myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper, state, myCA, myCA.grid));
-                        myCA.grid[xProper, yProper].ContainsAgent = true;
-                        myCA.grid[xProper, yProper].agent.currentState = state;
-                        myCA.grid[xProper, yProper].agent.xLocation = xProper;
-                        myCA.grid[xProper, yProper].agent.yLocation = yProper;
-                        myCA.AddAgent(myCA.grid[xProper, yProper].agent);
+                        myCA.grid[xProper, yProper].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[xProper, yProper]));
+                        myCA.AddAgent(myCA.grid[xProper, yProper].Agent);
                     }
                 }
                 UpdateCounter();
@@ -608,6 +596,8 @@ namespace Capstone_Application
         {
             if (editModeOn == true)
             {
+                var xcx = statePageInfo[state].moveProbs;
+                //myCA. check if can move
                 for (int i = 0; i < rangeX.Length; i++)
                 {
                     for (int j = 0; j < rangeY.Length; j++)
@@ -620,7 +610,7 @@ namespace Capstone_Application
                         {
                             if (myCA.grid[xProper, yProper].ContainsAgent == true)
                             {
-                                myCA.grid[xProper, yProper].agent.currentState = state;
+                                myCA.grid[xProper, yProper].Agent.currentState = state;
                                 //if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
                                 //{
                                 //    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
@@ -632,17 +622,12 @@ namespace Capstone_Application
                             if (myCA.grid[xProper, yProper].ContainsAgent == true)
                             {
                                 myCA.RemoveAgent(xProper, yProper);
-                                myCA.grid[xProper, yProper].agent = null;
-                                myCA.grid[xProper, yProper].ContainsAgent = false;
+                                myCA.grid[xProper, yProper].RemoveAgent();
                             }
                             else if (myCA.grid[xProper, yProper].ContainsAgent == false)
                             {
-                                myCA.grid[xProper, yProper].AddAgent(xProper, yProper, new AgentController(xProper, yProper, state, myCA, myCA.grid));
-                                myCA.grid[xProper, yProper].ContainsAgent = true;
-                                myCA.grid[xProper, yProper].agent.currentState = state;
-                                myCA.grid[xProper, yProper].agent.xLocation = xProper;
-                                myCA.grid[xProper, yProper].agent.yLocation = yProper;
-                                myCA.AddAgent(myCA.grid[xProper, yProper].agent);
+                                myCA.grid[xProper, yProper].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[xProper, yProper]));
+                                myCA.AddAgent(myCA.grid[xProper, yProper].Agent);
                             }
                         }
                     }

@@ -28,7 +28,7 @@ namespace Capstone_Application
         public bool? ai = false; // think about what type of search the ai will have - what range?
         public bool? growth = false;
 
-        public int? mobileNeighborhood;
+        public MoveType? mobileNeighborhood;
         public List<Tuple<int, int>> startingLocations;
         public List<Tuple<string, double>> storageObjects;
         public int? neighbors;
@@ -42,23 +42,5 @@ namespace Capstone_Application
             color = Color.White;
             startingAmount = 0;
         }
-
-        //public StatePageInfo(int totalStates, int neighbors, int currentState, int rows, int columns)
-        //{
-        //    stateNum = currentState;
-        //    color = Color.White;
-        //    startingAmount = 0;
-        //    advProbs = new double[totalStates, totalStates][,];
-        //    probs = new float[totalStates, totalStates, neighbors + 1];
-        //}
-
-        //public StatePageInfo(int currentState)
-        //{
-        //    stateNum = currentState;
-        //    color = Color.White;
-        //    startingAmount = 0;
-        //    locationCode = new List<string>();
-        //    probValue = new List<double>();
-        //}
     }
 }

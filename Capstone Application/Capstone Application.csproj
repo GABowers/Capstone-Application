@@ -234,6 +234,7 @@
     </Compile>
     <Compile Include="StatePageController.cs" />
     <Compile Include="StatePageInfo.cs" />
+    <Compile Include="StaticMethods.cs" />
     <Compile Include="To State Panel.cs">
       <SubType>UserControl</SubType>
     </Compile>

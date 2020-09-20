@@ -146,4 +146,10 @@ namespace Capstone_Application
         Hybrid,
         Advanced,
     }
+    public enum MoveType
+    {
+        None,
+        VonNeumann,
+        Moore
+    }
 }
