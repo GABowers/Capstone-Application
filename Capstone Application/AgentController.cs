@@ -22,31 +22,45 @@ namespace Capstone_Application
         private bool historyChange = false;
         List<Tuple<int, int, int>> history = new List<Tuple<int, int, int>>();
         //List<Tuple<int, int>> neighborhood = new List<Tuple<int, int>>();
-        List<AgentContainerSetting> containerSettings;
+        //List<AgentContainerSetting> containerSettings;
         List<ContainerController> containers;
 
         public List<Tuple<int, int, int>> History { get => history; set => history = value; }
         public bool HistoryChange { get => historyChange; set => historyChange = value; }
         internal List<ContainerController> Containers { get => containers; set => containers = value; }
+        AgentController targetAgent;
+        public bool Busy { get; private set; } // use when the agent has a long-running task. In this case travelling on a path.
+        Action ExecutionAction;
 
         public AgentController(int agentX, int agentY, int state, CA parent, BlankGrid cell)
         {
             this.Parent = parent;
             this.Cell = cell;
+            this.currentState = state;
             History.Add(Tuple.Create(agentX, agentY, state));
             rng = new RNGCryptoServiceProvider();
+            Containers = new List<ContainerController>();
+            foreach(var con in parent.GetStateInfo(state).containerSettings)
+            {
+                Containers.Add(new ContainerController(con));
+            }
+        }
+
+        public void Execute()
+        {
+            ExecutionAction();
         }
 
         public void AddContainer(List<AgentContainerSetting> input)
         {
-            if (input != null && input.Count > 0)
-            {
-                Containers = new List<ContainerController>();
-                for (int i = 0; i < input.Count; i++)
-                {
-                    Containers.Add(new ContainerController(input[i]));
-                }
-            }
+            //if (input != null && input.Count > 0)
+            //{
+            //    Containers = new List<ContainerController>();
+            //    for (int i = 0; i < input.Count; i++)
+            //    {
+            //        Containers.Add(new ContainerController(input[i]));
+            //    }
+            //}
         }
 
         public void HandleContainer()
@@ -59,28 +73,25 @@ namespace Capstone_Application
                 for (int j = 0; j < Containers[i].IterativeBehaviors.Count; j++)
                 {
                     values.Add(value);
-                    for (int k = 0; k < Containers[i].IterativeBehaviors[j].Count; k++)
+                    switch (Containers[i].IterativeBehaviors[j].Item1)
                     {
-                        switch (Containers[i].IterativeBehaviors[j][k].Item1)
-                        {
-                            case Operation.Add:
-                                values[j] = values[j] + Containers[i].IterativeBehaviors[j][k].Item2;
-                                break;
-                            case Operation.Div:
-                                values[j] = values[j] / Containers[i].IterativeBehaviors[j][k].Item2;
-                                break;
-                            case Operation.Mul:
-                                values[j] = values[j] * Containers[i].IterativeBehaviors[j][k].Item2;
-                                break;
-                            case Operation.None:
-                                break;
-                            case Operation.Pow:
-                                values[j] = Math.Pow(values[j], Containers[i].IterativeBehaviors[j][k].Item2);
-                                break;
-                            case Operation.Sub:
-                                values[j] = values[j] - Containers[i].IterativeBehaviors[j][k].Item2;
-                                break;
-                        }
+                        case Operation.Add:
+                            values[j] = values[j] + Containers[i].IterativeBehaviors[j].Item2;
+                            break;
+                        case Operation.Div:
+                            values[j] = values[j] / Containers[i].IterativeBehaviors[j].Item2;
+                            break;
+                        case Operation.Mul:
+                            values[j] = values[j] * Containers[i].IterativeBehaviors[j].Item2;
+                            break;
+                        case Operation.None:
+                            break;
+                        case Operation.Pow:
+                            values[j] = Math.Pow(values[j], Containers[i].IterativeBehaviors[j].Item2);
+                            break;
+                        case Operation.Sub:
+                            values[j] = values[j] - Containers[i].IterativeBehaviors[j].Item2;
+                            break;
                     }
                 }
                 // with all of these possible values, we need to pick between them.
@@ -92,12 +103,54 @@ namespace Capstone_Application
                 int answer = (int)Math.Floor(randomDouble * values.Count);
                 //Console.WriteLine("double," + randomDouble+",values,"+string.Join(",",values)+",answer,"+answer);
                 value = values[answer];
-                if (value > Containers[i].Threshold)
+                for (int j = 0; j < Containers[i].Thresholds.Count; j++)
                 {
-                    value = HandleThreshold(value, i);
+                    if (CheckThreshold(Containers[i].Thresholds[j].Threshold, value))
+                    {
+                        value = HandleThreshold(value, i, j);
+                    }
                 }
                 Containers[i].Value = value;
             }
+        }
+
+        bool CheckThreshold(Tuple<ThresholdType, double> threshold, double value)
+        {
+            var thresholdValue = threshold.Item2;
+            switch(threshold.Item1)
+            {
+                case ThresholdType.LessThan:
+                    if(value < thresholdValue)
+                    {
+                        return true;
+                    }
+                    break;
+                case ThresholdType.LessThanOrEqualTo:
+                    if (value <= thresholdValue)
+                    {
+                        return true;
+                    }
+                    break;
+                case ThresholdType.EqualTo:
+                    if (value == thresholdValue)
+                    {
+                        return true;
+                    }
+                    break;
+                case ThresholdType.GreaterThanOrEqualTo:
+                    if (value >= thresholdValue)
+                    {
+                        return true;
+                    }
+                    break;
+                case ThresholdType.GreaterThan:
+                    if (value > thresholdValue)
+                    {
+                        return true;
+                    }
+                    break;
+            }
+            return false;
         }
 
         public void AddContainerValue(double value, int i)
@@ -105,19 +158,65 @@ namespace Capstone_Application
             Containers[i].Value += value;
         }
 
-        dynamic HandleThreshold(double input, int i)
+        dynamic HandleThreshold(double input, int i, int j)
         {
             dynamic output = input;
-            switch(Containers[i].ThresholdBehavior)
+            switch(Containers[i].Thresholds[j].Behavior)
             {
                 case AgentContainerThresholdBehavior.Overflow:
-                    List<Tuple<int, int>> a = StaticMethods.GetMoveNeighborLocations(Parent.GetStateInfo(currentState), new Tuple<int, int>(X, Y), new Tuple<int, int>(Parent.gridWidth, Parent.gridHeight));
-                    a = a.Where(x => Parent.grid[x.Item1, x.Item2].ContainsAgent).ToList();
-                    for (int j = 0; j < a.Count; j++)
+                    var a = StaticMethods.GetMoveNeighbors(Parent.GetStateInfo(currentState), this.Cell, new Tuple<int, int>(Parent.gridWidth, Parent.gridHeight));
+                    a = a.Where(x => x.ContainsAgent).ToList();
+                    for (int k = 0; k < a.Count; k++)
                     {
 
-                        Parent.grid[a[j].Item1, a[j].Item2].Agent.AddContainerValue(input / a.Count, i);
+                        a[k].Agent.AddContainerValue(input / a.Count, i);
                         output -= input / a.Count;
+                    }
+                    break;
+                case AgentContainerThresholdBehavior.Die:
+                    Cell.RemoveAgent();
+                    Parent.RemoveAgent(X, Y);
+                    break;
+                case AgentContainerThresholdBehavior.Find: // this automatically finds the closest
+                    var agents = Parent.ActiveAgents.Where(x => x.Containers.Any(y => y.Name.Equals(Containers[i].Name))).Where(y => y != this).ToList();
+                    if(agents.Count > 0)
+                    {
+                        int index = 0;
+                        var distance = StaticMethods.GetDistance(this.Cell, agents[0].Cell);
+                        for (int k = 0; k < agents.Count; k++)
+                        {
+                            var curDistance = StaticMethods.GetDistance(this.Cell, agents[k].Cell);
+                            if (curDistance < distance)
+                            {
+                                distance = curDistance;
+                                index = k;
+                            }
+                        }
+                        if (distance == 0)
+                        {
+                            // arrived
+                        }
+                        else
+                        {
+                            Busy = true;
+                            var path = StaticMethods.FindPath(this, agents[index].Cell, false);
+                            ExecutionAction = (() => // look to see if destination agent has moved?
+                            {
+                                if (path.Count == 0)
+                                {
+                                    Busy = false;
+                                }
+                                else
+                                {
+                                    var success = Parent.MoveAgent(this, new Tuple<int, int>(path[0].X, path[0].Y));
+                                    path.RemoveAt(0);
+                                    if (path.Count == 0)
+                                    {
+                                        Busy = false;
+                                    }
+                                }
+                            });
+                        }
                     }
                     break;
             }

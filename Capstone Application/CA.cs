@@ -87,7 +87,7 @@ public class CA
             CIndexes.Add(0);
             neighborhoods.Add(new Neighborhood(types[i]));
             separateAgents.Add(new List<AgentController>());
-            states[i] = new CellState(numStates, numStates, info[i].neighbors.Value, info[i].probs.Select(x => x.Select(y => y.ToArray()).ToArray()).ToArray(), info[i].moveProbs, info[i].stickingProbs, info[i].sticking.Value, info[i].mobileNeighborhood.Value, info[i].mobile.Value, info[i].startingLocations, info[i].gridType.Value);
+            states[i] = new CellState(numStates, numStates, info[i]);
             for (int j = 0; j < (numStates - 1); j++)
             {
                 Transitions.Add(0);
@@ -207,7 +207,7 @@ public class CA
                         int x = states[i].startingLocations[j].Item1;
                         int y = states[i].startingLocations[j].Item2;
                         int combination = (x * gridWidth) + y;
-                        grid[x, y] = new BlankGrid(x, y, new AgentController(x, y, i, this, grid[x, y]));
+                        grid[x, y] = new BlankGrid(x, y, new AgentController(x, y, i, this, grid[x, y]), this);
                         grid[x, y].Agent.AddContainer(states[i].containerSettings);
                         AddAgent(grid[x, y].Agent);
                         separateAgents[i].Add(grid[x, y].Agent);
@@ -240,7 +240,7 @@ public class CA
             int xValue = (increment / gridWidth);
             int yValue = (increment % gridWidth);
             
-            grid[xValue, yValue] = new BlankGrid(xValue, yValue, new AgentController(xValue, yValue, state, this, grid[xValue, yValue]));
+            grid[xValue, yValue] = new BlankGrid(xValue, yValue, new AgentController(xValue, yValue, state, this, grid[xValue, yValue]), this);
             grid[xValue, yValue].Agent.AddContainer(states[state].containerSettings);
             AddAgent(grid[xValue, yValue].Agent);
             separateAgents[state].Add(grid[xValue, yValue].Agent);
@@ -265,7 +265,7 @@ public class CA
                 {
                     if (System.Object.ReferenceEquals(grid[i, j], null))
                     {
-                        grid[i, j] = new BlankGrid(i, j);
+                        grid[i, j] = new BlankGrid(i, j, this);
                     }
                 }
             }
@@ -280,13 +280,15 @@ public class CA
 
     public void RemoveAgent(int xLoc, int yLoc)
     {
-        foreach(AgentController agent in ActiveAgents)
+        for (int i = 0; i < ActiveAgents.Count; i++)
         {
-            if(agent.X == xLoc)
+            var agent = ActiveAgents[i];
+            if (agent.X == xLoc)
             {
-                if(agent.Y == yLoc)
+                if (agent.Y == yLoc)
                 {
                     ActiveAgents.Remove(agent);
+                    grid[xLoc, yLoc].RemoveAgent();
                 }
             }
         }
@@ -336,38 +338,45 @@ public class CA
         {
             for (int x = 0; x < ActiveAgents.Count; ++x)
             {
-                if (states[ActiveAgents[x].currentState].mobile)
+                if(ActiveAgents[x].Busy)
                 {
-                    if (CheckForMovement(ActiveAgents[x]))
-                    {
-                        AgentMove(ActiveAgents[x], x);
-                    }
-                    ActiveAgents[x].AddHistory();
+                    ActiveAgents[x].Execute();
                 }
                 else
                 {
-                    int oldState = ActiveAgents[x].currentState;
-                    int xLoc = ActiveAgents[x].X;
-                    int yLoc = ActiveAgents[x].Y;
-                    if (neighborTypes[oldState] == NType.Advanced)
+                    if (states[ActiveAgents[x].currentState].mobile)
                     {
-                        double[] probChances = AdvancedGetProbChances(oldState, xLoc, yLoc);
-                        ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                        if (CheckForMovement(ActiveAgents[x]))
+                        {
+                            AgentMove(ActiveAgents[x], x);
+                        }
+                        ActiveAgents[x].AddHistory();
                     }
                     else
                     {
-                        List<int> neighborStateCount = GetNeighborCount(xLoc, yLoc, oldState);
-                        double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-                        ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                        int oldState = ActiveAgents[x].currentState;
+                        int xLoc = ActiveAgents[x].X;
+                        int yLoc = ActiveAgents[x].Y;
+                        if (neighborTypes[oldState] == NType.Advanced)
+                        {
+                            double[] probChances = AdvancedGetProbChances(oldState, xLoc, yLoc);
+                            ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                        }
+                        else
+                        {
+                            List<int> neighborStateCount = GetNeighborCount(xLoc, yLoc, oldState);
+                            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+                            ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                        }
+                        int newState = ActiveAgents[x].currentState;
+                        separateAgents[newState].Add(ActiveAgents[x]);
+                        CheckTransitions(oldState, newState);
+                        StateCount[newState] += 1;
                     }
-                    int newState = ActiveAgents[x].currentState;
-                    separateAgents[newState].Add(ActiveAgents[x]);
-                    CheckTransitions(oldState, newState);
-                    StateCount[newState] += 1;
-                }
-                if(containerObjects)
-                {
-                    ActiveAgents[x].HandleContainer();
+                    if (containerObjects)
+                    {
+                        ActiveAgents[x].HandleContainer();
+                    }
                 }
             }
             for (int i = 0; i < numStates; i++)
@@ -1152,6 +1161,24 @@ public class CA
     //    }
     //}
 
+    public bool MoveAgent(AgentController agent, Tuple<int, int> position)
+    {
+        int oldX = agent.X;
+        int oldY = agent.Y;
+        if (grid[position.Item1, position.Item2].ContainsAgent == false && System.Object.ReferenceEquals(grid[position.Item1, position.Item2].Agent, null) == true)
+        {
+            grid[position.Item1, position.Item2].AddAgent(agent);
+            ActiveAgents[agentLocation] = grid[position.Item1, position.Item2].Agent;
+            grid[oldX, oldY].RemoveAgent();
+            agent.AddHistory();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private bool CheckForMovement(AgentController currentAgent)
     {
         // Make method to check for agent in surrounding area. the "surrounding area" will of course need
@@ -1159,18 +1186,18 @@ public class CA
         if (states[currentAgent.currentState].sticking)
         {
             // Add check for type???
-            List<Tuple<int, int>> neighborList = StaticMethods.GetMoveNeighborLocations(states[currentAgent.currentState], new Tuple<int, int>(currentAgent.X, currentAgent.Y), new Tuple<int, int>(gridWidth, gridHeight));
+            List<BlankGrid> neighborList = StaticMethods.GetMoveNeighbors(states[currentAgent.currentState], currentAgent.Cell, new Tuple<int, int>(gridWidth, gridHeight));
 
             for (int i = 0; i < neighborList.Count; i++)
             {
-                if(grid[neighborList[i].Item1, neighborList[i].Item2].ContainsAgent)
+                if(neighborList[i].ContainsAgent)
                 {
                     var rng = new RNGCryptoServiceProvider();
                     var bytes = new Byte[8];
                     rng.GetBytes(bytes);
                     var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
                     Double rand = ul / (Double)(1UL << 53);
-                    double stayProb = states[currentAgent.currentState].stickingProbs[grid[neighborList[i].Item1, neighborList[i].Item2].Agent.currentState];
+                    double stayProb = states[currentAgent.currentState].stickingProbs[neighborList[i].Agent.currentState];
                     if (rand < stayProb)
                         return false;
                     else

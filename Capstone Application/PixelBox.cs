@@ -16,22 +16,22 @@ namespace Capstone_Application
 
         public PixelBox()
         {
-            InterpolationMode = InterpolationMode.Default;
+            InterpolationMode = InterpolationMode.NearestNeighbor;
         }
         public InterpolationMode InterpolationMode { get; set; }
 
         protected override void OnPaint(PaintEventArgs paintEventArgs)
         {
-            //if (this.InvokeRequired)
-            //{
+            if (this.InvokeRequired)
+            {
                 Invoke(new Action(() => InvokePaint(paintEventArgs)));
-            //}
-            //else
-            //{
-            //    paintEventArgs.Graphics.InterpolationMode = InterpolationMode;
-            //    paintEventArgs.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
-            //    base.OnPaint(paintEventArgs);
-            //}
+            }
+            else
+            {
+                paintEventArgs.Graphics.InterpolationMode = InterpolationMode;
+                paintEventArgs.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
+                base.OnPaint(paintEventArgs);
+            }
         }
 
         void InvokePaint(PaintEventArgs paintEventArgs)

@@ -8,42 +8,52 @@ namespace Capstone_Application
 {
     public class StaticMethods
     {
-        public static List<BlankGrid> FindPath(AgentController agent, Tuple<int, int> destination, bool destinationEmpty) // how to handle destination containing something vs. being empty, or rather what to do when going to an object.
+        public static List<BlankGrid> FindPath(AgentController agent, BlankGrid destination, bool destinationEmpty) // how to handle destination containing something vs. being empty, or rather what to do when going to an object.
         {
-            var startNode = new PathfindingNode(new Tuple<int, int>(agent.Cell.X, agent.Cell.Y), true);
+            var startNode = agent.Cell;
             // if contains agent, then make "target node" check for something around it.
-            HashSet<PathfindingNode> closedSet = new HashSet<PathfindingNode>();
-            Heap<PathfindingNode> openSet = new Heap<PathfindingNode>(agent.Parent.gridHeight * agent.Parent.gridWidth);
+            HashSet<BlankGrid> closedSet = new HashSet<BlankGrid>();
+            //Heap<PathfindingNode> openSet = new Heap<PathfindingNode>(agent.Parent.gridHeight * agent.Parent.gridWidth);
+            List<BlankGrid> openSet = new List<BlankGrid>();
             openSet.Add(startNode);
-            PathfindingNode targetNode = new PathfindingNode(destination, destinationEmpty);
-            while(openSet.Count > 0)
+            List<BlankGrid> targetNeighbors = GetMoveNeighbors(agent.Parent.GetStateInfo(agent.currentState), destination, new Tuple<int, int>(agent.Parent.gridWidth, agent.Parent.gridHeight));
+            while (openSet.Count > 0)
             {
-                PathfindingNode currentNode = openSet.RemoveFirst();
+                //PathfindingNode currentNode = openSet.RemoveFirst();// for heap implementation
+                BlankGrid currentNode = openSet[0];
+                for (int i = 0; i < openSet.Count; i++)
+                {
+                    if (openSet[i].FCost < currentNode.FCost || openSet[i].FCost == currentNode.FCost && openSet[i].HCost < currentNode.HCost)
+                    {
+                        currentNode = openSet[i];
+                    }
+                }
+                openSet.Remove(currentNode);
+                // end list version
                 closedSet.Add(currentNode);
                 if(destinationEmpty)
                 {
-                    if (currentNode == targetNode)
+                    if (currentNode == destination)
                     {
-                        return RetracePath(startNode, currentNode).Select(x => agent.Parent.grid[x.Position.Item1, x.Position.Item2]).ToList();
+                        return RetracePath(startNode, currentNode);
                     }
                 }
                 else
                 {
-                    List<PathfindingNode> targetNeighbors = GetMoveNeighborLocations(agent.Parent.GetStateInfo(agent.currentState), destination, new Tuple<int, int>(agent.Parent.gridWidth, agent.Parent.gridHeight)).Select(x => new PathfindingNode(x, !agent.Parent.grid[x.Item1, x.Item2].ContainsAgent)).ToList();
                     foreach (var targetNeighbor in targetNeighbors)
                     {
                         if(currentNode == targetNeighbor)
                         {
-                            return RetracePath(startNode, currentNode).Select(x => agent.Parent.grid[x.Position.Item1, x.Position.Item2]).ToList();
+                            return RetracePath(startNode, currentNode);
                         }
                     }
                 }
 
-                List<PathfindingNode> neighbors = GetMoveNeighborLocations(agent.Parent.GetStateInfo(agent.currentState), new Tuple<int, int>(agent.X, agent.Y), new Tuple<int, int>(agent.Parent.gridWidth, agent.Parent.gridHeight)).Select(x => new PathfindingNode(x, !agent.Parent.grid[x.Item1, x.Item2].ContainsAgent)).ToList();
+                List<BlankGrid> neighbors = GetMoveNeighbors(agent.Parent.GetStateInfo(agent.currentState), currentNode, new Tuple<int, int>(agent.Parent.gridWidth, agent.Parent.gridHeight));
 
                 foreach (var neighbor in neighbors)
                 {
-                    if(!neighbor.Empty || closedSet.Contains(neighbor))
+                    if(neighbor.ContainsAgent || closedSet.Contains(neighbor))
                     {
                         continue;
                     }
@@ -51,8 +61,8 @@ namespace Capstone_Application
                     if(newMovementCostToNeighbor < neighbor.GCost || !openSet.Contains(neighbor))
                     {
                         neighbor.GCost = newMovementCostToNeighbor;
-                        neighbor.HCost = GetDistance(neighbor, targetNode);
-                        neighbor.Parent = currentNode;
+                        neighbor.HCost = GetDistance(neighbor, destination);
+                        neighbor.PathParent = currentNode;
                         if(!openSet.Contains(neighbor))
                         {
                             openSet.Add(neighbor);
@@ -63,42 +73,42 @@ namespace Capstone_Application
             return null;
         }
 
-        static List<PathfindingNode> RetracePath(PathfindingNode startNode, PathfindingNode endNode)
+        static List<BlankGrid> RetracePath(BlankGrid startNode, BlankGrid endNode)
         {
-            List<PathfindingNode> path = new List<PathfindingNode>();
-            PathfindingNode currentNode = endNode;
+            List<BlankGrid> path = new List<BlankGrid>();
+            BlankGrid currentNode = endNode;
             while(currentNode != startNode)
             {
                 path.Add(currentNode);
-                currentNode = currentNode.Parent;
+                currentNode = currentNode.PathParent;
             }
             path.Reverse();
             return path;
         }
 
-        static int GetDistance(PathfindingNode nodeA, PathfindingNode nodeB) //  type of distance?
+        public static int GetDistance(BlankGrid nodeA, BlankGrid nodeB) //  type of distance?
         {
-            int dstMin = Math.Min(Math.Abs(nodeA.Position.Item1 - nodeB.Position.Item1), Math.Abs(nodeA.Position.Item2 - nodeB.Position.Item2));
-            int dstMax = Math.Max(Math.Abs(nodeA.Position.Item1 - nodeB.Position.Item1), Math.Abs(nodeA.Position.Item2 - nodeB.Position.Item2));
+            int dstMin = Math.Min(Math.Abs(nodeA.X - nodeB.X), Math.Abs(nodeA.Y - nodeB.Y));
+            int dstMax = Math.Max(Math.Abs(nodeA.X - nodeB.X), Math.Abs(nodeA.Y - nodeB.Y));
             return (14 * dstMin) + (10 * (dstMax - dstMin));
         }
 
-        public static List<Tuple<int, int>> GetMoveNeighborLocations(CellState stateInfo, Tuple<int, int> position, Tuple<int, int> dimensions)
+        public static List<BlankGrid> GetMoveNeighbors(CellState stateInfo, BlankGrid position, Tuple<int, int> dimensions)
         {
             List<Tuple<int, int>> neighbors = new List<Tuple<int, int>>();
             int mNeighborhood = (int)(stateInfo.mobileNeighborhood);
             if(mNeighborhood > 0)
             {
-                neighbors.Add(new Tuple<int, int>(position.Item1 - 1, position.Item2));
-                neighbors.Add(new Tuple<int, int>(position.Item1 + 1, position.Item2));
-                neighbors.Add(new Tuple<int, int>(position.Item1, position.Item2 - 1));
-                neighbors.Add(new Tuple<int, int>(position.Item1, position.Item2 + 1));
+                neighbors.Add(new Tuple<int, int>(position.X - 1, position.Y));
+                neighbors.Add(new Tuple<int, int>(position.X + 1, position.Y));
+                neighbors.Add(new Tuple<int, int>(position.X, position.Y - 1));
+                neighbors.Add(new Tuple<int, int>(position.X, position.Y + 1));
                 if(mNeighborhood > 1)
                 {
-                    neighbors.Add(new Tuple<int, int>(position.Item1 - 1, position.Item2 - 1));
-                    neighbors.Add(new Tuple<int, int>(position.Item1 + 1, position.Item2 + 1));
-                    neighbors.Add(new Tuple<int, int>(position.Item1 + 1, position.Item2 - 1));
-                    neighbors.Add(new Tuple<int, int>(position.Item1 - 1, position.Item2 + 1));
+                    neighbors.Add(new Tuple<int, int>(position.X - 1, position.Y - 1));
+                    neighbors.Add(new Tuple<int, int>(position.X + 1, position.Y + 1));
+                    neighbors.Add(new Tuple<int, int>(position.X + 1, position.Y - 1));
+                    neighbors.Add(new Tuple<int, int>(position.X - 1, position.Y + 1));
                 }
             }
 
@@ -138,7 +148,8 @@ namespace Capstone_Application
                 }
                 neighbors[i] = new Tuple<int, int>(x, y);
             }
-            return neighbors;
+            List<BlankGrid> neigh = neighbors.Select(x => position.Parent.grid[x.Item1, x.Item2]).ToList();
+            return neigh;
         }
 
         public static bool PathOpen(List<BlankGrid> path)
@@ -147,76 +158,78 @@ namespace Capstone_Application
         }
     }
 
-    class PathfindingNode : IHeapItem<PathfindingNode>
-    {
-        public Tuple<int, int> Position { get; private set; }
-        public bool Empty { get; private set; }
-        public int GCost { get; set; }
-        public int HCost { get; set; }
-        public int FCost { get { return GCost + HCost; } }
-        public PathfindingNode Parent { get; set; }
-        public PathfindingNode(Tuple<int, int> pos, bool empty)
-        {
-            Position = pos;
-            Empty = empty;
-        }
+    //public class PathfindingNode
+    //{
+    //    public bool Walkable { get; private set; }
+    //    public int GCost { get; set; }
+    //    public int HCost { get; set; }
+    //    public int FCost { get { return GCost + HCost; } }
+    //    public PathfindingNode PathParent { get; set; }
+    //    //private BlankGrid Parent;
+    //    public Tuple<int, int> Position { get; private set; }
 
-        public int HeapIndex
-        {
-            get
-            {
-                return HeapIndex;
-            }
-            set
-            {
-                HeapIndex = value;
-            }
-        }
+    //    public PathfindingNode(int x, int y, /*BlankGrid parent,*/ bool empty)
+    //    {
+    //        Walkable = empty;
+    //        //this.Parent = parent;
+    //        Position = new Tuple<int, int>(x, y);
+    //    }
 
-        public int CompareTo(PathfindingNode obj)
-        {
-            int compare = FCost.CompareTo(obj.FCost);
-            if(compare == 0)
-            {
-                compare = HCost.CompareTo(obj.HCost);
-            }
-            return -compare;
-        }
-    }
+    //    //public BlankGrid GetParent()
+    //    //{
+    //    //    return Parent;
+    //    //}
+
+    //    public int HeapIndex { get; set; }
+    //    public int CompareTo(PathfindingNode obj)
+    //    {
+    //        int compare = FCost.CompareTo(obj.FCost);
+    //        if (compare == 0)
+    //        {
+    //            compare = HCost.CompareTo(obj.HCost);
+    //        }
+    //        return -compare;
+    //    }
+    //}
 
     class Heap<T> where T : IHeapItem<T>
     {
-        public T[] Items { get; private set; }
-        public int CurrentItemCount { get; private set; }
+        T[] items;
+        int currentItemCount;
         public Heap(int maxheapSize)
         {
-            Items = new T[maxheapSize];
+            items = new T[maxheapSize];
         }
 
         public void Add(T item)
         {
-            item.HeapIndex = CurrentItemCount;
-            Items[CurrentItemCount] = item;
+            item.HeapIndex = currentItemCount;
+            items[currentItemCount] = item;
             SortUp(item);
-            CurrentItemCount++;
+            currentItemCount++;
         }
 
         public T RemoveFirst()
         {
-            T firstItem = Items[0];
-            CurrentItemCount--;
-            Items[0] = Items[CurrentItemCount];
-            Items[0].HeapIndex = 0;
-            SortDown(Items[0]);
+            T firstItem = items[0];
+            currentItemCount--;
+            items[0] = items[currentItemCount];
+            items[0].HeapIndex = 0;
+            SortDown(items[0]);
             return firstItem;
         }
 
         public bool Contains(T item)
         {
-            return Equals(Items[item.HeapIndex], item);
+            if(items.Contains(item))
+            {
+                Console.Write("WTF");
+            }
+            bool fake = Equals(items[item.HeapIndex], item); ;
+            return fake;
         }
 
-        public int Count { get { return CurrentItemCount; } }
+        public int Count { get { return currentItemCount; } }
 
         public void UpdateItem(T item)
         {
@@ -230,19 +243,19 @@ namespace Capstone_Application
                 int childIndexLeft = item.HeapIndex * 2 + 1;
                 int childIndexRight = item.HeapIndex * 2 + 2;
                 int swapIndex = 0;
-                if(childIndexLeft < CurrentItemCount)
+                if(childIndexLeft < currentItemCount)
                 {
                     swapIndex = childIndexLeft;
-                    if(childIndexRight < CurrentItemCount)
+                    if(childIndexRight < currentItemCount)
                     {
-                        if(Items[childIndexLeft].CompareTo(Items[childIndexRight]) < 0)
+                        if(items[childIndexLeft].CompareTo(items[childIndexRight]) < 0)
                         {
                             swapIndex = childIndexRight;
                         }
                     }
-                    if(item.CompareTo(Items[swapIndex]) < 0)
+                    if(item.CompareTo(items[swapIndex]) < 0)
                     {
-                        Swap(item, Items[swapIndex]);
+                        Swap(item, items[swapIndex]);
                     }
                     else
                     {
@@ -261,7 +274,7 @@ namespace Capstone_Application
             int parentIndex = (item.HeapIndex - 1) / 2;
             while(true)
             {
-                T parentItem = Items[parentIndex];
+                T parentItem = items[parentIndex];
                 if(item.CompareTo(parentItem) > 0)
                 {
                     Swap(item, parentItem);
@@ -270,16 +283,22 @@ namespace Capstone_Application
                 {
                     break;
                 }
+                parentIndex = (item.HeapIndex - 1) / 2;
             }
         }
 
         void Swap(T itemA, T itemB)
         {
-            Items[itemA.HeapIndex] = itemB;
-            Items[itemB.HeapIndex] = itemA;
+            items[itemA.HeapIndex] = itemB;
+            items[itemB.HeapIndex] = itemA;
             int itemAIndex = itemA.HeapIndex;
             itemA.HeapIndex = itemB.HeapIndex;
             itemB.HeapIndex = itemAIndex;
+        }
+
+        public T[] ToArray()
+        {
+            return items;
         }
     }
 

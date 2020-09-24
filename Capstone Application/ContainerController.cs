@@ -10,25 +10,22 @@ namespace Capstone_Application
     {
         string name;
         double value;
-        double threshold;
-        AgentContainerThresholdBehavior thresholdBehavior;
-        List<List<Tuple<Operation, double>>> iterativeBehaviors;
+        List<Tuple<Operation, double>> iterativeBehaviors;
         bool stochasticThreshold;
 
         public ContainerController(AgentContainerSetting input)
         {
             Name = input.Name;
-            Threshold = input.Threshold;
-            ThresholdBehavior = input.ThresholdBehavior;
-            IterativeBehaviors = new List<List<Tuple<Operation, double>>>();
+            Value = input.InitialValue;
+            Thresholds = input.Thresholds;
+            IterativeBehaviors = new List<Tuple<Operation, double>>();
             ParseOperation(input.IterationBehavior);
             StochasticThreshold = input.ThresholdStochastic;
         }
 
         public bool StochasticThreshold { get => stochasticThreshold; set => stochasticThreshold = value; }
-        public List<List<Tuple<Operation, double>>> IterativeBehaviors { get => iterativeBehaviors; set => iterativeBehaviors = value; }
-        public AgentContainerThresholdBehavior ThresholdBehavior { get => thresholdBehavior; set => thresholdBehavior = value; }
-        public double Threshold { get => threshold; set => threshold = value; }
+        public List<Tuple<Operation, double>> IterativeBehaviors { get => iterativeBehaviors; set => iterativeBehaviors = value; }
+        public List<AgentContainerThreshold> Thresholds { get; set; }
         public double Value { get => value; set => this.value = value; }
         public string Name { get => name; set => name = value; }
 
@@ -39,40 +36,33 @@ namespace Capstone_Application
             string[] pieces = all.Split(',');
             for (int i = 0; i < pieces.Length; i++)
             {
+                Operation o = Operation.None;
                 List<Tuple<Operation, double>> cur = new List<Tuple<Operation, double>>();
-                if (pieces[i] == "None")
+                if(pieces[i].Length > 0)
                 {
-                    cur.Add(new Tuple<Operation, double>(Operation.None, 0));
-                }
-                else
-                {
-                    string[] sub_pieces = pieces[i].Split('.');
-                    for (int j = 0; j < sub_pieces.Length; j++)
+                    switch (pieces[i][0])
                     {
-                        Operation o = Operation.None;
-                        switch (sub_pieces[j][0])
-                        {
-                            case '+':
-                                o = Operation.Add;
-                                break;
-                            case '-':
-                                o = Operation.Sub;
-                                break;
-                            case '*':
-                                o = Operation.Mul;
-                                break;
-                            case '/':
-                                o = Operation.Div;
-                                break;
-                            case '^':
-                                o = Operation.Pow;
-                                break;
-                        }
-                        cur.Add(new Tuple<Operation, double>(o, double.Parse(sub_pieces[j].Remove(0, 1))));
+                        case '+':
+                            o = Operation.Add;
+                            break;
+                        case '-':
+                            o = Operation.Sub;
+                            break;
+                        case '*':
+                            o = Operation.Mul;
+                            break;
+                        case '/':
+                            o = Operation.Div;
+                            break;
+                        case '^':
+                            o = Operation.Pow;
+                            break;
                     }
-                    
+                    if(double.TryParse(pieces[i].Remove(0,1), out double result))
+                    {
+                        IterativeBehaviors.Add(new Tuple<Operation, double>(o, result));
+                    }
                 }
-                IterativeBehaviors.Add(cur);
             }
         }
 

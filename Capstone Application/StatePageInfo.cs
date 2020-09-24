@@ -19,8 +19,8 @@ namespace Capstone_Application
         public List<List<List<double>>> probs; // [x,y] prob to go to state x with y neighbors
         //public List<string> locationCode;
         //public List<double> probValue;
-        public List<double> moveProbs;
-        public List<double> stickingProbs;
+        public List<double> moveProbs = new List<double>();
+        public List<double> stickingProbs = new List<double>();
 
         public bool? sticking;
         public bool? mobile;
@@ -29,10 +29,10 @@ namespace Capstone_Application
         public bool? growth = false;
 
         public MoveType? mobileNeighborhood;
-        public List<Tuple<int, int>> startingLocations;
-        public List<Tuple<string, double>> storageObjects;
+        public List<Tuple<int, int>> startingLocations = new List<Tuple<int, int>>();
+        public List<Tuple<string, double>> storageObjects = new List<Tuple<string, double>>();
         public int? neighbors;
-        public List<AgentContainerSetting> containerSettings;
+        public List<AgentContainerSetting> containerSettings = new List<AgentContainerSetting>();
 
         public List<object> template_objects;
 

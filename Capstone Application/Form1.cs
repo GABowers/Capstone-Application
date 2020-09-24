@@ -67,6 +67,8 @@ namespace Capstone_Application
             this.panel1.Controls.Add(this.innerPictureBox);
 
             innerPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            innerPictureBox.MouseDown += innerPictureBox_MouseDown;
+            innerPictureBox.MouseUp += innerPictureBox_MouseUp;
             locationTT = new ToolTip();
             text_timer.Interval = 5;
             text_timer.Elapsed += Timer_Tick;

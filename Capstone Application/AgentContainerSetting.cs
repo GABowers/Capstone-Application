@@ -10,11 +10,25 @@ namespace Capstone_Application
     {
         public string Name { get; set; }
         public AgentContainerType Type { get; set; }
-        public string InitialValue { get; set; }
+        public double InitialValue { get; set; }
         public string IterationBehavior { get; set; }
-        public double Threshold { get; set; }
-        public AgentContainerThresholdBehavior ThresholdBehavior { get; set; }
+        public List<AgentContainerThreshold> Thresholds { get; set; }
         public bool ThresholdStochastic { get; set; }
         public bool Shade { get; set; }
+        public AgentContainerSetting()
+        {
+            Thresholds = new List<AgentContainerThreshold>();
+        }
+    }
+
+    public class AgentContainerThreshold
+    {
+        public Tuple<ThresholdType, double> Threshold { get; private set; }
+        public AgentContainerThresholdBehavior Behavior { get; private set; }
+        public AgentContainerThreshold(Tuple<ThresholdType, double> threshold, AgentContainerThresholdBehavior behavior)
+        {
+            Threshold = threshold;
+            Behavior = behavior;
+        }
     }
 }

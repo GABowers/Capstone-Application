@@ -315,7 +315,7 @@ namespace Capstone_Application
             local_form = form;
                 if(statePageInfo.Any(x => x.containerSettings != null))
                 {
-                    reshade = statePageInfo.Any(xyz => xyz.containerSettings.Any(abc => abc.Shade == true) == true);
+                    reshade = statePageInfo.Where(x => x.containerSettings != null).Any(xyz => xyz.containerSettings.Any(abc => abc.Shade == true) == true);
                 }
                 else
                 {
@@ -449,13 +449,13 @@ namespace Capstone_Application
                                 // check for container that shades color
                                 tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].Agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
                                 frac = 1.0;
-                                if (myCA.grid[oldX, oldY].Agent.Containers != null)
-                                {
-                                    for (int j = 0; j < myCA.grid[oldX, oldY].Agent.Containers.Count; j++)
-                                    {
-                                        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].Agent.Containers[j].Value / myCA.grid[oldX, oldY].Agent.Containers[j].Threshold));
-                                    }
-                                }
+                                //if (myCA.grid[oldX, oldY].Agent.Containers != null) // how to handle multiple thresholds?
+                                //{
+                                //    for (int j = 0; j < myCA.grid[oldX, oldY].Agent.Containers.Count; j++)
+                                //    {
+                                //        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].Agent.Containers[j].Value / myCA.grid[oldX, oldY].Agent.Containers[j].Threshold));
+                                //    }
+                                //}
                                 newColor = Color.FromArgb((int)(frac * tileColor.R), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
                                 pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, newColor));
                             }
@@ -470,13 +470,13 @@ namespace Capstone_Application
                     int newY = curAgent.Y;
                     tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
                     frac = 1.0;
-                    if (curAgent.Containers != null)
-                    {
-                        for (int j = 0; j < curAgent.Containers.Count; j++)
-                        {
-                            frac = frac * Math.Min(1, (curAgent.Containers[j].Value / curAgent.Containers[j].Threshold));
-                        }
-                    }
+                    //if (curAgent.Containers != null) // multiple thresholds
+                    //{
+                    //    for (int j = 0; j < curAgent.Containers.Count; j++)
+                    //    {
+                    //        frac = frac * Math.Min(1, (curAgent.Containers[j].Value / curAgent.Containers[j].Threshold));
+                    //    }
+                    //}
                     newColor = Color.FromArgb((int)(tileColor.R * frac), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
                     //Console.WriteLine("frac," + frac.ToString() + "color," + newColor.ToString());
                     //if(iterations == 999)

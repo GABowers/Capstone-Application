@@ -18,18 +18,23 @@ namespace Capstone_Application
         {
             this.location = location;
             InitializeComponent();
+            var items = Enum.GetNames(typeof(AgentContainerThresholdBehavior));
+            thresholdBehaviorInput.Items.AddRange(items);
         }
 
         public AgentContainerSetting Retrieve()
         {
             AgentContainerSetting a = new AgentContainerSetting();
             a.Name = nameInput.Text;
-            a.Threshold = double.TryParse(thresholdInput.Text, out double result)? result : 0.0;
+            var thresholdType = (ThresholdType)thresholdTypeInput.SelectedIndex;
+            var thresholdValue = double.TryParse(thresholdInput.Text, out double result)? result : 0.0;
             a.IterationBehavior = iterationBehaviorInput.Text;
-            a.ThresholdBehavior = (AgentContainerThresholdBehavior)thresholdBehaviorInput.SelectedIndex;
+            var behavior = (AgentContainerThresholdBehavior)thresholdBehaviorInput.SelectedIndex;
+            var threshold = new AgentContainerThreshold(new Tuple<ThresholdType, double>(thresholdType, thresholdValue), behavior);
+            a.Thresholds.Add(threshold);
             a.ThresholdStochastic = stochasticThresholdInput.Checked;
             a.Type = (AgentContainerType)typeInput.SelectedIndex;
-            a.InitialValue = initialInput.Text;
+            a.InitialValue = double.TryParse(initialInput.Text, out double result2) ? result2 : 0.0; ;
             a.Shade = shadeInput.Checked;
             return a;
         }
@@ -37,7 +42,17 @@ namespace Capstone_Application
 
     public enum AgentContainerThresholdBehavior
     {
-        Overflow = 0,
+        Overflow = 0, // adds entity to surroundings IF they're valid - what does valid mean?
+        Die = 1, // remove agent
+        Find = 2, // seek out entities which can increase the threshold
+    }
+    public enum ThresholdType
+    {
+        LessThan=0,
+        LessThanOrEqualTo=1,
+        EqualTo=2,
+        GreaterThanOrEqualTo=3,
+        GreaterThan=4
     }
     public enum AgentContainerType
     {

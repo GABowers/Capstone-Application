@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CellState
 {
@@ -18,11 +19,12 @@ public class CellState
     public List<Tuple<int, int>> startingLocations;
     public List<Capstone_Application.AgentContainerSetting> containerSettings;
 
-    public CellState(int totalStates, int neighborState, int neighborSize, double[][][] probs, List<double> incomingWalkProbs, List<double> incomingStickingProbs, bool incomingSticking, MoveType incomingNeighborhood, bool incMobile, List<Tuple<int, int>> incomingStartingLocations, GridType gType)
+    public CellState(int totalStates, int neighborState, StatePageInfo info)
     {
-        this.gridType = gType;
+        this.gridType = info.gridType.Value;
         advProbs = new double[totalStates, totalStates][,];
-        prob = new double[totalStates, neighborState, neighborSize + 1];
+        prob = new double[totalStates, neighborState, info.neighbors.Value + 1];
+        double[][][] probs = info.probs.Select(x => x.Select(y => y.ToArray()).ToArray()).ToArray();
         for (int i = 0; i < probs.Length; i++)
         {
             for (int j = 0; j < probs[i].Length; j++)
@@ -33,15 +35,15 @@ public class CellState
                 }
             }
         }
-
+        containerSettings = info.containerSettings;
         stickingProbs = new double[totalStates];
-        walkProbs = incomingWalkProbs.ToArray();
-        stickingProbs = incomingStickingProbs.ToArray();
-        sticking = incomingSticking;
-        mobileNeighborhood = incomingNeighborhood;
-        mobile = incMobile;
+        walkProbs = info.moveProbs.ToArray();
+        stickingProbs = info.stickingProbs.ToArray();
+        sticking = info.sticking.Value;
+        mobileNeighborhood = info.mobileNeighborhood.Value;
+        mobile = info.mobile.Value;
         startingLocations = new List<Tuple<int, int>>();
-        startingLocations = incomingStartingLocations;
+        startingLocations = info.startingLocations;
     }
 
     //public double GetProbability(int state, int neighborState, int numNeighbors)

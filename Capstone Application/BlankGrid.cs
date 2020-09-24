@@ -8,6 +8,11 @@ namespace Capstone_Application
 {
     public class BlankGrid
     {
+        public int GCost { get; set; }
+        public int HCost { get; set; }
+        public int FCost { get { return GCost + HCost; } }
+        public BlankGrid PathParent { get; set; }
+        public CA Parent { get; private set; }
         public int X { get; private set; }
         public int Y { get; private set; }
         public AgentController Agent { get; private set; }
@@ -18,13 +23,14 @@ namespace Capstone_Application
 
         //}
 
-        public BlankGrid(int x, int y)
+        public BlankGrid(int x, int y, CA parent)
         {
             X = x;
             Y = y;
+            this.Parent = parent;
         }
 
-        public BlankGrid(int x, int y, AgentController agent):this(x, y)
+        public BlankGrid(int x, int y, AgentController agent, CA Parent):this(x, y, Parent)
         {
             AddAgent(agent);
         }
@@ -49,5 +55,10 @@ namespace Capstone_Application
             Agent = null;
             ContainsAgent = false;
         }
+
+        //public PathfindingNode CreateSubNode()
+        //{
+        //    return new PathfindingNode(X, Y, this, !ContainsAgent);
+        //}
     }
 }
