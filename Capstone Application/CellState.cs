@@ -18,6 +18,7 @@ public class CellState
     public GridType gridType;
     public List<Tuple<int, int>> startingLocations;
     public List<Capstone_Application.AgentContainerSetting> containerSettings;
+    public NType neighborhoodType;
 
     public CellState(int totalStates, int neighborState, StatePageInfo info)
     {
@@ -44,6 +45,7 @@ public class CellState
         mobile = info.mobile.Value;
         startingLocations = new List<Tuple<int, int>>();
         startingLocations = info.startingLocations;
+        this.neighborhoodType = info.nType;
     }
 
     //public double GetProbability(int state, int neighborState, int numNeighbors)

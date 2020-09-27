@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 //using System.Threading.Tasks;
 
 public class CA
@@ -40,10 +41,8 @@ public class CA
     //int CICalcs = 0;
     int edgeCalcs = 0;
 
-    List<int> stateCount = new List<int>();
     public List<int> stateCountReplacement = new List<int>();
     public List<int> neighborCount = new List<int>();
-    List<int> transitions = new List<int>();
     List<double> cIndexes = new List<double>();
     public List<float> neighborAnalysis = new List<float>();
     private List<Tuple<int, int, int, int>> edges = new List<Tuple<int, int, int, int>>();
@@ -58,8 +57,8 @@ public class CA
     public List<AgentController> ActiveAgents { get => activeAgents; set => activeAgents = value; }
     public int ConnectedVertices { get => connectedVertices; set => connectedVertices = value; }
     public List<double> CIndexes { get => cIndexes; set => cIndexes = value; }
-    public List<int> StateCount { get => stateCount; set => stateCount = value; }
-    public List<int> Transitions { get => transitions; set => transitions = value; }
+    public ConcurrentDictionary<int,int> StateCount { get; set; }
+    public ConcurrentDictionary<int,int> Transitions { get; set; }
     public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
     private List<List<AgentController>> SeparateAgents { get => separateAgents; set => separateAgents = value; }
 
@@ -68,8 +67,8 @@ public class CA
         controller = control;
         template = incTemplate;
         template_reset = templateReset;
-        StateCount.Clear();
-        Transitions.Clear();
+        StateCount = new ConcurrentDictionary<int, int>();
+        Transitions = new ConcurrentDictionary<int, int>();
         CIndexes.Clear();
         gridWidth = width;
         gridHeight = height;
@@ -83,14 +82,14 @@ public class CA
         states = new CellState[numStates];
         for (int i = 0; i < numStates; ++i)
         {
-            StateCount.Add(0);
+            StateCount.AddOrUpdate(i, 0, (k, v) => 0);
             CIndexes.Add(0);
             neighborhoods.Add(new Neighborhood(types[i]));
             separateAgents.Add(new List<AgentController>());
             states[i] = new CellState(numStates, numStates, info[i]);
             for (int j = 0; j < (numStates - 1); j++)
             {
-                Transitions.Add(0);
+                Transitions.AddOrUpdate(i, 0, (k, v) => 0);
             }
             generics.Add(info[i].template_objects);
             if(info[i].containerSettings != null && info[i].containerSettings.Count > 0)
@@ -336,49 +335,15 @@ public class CA
         }
         if (template == Template.None || template == Template.Random_Walk)
         {
-            for (int x = 0; x < ActiveAgents.Count; ++x)
+            if((states.Any(x => x.mobile) || (states.Any(x => x.neighborhoodType != NType.None))))
             {
-                if(ActiveAgents[x].Busy)
-                {
-                    ActiveAgents[x].Execute();
-                }
-                else
-                {
-                    if (states[ActiveAgents[x].currentState].mobile)
-                    {
-                        if (CheckForMovement(ActiveAgents[x]))
-                        {
-                            AgentMove(ActiveAgents[x], x);
-                        }
-                        ActiveAgents[x].AddHistory();
-                    }
-                    else
-                    {
-                        int oldState = ActiveAgents[x].currentState;
-                        int xLoc = ActiveAgents[x].X;
-                        int yLoc = ActiveAgents[x].Y;
-                        if (neighborTypes[oldState] == NType.Advanced)
-                        {
-                            double[] probChances = AdvancedGetProbChances(oldState, xLoc, yLoc);
-                            ActiveAgents[x].currentState = GetStateFromProbability(probChances);
-                        }
-                        else
-                        {
-                            List<int> neighborStateCount = GetNeighborCount(xLoc, yLoc, oldState);
-                            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-                            ActiveAgents[x].currentState = GetStateFromProbability(probChances);
-                        }
-                        int newState = ActiveAgents[x].currentState;
-                        separateAgents[newState].Add(ActiveAgents[x]);
-                        CheckTransitions(oldState, newState);
-                        StateCount[newState] += 1;
-                    }
-                    if (containerObjects)
-                    {
-                        ActiveAgents[x].HandleContainer();
-                    }
-                }
+                HandleAnyAgents();
             }
+            else
+            {
+                HandleIsolatedAgents();
+            }
+            
             for (int i = 0; i < numStates; i++)
             {
                 GetCIndex(i);
@@ -392,6 +357,82 @@ public class CA
         {
             GasRoutine();
         }
+    }
+
+    void HandleAnyAgents()
+    {
+        for (int x = 0; x < ActiveAgents.Count; ++x)
+        {
+            if (ActiveAgents[x].Busy)
+            {
+                ActiveAgents[x].Execute();
+            }
+            else
+            {
+                if (states[ActiveAgents[x].currentState].mobile)
+                {
+                    if (CheckForMovement(ActiveAgents[x]))
+                    {
+                        AgentMove(ActiveAgents[x], x);
+                    }
+                    ActiveAgents[x].AddHistory();
+                }
+                else
+                {
+                    int oldState = ActiveAgents[x].currentState;
+                    int xLoc = ActiveAgents[x].X;
+                    int yLoc = ActiveAgents[x].Y;
+                    if (neighborTypes[oldState] == NType.Advanced)
+                    {
+                        double[] probChances = AdvancedGetProbChances(oldState, xLoc, yLoc);
+                        ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                    }
+                    else
+                    {
+                        List<int> neighborStateCount = GetNeighborCount(xLoc, yLoc, oldState);
+                        double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+                        ActiveAgents[x].currentState = GetStateFromProbability(probChances);
+                    }
+                    int newState = ActiveAgents[x].currentState;
+                    separateAgents[newState].Add(ActiveAgents[x]);
+                    CheckTransitions(oldState, newState);
+                    StateCount[newState] += 1;
+                }
+                if (containerObjects)
+                {
+                    ActiveAgents[x].HandleContainer();
+                }
+            }
+        }
+    }
+
+    void HandleIsolatedAgents()
+    {
+        List<int> neighbors = Enumerable.Repeat(0, states.Length).ToList();
+        Parallel.For(0, ActiveAgents.Count, (i) =>
+        {
+            if (ActiveAgents[i].Busy)
+            {
+                ActiveAgents[i].Execute();
+            }
+            else
+            {
+                int oldState = ActiveAgents[i].currentState;
+                double[] probChances = StandardGetProbChances(oldState, neighbors);
+                ActiveAgents[i].currentState = GetStateFromProbability(probChances);
+                int newState = ActiveAgents[i].currentState;
+                lock(separateAgents)
+                {
+                    separateAgents[newState].Add(ActiveAgents[i]);
+                }
+                CheckTransitions(oldState, newState);
+                StateCount[newState] += 1;
+                if (containerObjects)
+                {
+                    ActiveAgents[i].HandleContainer();
+                }
+            }
+        });
     }
 
     public List<List<Tuple<int, int, int>>> GetPaths()
@@ -789,7 +830,9 @@ public class CA
     {
         List<int> neighborCount = new List<int>();
         for (int i = 0; i < numStates; ++i)
+        {
             neighborCount.Add(new int());
+        }
         List<Point> neighbors = neighborhoods[oldState].GetNeighbors(x, y);
 
         //Get a count of each state in our neighborhood

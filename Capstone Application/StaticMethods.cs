@@ -67,6 +67,10 @@ namespace Capstone_Application
                         {
                             openSet.Add(neighbor);
                         }
+                        //else
+                        //{
+                        //    openSet[openSet.IndexOf(neighbor)]
+                        //}
                     }
                 }
             }

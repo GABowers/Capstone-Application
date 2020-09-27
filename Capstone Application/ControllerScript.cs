@@ -23,6 +23,7 @@ namespace Capstone_Application
         List<NType> nTypes;
         public List<Color> colors;
         List<int> cellAmounts;
+        Rectangle rect;
         List<Tuple<int, List<int>>> fullCount;
         List<Tuple<int, List<int>>> fullTransitions;
         List<Tuple<int, List<double>>> fullIndex;
@@ -213,14 +214,14 @@ namespace Capstone_Application
                 iterations++;
                 // move these to check settings?
                 List<int> currentCellCount = new List<int>();
-                currentCellCount.AddRange(myCA.StateCount);
+                currentCellCount.AddRange(myCA.StateCount.Values);
 
                 if (CheckCount(new List<int>(currentCellCount)))
                 {
                     FullCount.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentCellCount)));
                 }
                 List<int> currentTransitions = new List<int>();
-                currentTransitions.AddRange(myCA.Transitions);
+                currentTransitions.AddRange(myCA.Transitions.Values);
                 if (CheckTrans(new List<int>(currentTransitions)))
                 {
                     FullTransitions.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentTransitions)));
@@ -339,7 +340,7 @@ namespace Capstone_Application
                 
                 for (int i = 0; i < statePageInfo.Count; i++)
                 {
-                    nTypes.Add(statePageInfo[i].nType.Value);
+                    nTypes.Add(statePageInfo[i].nType);
                 }
                                 
                 localGridWidth = mainPageInfo.gridWidth;
@@ -374,8 +375,8 @@ namespace Capstone_Application
             {
                 iterations = 0;
                 //Console.WriteLine(localGridWidth + "," +  localGridHeight);
-                bmp = new 
-                    DirectBitmap(localGridWidth, localGridHeight);
+                bmp = new DirectBitmap(localGridWidth, localGridHeight);
+                //rect = new Rectangle(0, 0, bmp.Bitmap.Width, bmp.Bitmap.Height);
                 //currentForm.innerPictureBox.Image = bmp.Bitmap;
                 //UpdateBoard(currentForm);
                 AlreadyCA = true;
@@ -400,6 +401,9 @@ namespace Capstone_Application
         {
             if(alreadyCA)
             {
+                //var data = bmp.Bitmap.LockBits(rect, ImageLockMode.ReadWrite, bmp.Bitmap.PixelFormat);
+                //var depth = Bitmap.GetPixelFormatSize(data.PixelFormat);
+                //var buffer = new byte[data.Width * data.Height * depth];
                 //Console.WriteLine("Count: " + pixelChanges.Count);
                 pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
                 if (iterations == 0)
@@ -412,23 +416,23 @@ namespace Capstone_Application
                             if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].Agent, null) == false))
                             {
                                 tileColor = PreMultiplyAlpha(colors[myCA.grid[i, j].Agent.currentState]);
-                                pixelChanges.Add(new Tuple<int, int, Color>(i, j, tileColor));
+                                bmp.SetPixel(i, j, tileColor);
                             }
                             else
                             {
                                 tileColor = PreMultiplyAlpha(Color.Black);
-                                pixelChanges.Add(new Tuple<int, int, Color>(i, j, tileColor));
+                                bmp.SetPixel(i, j, tileColor);
                             }
                         }
                     }
-                    while (pixelChanges.Count > 0)
-                    {
-                        if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
-                        {
-                            //Console.WriteLine(result.Item3.ToString());
-                            bmp.SetPixel(result.Item1, result.Item2, result.Item3);
-                        }
-                    }
+                    //while (pixelChanges.Count > 0)
+                    //{
+                    //    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
+                    //    {
+                    //        //Console.WriteLine(result.Item3.ToString());
+                    //        bmp.SetPixel(result.Item1, result.Item2, result.Item3);
+                    //    }
+                    //}
                 }
                 Parallel.For(0, myCA.ActiveAgents.Count, (i) =>
                 {
@@ -457,12 +461,12 @@ namespace Capstone_Application
                                 //    }
                                 //}
                                 newColor = Color.FromArgb((int)(frac * tileColor.R), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
-                                pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, newColor));
+                                bmp.SetPixel(oldX, oldY, newColor);
                             }
                             else
                             {
                                 tileColor = PreMultiplyAlpha(Color.Black);
-                                pixelChanges.Add(new Tuple<int, int, Color>(oldX, oldY, tileColor));
+                                bmp.SetPixel(oldX, oldY, tileColor);
                             }
                         }
                     }
@@ -470,31 +474,18 @@ namespace Capstone_Application
                     int newY = curAgent.Y;
                     tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
                     frac = 1.0;
-                    //if (curAgent.Containers != null) // multiple thresholds
-                    //{
-                    //    for (int j = 0; j < curAgent.Containers.Count; j++)
-                    //    {
-                    //        frac = frac * Math.Min(1, (curAgent.Containers[j].Value / curAgent.Containers[j].Threshold));
-                    //    }
-                    //}
                     newColor = Color.FromArgb((int)(tileColor.R * frac), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
-                    //Console.WriteLine("frac," + frac.ToString() + "color," + newColor.ToString());
-                    //if(iterations == 999)
-                    //{
-                    //    Console.WriteLine("index," + i + ",state," + curAgent.currentState + ",state color," + tileColor.ToString() + ",subColor," + newColor.ToString() + ",prop" + (curAgent.Containers[0].Value / curAgent.Containers[0].Threshold));
-                    //}
-                    pixelChanges.Add(new Tuple<int, int, Color>(newX, newY, newColor));
-
+                    bmp.SetPixel(newX, newY, newColor);
                 });
-
-                while (pixelChanges.Count > 0)
-                {
-                    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
-                    {
-                        //Console.WriteLine(result.Item3.ToString());
-                        bmp.SetPixel(result.Item1, result.Item2, result.Item3);
-                    }
-                }
+                //bmp.Bitmap.UnlockBits(data);
+                //while (pixelChanges.Count > 0)
+                //{
+                //    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
+                //    {
+                //        //Console.WriteLine(result.Item3.ToString());
+                //        bmp.SetPixel(result.Item1, result.Item2, result.Item3);
+                //    }
+                //}
                 UpdateImage(currentForm, bmp.Bitmap);
             }
         }

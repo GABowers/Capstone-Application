@@ -51,10 +51,7 @@ namespace Capstone_Application
 
         void SetSettings()
         {
-            if(parent.nType.HasValue)
-            {
-                nType = parent.nType.Value;
-            }
+            nType = parent.nType;
             if (parent.gridType.HasValue)
             {
                 gType = parent.gridType.Value;

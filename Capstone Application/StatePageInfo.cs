@@ -9,7 +9,7 @@ namespace Capstone_Application
 {
     public class StatePageInfo
     {
-        public NType? nType;
+        public NType nType = NType.None;
         public GridType? gridType;
         public int? stateNum;
         public Color? color;
