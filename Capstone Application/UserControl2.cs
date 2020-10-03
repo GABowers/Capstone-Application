@@ -198,13 +198,10 @@ namespace Capstone_Application
                 mobilityButtonsPanel.Controls.Add(mNeighborPickLabel);
                 mobilityButtonsPanel.Controls.Add(mNeighborPick);
                 //this.PerformLayout();
-                //Console.WriteLine("What the ever-loving F is going on here.");
                 //for (int i = 0; i < mobilityButtonsPanel.Controls.Count; i++)
                 //{
                 //    var control = mobilityButtonsPanel.Controls[i];
-                //    Console.WriteLine("Control: " + control.Name + " Width: " + control.Width + " Height: " + control.Height);
                 //}
-                //Console.WriteLine("Panel: " + mobilityButtonsPanel.Name + " Width: " + mobilityButtonsPanel.Width + " Height: " + mobilityButtonsPanel.Height);
                 //mobilityButtonsPanel.Update();
                 mNeighborPick.SelectedIndex = 0;
             }
@@ -412,7 +409,6 @@ namespace Capstone_Application
                                 int _i = i;
                                 int _j = j;
                                 int _k = k;
-                                //Console.WriteLine("Positions: {0}, {1}", xLabel, yPos);
                                 string neighbors = k.ToString();
                                 Label neighborsLabel = new Label() { Name = $"mNeighborLabel{i}.{j}.{k}", Text = $"Probability of change from state {fromState} to state {toState}, with {k} neighbors of state {neighborState}.", Location = new System.Drawing.Point(xLabel, yPos), AutoSize = true };
                                 TextBox neighborsPick = new TextBox() { Name = $"mNeighborPick{i}.{j}.{k}", Location = new System.Drawing.Point(xInput, yPos), Size = new Size(121, 20), Text = probs[i][j][k].ToString() };
@@ -448,14 +444,12 @@ namespace Capstone_Application
         {
             if(extra)
             {
-                //Console.WriteLine(extraPanel.Size.Width + ", " + extraPanel.Size.Height);
                 extraPanel.Controls.Clear();
                 e = new ExtraPanel
                 {
                     Location = new System.Drawing.Point(0, 0)
                 };
                 extraPanel.Controls.Add(e);
-                //Console.WriteLine(extraPanel.Size.Width + ", " + extraPanel.Size.Height);
             }
         }
 
@@ -490,7 +484,6 @@ namespace Capstone_Application
                 }
 
                 toStateYPosition += (nextStatePanel.Size.Height + 5);
-                Console.WriteLine("Positions: {0}, {1}", toStateXPosition, toStateYPosition);
             }
         }
 

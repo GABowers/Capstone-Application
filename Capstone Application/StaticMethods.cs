@@ -227,7 +227,6 @@ namespace Capstone_Application
         {
             if(items.Contains(item))
             {
-                Console.Write("WTF");
             }
             bool fake = Equals(items[item.HeapIndex], item); ;
             return fake;

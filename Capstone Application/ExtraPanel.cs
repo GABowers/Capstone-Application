@@ -25,7 +25,6 @@ namespace Capstone_Application
 
         private void addButton_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("add");
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             ExtraFeature extra = new ExtraFeature(extras.Count);
             //extra.Location = new System.Drawing.Point(x, y);

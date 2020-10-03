@@ -11,7 +11,7 @@ namespace Capstone_Application
     {
         public CA Parent { get; private set; }
         public BlankGrid Cell { get; private set; }
-        RNGCryptoServiceProvider rng;
+        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
         //ControllerScript controllerScript = Form1.controllerScript;
         //CA caScript = Form1.controllerScript.myCA;
         public int currentState;
@@ -38,7 +38,6 @@ namespace Capstone_Application
             this.Cell = cell;
             this.currentState = state;
             History.Add(Tuple.Create(agentX, agentY, state));
-            rng = new RNGCryptoServiceProvider();
             Containers = new List<ContainerController>();
             foreach(var con in parent.GetStateInfo(state).containerSettings)
             {
@@ -101,7 +100,6 @@ namespace Capstone_Application
                 var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
                 Double randomDouble = ul / (Double)(1UL << 53);
                 int answer = (int)Math.Floor(randomDouble * values.Count);
-                //Console.WriteLine("double," + randomDouble+",values,"+string.Join(",",values)+",answer,"+answer);
                 value = values[answer];
                 for (int j = 0; j < Containers[i].Thresholds.Count; j++)
                 {

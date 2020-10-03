@@ -111,7 +111,6 @@ namespace Capstone_Application
 
         void checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            Console.WriteLine("Checking");
             // handle adding new agents to the current visualization
         }
 

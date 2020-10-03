@@ -23,10 +23,6 @@ namespace Capstone_Application
         List<NType> nTypes;
         public List<Color> colors;
         List<int> cellAmounts;
-        Rectangle rect;
-        List<Tuple<int, List<int>>> fullCount;
-        List<Tuple<int, List<int>>> fullTransitions;
-        List<Tuple<int, List<double>>> fullIndex;
         List<List<Tuple<int, int, int>>> paths = new List<List<Tuple<int, int, int>>>();
         //List<object> templateObject;
 
@@ -50,9 +46,9 @@ namespace Capstone_Application
             set { mainPageInfo = value; }
         }
 
-        public List<Tuple<int, List<int>>> FullCount { get => fullCount; set => fullCount = value; }
-        public List<Tuple<int, List<int>>> FullTransitions { get => fullTransitions; set => fullTransitions = value; }
-        public List<Tuple<int, List<double>>> FullIndex { get => fullIndex; set => fullIndex = value; }
+        public List<Tuple<int, List<int>>> FullCount { get; private set; }
+        public List<Tuple<int,Dictionary<Tuple<int, int>, int>>> FullTransitions {get; private set;}
+        public List<Tuple<int, List<double>>> FullIndex { get; private set; }
         public bool CreatedCA { get => createdCA; set => createdCA = value; }
         public bool AlreadyCA { get => alreadyCA; set => alreadyCA = value; }
         public List<List<Tuple<int, int, int>>> Paths { get => paths; set => paths = value; }
@@ -125,7 +121,6 @@ namespace Capstone_Application
                 StatePageInfo current = new StatePageInfo(i + 1);
                 //StatePageInfo current = new StatePageInfo(mainPageInfo.numStates);
                 statePageInfo.Add(current);
-                //Console.WriteLine("New statePage added");
             }
         }
 
@@ -213,146 +208,70 @@ namespace Capstone_Application
                 myCA.OneIteration();
                 iterations++;
                 // move these to check settings?
-                List<int> currentCellCount = new List<int>();
-                currentCellCount.AddRange(myCA.StateCount.Values);
-
-                if (CheckCount(new List<int>(currentCellCount)))
+                if(runSettings.SaveCounts)
                 {
-                    FullCount.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentCellCount)));
+                    FullCount.Add(new Tuple<int, List<int>>(iterations, myCA.StateCount.Values.ToList()));
                 }
-                List<int> currentTransitions = new List<int>();
-                currentTransitions.AddRange(myCA.Transitions.Values);
-                if (CheckTrans(new List<int>(currentTransitions)))
+                if (runSettings.SaveTrans)
                 {
-                    FullTransitions.Add(new Tuple<int, List<int>>(iterations, new List<int>(currentTransitions)));
+                    FullTransitions.Add(new Tuple<int, Dictionary<Tuple<int, int>, int>>(iterations, new Dictionary<Tuple<int, int>, int>(myCA.Transitions)));
                 }
 
                 List<double> currentIndex = new List<double>();
                 currentIndex.AddRange(myCA.CIndexes);
-                if (CheckIndex(new List<double>(currentIndex)))
+                if(runSettings.SaveIndex)
                 {
-                    FullIndex.Add(new Tuple<int, List<double>>(iterations, new List<double>(currentIndex)));
+                    FullIndex.Add(new Tuple<int, List<double>>(iterations, myCA.CIndexes));
                 }
-            }
-        }
-
-        bool CheckCount(List<int> curCount)
-        {
-            if (iterations > 1)
-            {
-                Tuple<int, List<int>> prev = FullCount.Last();
-                List<int> prev_list = prev.Item2;
-                for (int i = 0; i < curCount.Count; i++)
-                {
-                    if (curCount[i] == prev_list[i])
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        bool CheckTrans(List<int> curTrans)
-        {
-            if (iterations > 1)
-            {
-                Tuple<int, List<int>> prev = FullTransitions.Last();
-                List<int> prev_list = prev.Item2;
-                for (int i = 0; i < curTrans.Count; i++)
-                {
-                    if (curTrans[i] == prev_list[i])
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        bool CheckIndex(List<double> curIndex)
-        {
-            if (iterations > 1)
-            {
-                Tuple<int, List<double>> prev = FullIndex.Last();
-                List<double> prev_list = prev.Item2;
-                for (int i = 0; i < curIndex.Count; i++)
-                {
-                    if (curIndex[i] == prev_list[i])
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-            else
-            {
-                return true;
             }
         }
 
         public void CreateCA(Form1 form)
         {
             local_form = form;
-                if(statePageInfo.Any(x => x.containerSettings != null))
-                {
-                    reshade = statePageInfo.Where(x => x.containerSettings != null).Any(xyz => xyz.containerSettings.Any(abc => abc.Shade == true) == true);
-                }
-                else
-                {
-                    reshade = false;
-                }
-                iterations = 0;
-                editModeOn = false;
-                nTypes = new List<NType>();
-                colors = new List<Color>();
+            if(statePageInfo.Any(x => x.containerSettings != null))
+            {
+                reshade = statePageInfo.Where(x => x.containerSettings != null).Any(xyz => xyz.containerSettings.Any(abc => abc.Shade == true) == true);
+            }
+            else
+            {
+                reshade = false;
+            }
+            iterations = 0;
+            editModeOn = false;
+            nTypes = new List<NType>();
+            colors = new List<Color>();
             cellAmounts = Enumerable.Repeat(0, statePageInfo.Count).ToList();
-                fullCount = new List<Tuple<int, List<int>>>();
-                fullTransitions = new List<Tuple<int, List<int>>>();
-                fullIndex = new List<Tuple<int, List<double>>>();
-                amountOfCellTypes = mainPageInfo.numStates;
-                Template template = mainPageInfo.template;
-                bool reset = false;
-                if(mainPageInfo.template_reset.HasValue)
-                {
-                    reset = mainPageInfo.template_reset.Value;
-                }
+            FullCount = new List<Tuple<int, List<int>>>();
+            FullTransitions = new List<Tuple<int, Dictionary<Tuple<int, int>, int>>>();
+            FullIndex = new List<Tuple<int, List<double>>>();
+            amountOfCellTypes = mainPageInfo.numStates;
+            Template template = mainPageInfo.template;
+            bool reset = false;
+            if(mainPageInfo.template_reset.HasValue)
+            {
+                reset = mainPageInfo.template_reset.Value;
+            }
                 
-                for (int i = 0; i < statePageInfo.Count; i++)
-                {
-                    nTypes.Add(statePageInfo[i].nType);
-                }
+            for (int i = 0; i < statePageInfo.Count; i++)
+            {
+                nTypes.Add(statePageInfo[i].nType);
+            }
                                 
-                localGridWidth = mainPageInfo.gridWidth;
-                localGridHeight = mainPageInfo.gridHeight;
-                myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, statePageInfo, template, reset);
-                for (int h = 0; h < statePageInfo.Count; ++h)
-                {
-                    cellAmounts[h] = statePageInfo[h].startingAmount.Value;
-                    colors.Add(statePageInfo[h].color.Value);
-                }
-                myCA.InitializeGrid(cellAmounts);
-                CreatedCA = true;
+            localGridWidth = mainPageInfo.gridWidth;
+            localGridHeight = mainPageInfo.gridHeight;
+            myCA = new CA(this, localGridWidth, localGridHeight, amountOfCellTypes, nTypes, statePageInfo, template, reset);
+            for (int h = 0; h < statePageInfo.Count; ++h)
+            {
+                cellAmounts[h] = statePageInfo[h].startingAmount.Value;
+                colors.Add(statePageInfo[h].color.Value);
+            }
+            myCA.InitializeGrid(cellAmounts);
+            FullCount.Add(new Tuple<int, List<int>>(0, myCA.StateCount.Values.ToList()));
+            FullTransitions.Add(new Tuple<int, Dictionary<Tuple<int, int>, int>>(0, new Dictionary<Tuple<int, int>, int>(myCA.Transitions)));
+            FullIndex.Add(new Tuple<int, List<double>>(0, myCA.CIndexes));
+
+            CreatedCA = true;
         }
 
         public void Pause()
@@ -374,7 +293,6 @@ namespace Capstone_Application
             if (AlreadyCA == false)
             {
                 iterations = 0;
-                //Console.WriteLine(localGridWidth + "," +  localGridHeight);
                 bmp = new DirectBitmap(localGridWidth, localGridHeight);
                 //rect = new Rectangle(0, 0, bmp.Bitmap.Width, bmp.Bitmap.Height);
                 //currentForm.innerPictureBox.Image = bmp.Bitmap;
@@ -404,7 +322,6 @@ namespace Capstone_Application
                 //var data = bmp.Bitmap.LockBits(rect, ImageLockMode.ReadWrite, bmp.Bitmap.PixelFormat);
                 //var depth = Bitmap.GetPixelFormatSize(data.PixelFormat);
                 //var buffer = new byte[data.Width * data.Height * depth];
-                //Console.WriteLine("Count: " + pixelChanges.Count);
                 pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
                 if (iterations == 0)
                 {
@@ -429,7 +346,6 @@ namespace Capstone_Application
                     //{
                     //    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
                     //    {
-                    //        //Console.WriteLine(result.Item3.ToString());
                     //        bmp.SetPixel(result.Item1, result.Item2, result.Item3);
                     //    }
                     //}
@@ -482,7 +398,6 @@ namespace Capstone_Application
                 //{
                 //    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
                 //    {
-                //        //Console.WriteLine(result.Item3.ToString());
                 //        bmp.SetPixel(result.Item1, result.Item2, result.Item3);
                 //    }
                 //}
@@ -634,7 +549,6 @@ namespace Capstone_Application
         
         //public List<double> ReturnConnectivityIndex()
         //{
-        //    Console.WriteLine("ReturnConnectivityIndex");
         //    List<double> tempList = new List<double>();
         //    if(createdCA)
         //    {
@@ -663,7 +577,6 @@ namespace Capstone_Application
 
                 CheckDataSave(form, time);
 
-                //Console.WriteLine("Reset: " + runSettings.AutoReset);
                 // Reset CA options
                 if (runSettings.ResetIterations.Count > 0 || runSettings.ResetCounts.Count > 0)
                 {
@@ -845,7 +758,6 @@ namespace Capstone_Application
                 {
                     if (runSettings.DataIncs[i] == -1)
                     {
-                        Console.WriteLine("We're here because we're here");
                         form.SaveData(time, counts, trans, cIndex, runSettings.DataPath);
                     }
                 }

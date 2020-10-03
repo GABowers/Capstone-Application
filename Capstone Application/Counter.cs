@@ -57,14 +57,14 @@ namespace Capstone_Application
                     {
                         dataGridView1[1, i].Value = "N/A";
                     }
-                    try
-                    {
-                        dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
-                    }
-                    catch (Exception)
-                    {
-                        dataGridView1[1, i].Value = "N/A";
-                    }
+                    //try
+                    //{
+                    //    dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
+                    //}
+                    //catch (Exception)
+                    //{
+                    //    dataGridView1[1, i].Value = "N/A";
+                    //}
                     try
                     {
                         dataGridView1[3, i].Value = controllerScript.myCA.CIndexes[i];
@@ -94,7 +94,7 @@ namespace Capstone_Application
             for (int i = 0; i < states; i++)
             {
                 dataGridView1[1, i].Value = controllerScript.myCA.StateCount[i];
-                dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
+                //dataGridView1[2, i].Value = controllerScript.myCA.Transitions[i];
                 //dataGridView1[3, i].Value = controllerScript.ReturnConnectivityIndex(i);
             }
         }

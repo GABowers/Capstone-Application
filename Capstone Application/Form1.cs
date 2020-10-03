@@ -55,6 +55,7 @@ namespace Capstone_Application
         public Form1()
         {
             InitializeComponent();
+            //Console.WriteLine("Processors: " + Environment.ProcessorCount);
             Running = false;
             this.StartPosition = FormStartPosition.CenterScreen;
             innerPictureBox = new PixelBox();
@@ -303,7 +304,6 @@ namespace Capstone_Application
                     {
                         rangeY[i] = (minY + i);
                     }
-                    Console.WriteLine(distanceX + "," + distanceY);
                     if (e.Button == MouseButtons.Left)
                     {
                         controllerScript.EditGrid(rangeX, rangeY, innerPictureBox, 0, editWindow.EditState);
@@ -400,23 +400,7 @@ namespace Capstone_Application
             {
                 path = path + "/" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Runs " + controllerScript.caRuns + " Iterations " + controllerScript.iterations + " Data.csv";
             }
-            //Console.WriteLine("Path: " + path);
-            List<int> iterations = new List<int>();
-            if(counts)
-            {
-                iterations.AddRange(controllerScript.FullCount.Select(x => x.Item1));
-            }
-            if (trans)
-            {
-                iterations.AddRange(controllerScript.FullTransitions.Select(x => x.Item1));
-            }
-            if (cIndex)
-            {
-                iterations.AddRange(controllerScript.FullIndex.Select(x => x.Item1));
-            }
 
-            iterations = iterations.Distinct().ToList();
-            iterations.Sort();
             using (StreamWriter wt = new StreamWriter(path))
             {
                 //pertinent info - run, iteration, time
@@ -426,16 +410,31 @@ namespace Capstone_Application
                 wt.Write(thing);
                 wt.WriteLine();
                 wt.Write("Iteration,");
+                List<List<int>> c = new List<List<int>>();
+                List<Dictionary<Tuple<int, int>, int>> t = new List<Dictionary<Tuple<int, int>, int>>();
+                List<List<double>> ci = new List<List<double>>();
                 if (counts)
                 {
+                    List<int> countBase = new List<int>();
                     for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                     {
                         string cellTypeString = (j + 1).ToString();
-                        wt.Write("Counts Type " + cellTypeString + ",");
+                        wt.Write("Count (" + cellTypeString + "),");
+                        countBase.Add(-1);
+                    }
+                    foreach (var item in controllerScript.FullCount)
+                    {
+                        int iteration = item.Item1;
+                        while(c.Count < iteration)
+                        {
+                            c.Add(countBase);
+                        }
+                        c.Add(item.Item2);
                     }
                 }
                 if (trans)
                 {
+                    Dictionary<Tuple<int, int>, int> transBase = new Dictionary<Tuple<int, int>, int>();
                     for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                     {
                         for (int k = 0; k < controllerScript.amountOfCellTypes; k++)
@@ -446,120 +445,80 @@ namespace Capstone_Application
                             }
                             string write = "Transitions " + (j + 1).ToString() + " ->" + (k + 1).ToString();
                             wt.Write(write + ",");
+                            transBase.Add(new Tuple<int, int>(j, k), -1);
                         }
                     }
+                    foreach (var item in controllerScript.FullTransitions)
+                    {
+                        int iteration = item.Item1;
+                        while (t.Count < iteration)
+                        {
+                            t.Add(transBase);
+                        }
+                        t.Add(item.Item2);
+                    }
+
                 }
                 if (cIndex)
                 {
+                    List<double> cIndexBase = new List<double>();
                     for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                     {
                         string cellTypeString = (j + 1).ToString();
                         wt.Write("C Index Type " + cellTypeString + ",");
+                        cIndexBase.Add(-1);
+                    }
+                    foreach (var item in controllerScript.FullIndex)
+                    {
+                        int iteration = item.Item1;
+                        while (ci.Count < iteration)
+                        {
+                            ci.Add(cIndexBase);
+                        }
+                        ci.Add(item.Item2);
                     }
                 }
                 wt.WriteLine();
-                for (int i = 0; i < iterations.Count; ++i)
+                for (int i = 0; i < controllerScript.iterations; i++)
                 {
-                    wt.Write((iterations[i]).ToString() + ",");
-                    wt.WriteLine();
-                }
-                wt.Close();
-            }
-            string[] lines = File.ReadAllLines(path);
-            int count_val = 0;
-            int trans_val = 0;
-            int index_val = 0;
-            for (int i = 0; i < iterations.Count; ++i)
-            {
-                int line = i + 3;
-                string currentLine = lines[line];
-                string[] currentLineArray = currentLine.Split(',');
-                int it = int.Parse(currentLineArray[0]);
-                if (counts)
-                {
-                    List<Tuple<int, List<int>>> local_count = controllerScript.FullCount;
-                    if (count_val <= local_count.Count - 1)
+                    wt.Write(i.ToString() + ",");
+                    if(counts)
                     {
-                        if (local_count[count_val].Item1 == it)
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                         {
-                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                            {
-                                currentLine += local_count[count_val].Item2[j].ToString() + ",";
-                            }
-                            count_val += 1;
-                        }
-                        else
-                        {
-                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                            {
-                                currentLine += local_count[count_val - 1].Item2[j].ToString() + ",";
-                            }
+                            wt.Write(c[i][j].ToString() + ",");
                         }
                     }
-                }
-                if (trans)
-                {
-                    List<Tuple<int, List<int>>> local_trans = controllerScript.FullTransitions;
-                    if (trans_val <= local_trans.Count - 1)
+                    if (trans && (controllerScript.FullTransitions[i].Item1 == i))
                     {
-                        int localTrans = 0;
-                        if (local_trans[trans_val].Item1 == it)
-                        {
-                            localTrans = trans_val;
-                            trans_val += 1;
-                        }
-                        else
-                        {
-                            localTrans = trans_val - 1;
-                        }
-                        int val = 0;
                         for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                         {
                             for (int k = 0; k < controllerScript.amountOfCellTypes; k++)
                             {
-                                if(j == k)
+                                if (j == k)
                                 {
                                     continue;
                                 }
-                                currentLine += local_trans[localTrans].Item2[val].ToString() + ",";
-                                val++;
+                                int valToUse = 0;
+                                if(t[i].TryGetValue(new Tuple<int, int>(j,k), out int val))
+                                {
+                                    valToUse = val;
+                                }
+                                wt.Write(valToUse.ToString() + ",");
                             }
                         }
                     }
-                }
-                if (cIndex)
-                {
-                    List<Tuple<int, List<double>>> local_index = controllerScript.FullIndex;
-                    if (index_val <= local_index.Count- 1)
+                    if (cIndex && (controllerScript.FullIndex[i].Item1 == i))
                     {
-                        if (local_index[index_val].Item1 == it)
+                        for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
                         {
-                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                            {
-                                currentLine += local_index[index_val].Item2[j].ToString() + ",";
-                            }
-                            index_val += 1;
-                        }
-                        else
-                        {
-                            for (int j = 0; j < controllerScript.amountOfCellTypes; j++)
-                            {
-                                currentLine += local_index[index_val - 1].Item2[j].ToString() + ",";
-                            }
+                            wt.Write(ci[i][j].ToString() + ",");
                         }
                     }
                 }
-                lines[line] = currentLine;
+                wt.Close();
             }
-            using (StreamWriter writer = new StreamWriter(path, false))
-            {
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    writer.Write(lines[i]);
-                    writer.WriteLine();
-                }
-                writer.Close();
-            }
+
         }
 
         private void cellCounterToolStripMenuItem_Click(object sender, EventArgs e)

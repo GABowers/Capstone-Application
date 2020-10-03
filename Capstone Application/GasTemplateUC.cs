@@ -100,7 +100,6 @@ namespace Capstone_Application
                 {
                     cur_text = cur_text.Remove(0, 1);
                 }
-                //Console.WriteLine(cur_text);
             }
             SetPressureText();
         }

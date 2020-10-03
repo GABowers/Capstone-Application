@@ -12,14 +12,13 @@ using System.Collections.Concurrent;
 public class CA
 {
 
-    //RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+    RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
     ControllerScript controller;
     Template template;
     bool template_reset = false;
     bool containerObjects = false;
     public static MobileCA mobileCA = new MobileCA();
     //int caType = 0;
-    List<AgentController> activeAgents = new List<AgentController>();
     List<List<AgentController>> separateAgents = new List<List<AgentController>>();
     //AgentController[] activeAgentsArray;
     //System.Object[,] objects;
@@ -54,11 +53,11 @@ public class CA
     //public int CaType { get => caType; set => caType = value; }
     //public AgentController[] ActiveAgentsArray { get => activeAgentsArray; set => activeAgentsArray = value; }
 
-    public List<AgentController> ActiveAgents { get => activeAgents; set => activeAgents = value; }
+    public List<AgentController> ActiveAgents { get; private set; }
     public int ConnectedVertices { get => connectedVertices; set => connectedVertices = value; }
     public List<double> CIndexes { get => cIndexes; set => cIndexes = value; }
-    public ConcurrentDictionary<int,int> StateCount { get; set; }
-    public ConcurrentDictionary<int,int> Transitions { get; set; }
+    public ConcurrentDictionary<int, int> StateCount { get; set; }
+    public ConcurrentDictionary<Tuple<int, int>, int> Transitions { get; private set; }
     public List<Tuple<int, int, int, int>> Edges { get => edges; set => edges = value; }
     private List<List<AgentController>> SeparateAgents { get => separateAgents; set => separateAgents = value; }
 
@@ -68,7 +67,7 @@ public class CA
         template = incTemplate;
         template_reset = templateReset;
         StateCount = new ConcurrentDictionary<int, int>();
-        Transitions = new ConcurrentDictionary<int, int>();
+        Transitions = new ConcurrentDictionary<Tuple<int, int>, int>();
         CIndexes.Clear();
         gridWidth = width;
         gridHeight = height;
@@ -78,6 +77,7 @@ public class CA
         grid = new BlankGrid[width, height];
         backup = new BlankGrid[width, height];
         neighborhoods = new List<Neighborhood>();
+        ActiveAgents = new List<AgentController>();
         //neighborhood = new Neighborhood(type);
         states = new CellState[numStates];
         for (int i = 0; i < numStates; ++i)
@@ -87,9 +87,9 @@ public class CA
             neighborhoods.Add(new Neighborhood(types[i]));
             separateAgents.Add(new List<AgentController>());
             states[i] = new CellState(numStates, numStates, info[i]);
-            for (int j = 0; j < (numStates - 1); j++)
+            for (int j = 0; j < numStates; j++)
             {
-                Transitions.AddOrUpdate(i, 0, (k, v) => 0);
+                Transitions.AddOrUpdate(new Tuple<int, int>(i,j), 0, (k, v) => 0);
             }
             generics.Add(info[i].template_objects);
             if(info[i].containerSettings != null && info[i].containerSettings.Count > 0)
@@ -108,7 +108,6 @@ public class CA
 
     void TemplateCheck()
     {
-        //Console.WriteLine("TEMPLAtae: " + template);
         switch(template)
         {
             case Template.DLA:
@@ -143,24 +142,6 @@ public class CA
         
     }
 
-
-    //public void ChangeCell(int i, int j)
-    //{
-    //    int currentState = grid[i, j];
-    //    int newState = currentState + 1;
-    //    if (newState >= numStates)
-    //        newState = (newState - numStates);
-    //    grid[i, j] = newState;
-    //}
-
-    // Keep for multithreading
-    //public void ModifiedOneIteration()
-    //{
-    //    Array.Copy(grid, backup, gridWidth * gridHeight);
-    //    for (int i = 0; i < numStates; ++i)
-    //        stateCount[i] = 0;
-    //}
-
     public void InitializeGrid(List<int> cellAmounts)
     {
         // This method creates the grid after the user inputs the necessary initial and transition information
@@ -172,13 +153,13 @@ public class CA
         int totalCells = 0;
         for (int i = 0; i < numStates; ++i)
         {
-            StateCount[i] = cellAmounts[i];
+            StateCount.AddOrUpdate(i, 0, (k, v) => cellAmounts[i]);
             agentCount.Add(cellAmounts[i]);
             totalCells += cellAmounts[i];
         }
 
         // this is a list of which states still needed to be added
-        
+
         int gridSize = (gridWidth * gridHeight);
         //ActiveAgentsArray = new AgentController[gridSize];
         // if total cells < gridSize, check/decide connectivity method - every other point, or what?
@@ -293,30 +274,6 @@ public class CA
         }
     }
 
-    //public void CreateStateArray(int startState, int endState, int neighborState, int rows, int columns)
-    //{
-    //    states[startState].InitializeArray(endState, neighborState, rows, columns);
-    //}
-
-
-    //public void OneIteration()
-    //{
-    //    Array.Copy(grid, backup, gridWidth * gridHeight);
-    //    for (int i = 0; i < numStates; ++i)
-    //        stateCount[i] = 0;
-    //    for (int x = 0; x < gridWidth; ++x)
-    //    {
-    //        for (int y = 0; y < gridHeight; ++y)
-    //        {
-    //            int currentState = grid[x, y];
-    //            List<int> neighborStateCount = GetNeighborCount(x, y);
-    //            float[] probChances = GetProbChances(currentState, neighborStateCount);
-    //            grid[x, y] = GetStateFromProbability(probChances);
-    //            stateCount[currentState] += 1;
-    //        }
-    //    }
-    //}
-
     public void OneIteration()
     {
         for (int i = 0; i < numStates; i++)
@@ -327,10 +284,10 @@ public class CA
         Array.Copy(grid, backup, gridWidth * gridHeight);
         for (int i = 0; i < numStates; ++i)
         {
-            StateCount[i] = 0;
-            for (int j = 0; j < (numStates - 1); j++)
+            StateCount.AddOrUpdate(i, 0, (k, v) => 0);
+            for (int j = 0; j < numStates; j++)
             {
-                Transitions[(i * (numStates - 1)) + j] = 0;
+                Transitions.AddOrUpdate(new Tuple<int, int>(i,j), 0, (k, v) => 0);
             }
         }
         if (template == Template.None || template == Template.Random_Walk)
@@ -396,7 +353,7 @@ public class CA
                     int newState = ActiveAgents[x].currentState;
                     separateAgents[newState].Add(ActiveAgents[x]);
                     CheckTransitions(oldState, newState);
-                    StateCount[newState] += 1;
+                    StateCount.AddOrUpdate(newState, 0, (k, v) => v + 1);
                 }
                 if (containerObjects)
                 {
@@ -409,7 +366,8 @@ public class CA
     void HandleIsolatedAgents()
     {
         List<int> neighbors = Enumerable.Repeat(0, states.Length).ToList();
-        Parallel.For(0, ActiveAgents.Count, (i) =>
+        
+        Parallel.For(0, ActiveAgents.Count, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount}, (i) =>
         {
             if (ActiveAgents[i].Busy)
             {
@@ -426,7 +384,7 @@ public class CA
                     separateAgents[newState].Add(ActiveAgents[i]);
                 }
                 CheckTransitions(oldState, newState);
-                StateCount[newState] += 1;
+                StateCount.AddOrUpdate(newState, 0, (key, value) => value + 1);
                 if (containerObjects)
                 {
                     ActiveAgents[i].HandleContainer();
@@ -454,7 +412,7 @@ public class CA
         {
             for (int i = 0; i < ActiveAgents.Count; i++)
             {
-                StateCount[ActiveAgents[i].currentState] += 1;
+                StateCount.AddOrUpdate(ActiveAgents[i].currentState, 0, (k, v) => v + 1);
                 ActiveAgents[i].HistoryChange = false;
             }
             if(locations.Count == 0)
@@ -466,13 +424,13 @@ public class CA
             int y = locations[0].Item2;
             grid[x, y].AddAgent(new AgentController(x, y, 1, this, grid[x, y]));
             AddAgent(grid[x, y].Agent);
-            StateCount[ActiveAgents.Last().currentState] += 1;
+            StateCount.AddOrUpdate(ActiveAgents.Last().currentState, 0, (k, v) => v + 1);
         }
         else if (cur.currentState == 1)
         {
             for (int i = 0; i < ActiveAgents.Count - 1; i++)
             {
-                StateCount[ActiveAgents[i].currentState] += 1;
+                StateCount.AddOrUpdate(ActiveAgents[i].currentState, 0, (k, v) => v + 1);
                 ActiveAgents[i].HistoryChange = false;
             }
             if (CheckForMovement(cur))
@@ -489,9 +447,9 @@ public class CA
             int newState = cur.currentState;
             //separateAgents[newState].Add(ActiveAgents[x]);
             CheckTransitions(oldState, newState);
-            StateCount[newState] += 1;
+            StateCount.AddOrUpdate(newState, 0, (k, v) => v + 1);
 
-            if((oldState == newState) == false)
+            if ((oldState == newState) == false)
             {
                 var found_locs = locations.Where(v => v.Item1 == cur.X).ToList();
                 if (found_locs.Count > 0)
@@ -624,125 +582,27 @@ public class CA
         return output;
     }
 
-    // clearly not working correctly. up to 5 times SLOWER than other method.
-    //async void ASyncRun()
-    //{
-    //    dataList = new List<Tuple<int, int, int, int>>();
-    //    List<Task<Tuple<int, int, int, int>>> tasks = new List<Task<Tuple<int, int, int, int>>>();
-    //    for (int x = 0; x < gridWidth; ++x)
-    //    {
-    //        for (int y = 0; y < gridHeight; ++y)
-    //        {
-    //            // create tuple at end of operation returning location and new state.
-    //            // Then move through grid changing each location (this part must be synchronous)
-    //            tasks.Add(ASyncIndividualRun(x, y));
-    //        }
-    //    }
-    //    //Console.WriteLine("Number of entries: " + tasks.Count);
-    //    await Task.WhenAll(tasks);
-    //    //when changing grid, make sure to check if an actual agent is there. If none, skip reassignment
-    //    //Console.WriteLine("I'll never forget...");
-    //    foreach (Task<Tuple<int, int, int, int>> task in tasks)
-    //    {
-    //        //Console.WriteLine(task.Result);
-    //        //Console.WriteLine("We're here because we're here");
-    //        dataList.Add(task.Result);
-            
-    //    }
-        
-    //}
-
-    //async Task<Tuple<int, int, int, int>> ASyncIndividualRun(int x, int y)
-    //{
-    //    if (grid[x, y].ContainsAgent)
-    //    {
-    //        int newState;
-    //        int oldState = grid[x, y].agent.currentState;
-    //        // change when updating agent type setup
-    //        if (neighborType == NType.Advanced)
-    //        {
-    //            double[] probChances = AdvancedGetProbChances(oldState, x, y);
-    //            newState = GetStateFromProbability(probChances);
-    //            //dataList.Add(new Tuple<int, int, int>(x, y, ));
-    //        }
-    //        else
-    //        {
-    //            List<int> neighborStateCount = GetNeighborCount(x, y);
-    //            double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
-    //            newState = GetStateFromProbability(probChances);
-    //        }
-    //        return new Tuple<int, int, int, int>(x, y, oldState, newState);
-
-    //        //CheckTransitions(oldState, newState);
-    //        //stateCount[newState] += 1;
-    //    }
-    //    else
-    //    {
-    //        return new Tuple<int, int, int, int>(x, y, -1, -1);
-    //    }
-    //}
-
     public void CheckTransitions(int oldState, int newState)
     {
         if(oldState != newState)
         {
-            int tempNew = newState;
-            if(newState > oldState)
-            {
-                tempNew = newState - 1;
-            }
-            Transitions[(oldState * (numStates - 1)) + tempNew] += 1;
-        }
-    }
-
-    public void NeighborAnalysis()
-    {
-        for (int i = 0; i < numStates; ++i)
-        {
-            stateCountReplacement.Add(0);
-            neighborCount.Add(0);
-            neighborAnalysis.Add(0);
-        }
-        for (int x = 0; x < gridWidth; ++x)
-        {
-            for (int y = 0; y < gridHeight; ++y)
-            {
-                int currentState = grid[x, y].Agent.currentState;
-                List<int> neighborStateCount = GetNeighborCount(x, y, currentState);
-                stateCountReplacement[currentState] += 1;
-                for (int i = 0; i < numStates; ++i)
-                {
-                    if (i == currentState)
-                    {
-                        for (int j = 0; j < neighborStateCount.Count(); ++j)
-                        {
-                            if (j == currentState)
-                                continue;
-                            int tempInt = neighborStateCount[j];
-                            int tempInt2 = neighborCount[i];
-                            neighborCount[i] = (tempInt + tempInt2);
-                        }
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < numStates; ++i)
-        {
-            neighborAnalysis[i] = ((float)neighborCount[i] / (8 * stateCountReplacement[i]));
+            Transitions.AddOrUpdate(new Tuple<int, int>(oldState, newState), 0, (k, v) => v + 1);
         }
     }
 
     public double GetCIndex(int state)
     {
         //CICalcs++;
-        //Console.WriteLine("GetCIndex " + CICalcs);
         edgeCalcs = 0;
         Edges.Clear();
         ConnectedVertices = 0;
         //double connectivityIndex = 0;
         //double maxNeighbors = (gridWidth * gridHeight) * neighborhood.GetNeighborSize();
-        int amount = StateCount[state];
-        //Console.WriteLine("amount " + amount);
+        int amount = 0;
+        if(StateCount.TryGetValue(state, out int val))
+        {
+            amount = val;
+        }
         int neighborhoodFactor = 0;
         int maxEdges = 0;
 
@@ -821,7 +681,6 @@ public class CA
         {
             cIndex = (finalEdge / (double)maxEdges) * ((double)ConnectedVertices / amount);
         }
-        //Console.WriteLine(separateAgents[state].Count + "," + finalEdge + "," + maxEdges + "," + ConnectedVertices + "," + amount + "," +  cIndex);
         CIndexes[state] = cIndex;
         return cIndex;
     }
@@ -865,7 +724,6 @@ public class CA
 
             if (modifiedP == null)
                 continue;
-            //Console.WriteLine("Values: " + modifiedP.X + "," + modifiedP.Y);
             if (backup[modifiedP.X, modifiedP.Y].ContainsAgent)
             {
                 neighborCount[backup[modifiedP.X, modifiedP.Y].Agent.currentState]++;
@@ -1025,7 +883,6 @@ public class CA
     private int GetIndexFromRange(double[] agentAmountPerState)
     {
         double range = agentAmountPerState[agentAmountPerState.Length - 1];
-        var rng = new RNGCryptoServiceProvider();
         var bytes = new Byte[8];
         rng.GetBytes(bytes);
         var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
@@ -1055,7 +912,6 @@ public class CA
         int newY = currentAgent.Y;
         int oldX = currentAgent.X;
         int oldY = currentAgent.Y;
-        var rng = new RNGCryptoServiceProvider();
         var bytes = new Byte[8];
         rng.GetBytes(bytes);
         var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
@@ -1069,7 +925,6 @@ public class CA
         double newDown = newRight + downProb;
         double newLeft = newDown + leftProb;
 
-        //Console.WriteLine("Prob: " + randomWalk + " up: " + upProb + " right: " + newRight + " down: " + newDown + " left: " + newLeft);
 
         if (randomWalk < upProb)
         {
@@ -1092,12 +947,10 @@ public class CA
         {
             if (tempTuple.Item2 != oldX || tempTuple.Item3 != oldY)
             {
-                //Console.WriteLine("Old location: " + newX + "," + newY + " New Location" + tempTuple.Item2 + "," + tempTuple.Item3);
                 if (grid[tempTuple.Item2, tempTuple.Item3].ContainsAgent == false && System.Object.ReferenceEquals(grid[tempTuple.Item2, tempTuple.Item3].Agent, null) == true)
                 {
                     grid[tempTuple.Item2, tempTuple.Item3].AddAgent(currentAgent);
                     ActiveAgents[agentLocation] = grid[tempTuple.Item2, tempTuple.Item3].Agent;
-                    //Debug.Log("New: " + grid[newX, newY].agent.xLocation + ", " + grid[newX, newY].agent.yLocation);
                     grid[oldX, oldY].RemoveAgent();
                 }
             }
@@ -1235,7 +1088,6 @@ public class CA
             {
                 if(neighborList[i].ContainsAgent)
                 {
-                    var rng = new RNGCryptoServiceProvider();
                     var bytes = new Byte[8];
                     rng.GetBytes(bytes);
                     var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
@@ -1256,7 +1108,6 @@ public class CA
 
     Tuple<bool, int, int> GetGridTypeLocation(int x, int y, int localState)
     {
-        //Console.WriteLine("Old location: " + x + "," + y);
         switch (states[localState].gridType)
         {
             case GridType.Box:
@@ -1266,7 +1117,6 @@ public class CA
                 }
                 else
                 {
-                    //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
             //break;
@@ -1285,7 +1135,6 @@ public class CA
                     {
                         x -= gridWidth;
                     }
-                    //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
             //break;
@@ -1304,7 +1153,6 @@ public class CA
                     {
                         y -= gridHeight;
                     }
-                    //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
             //break;
@@ -1326,7 +1174,6 @@ public class CA
                     {
                         y -= gridHeight;
                     }
-                    //Console.WriteLine("New location: " + x + "," + y);
                     return new Tuple<bool, int, int>(true, x, y);
                 }
                 //break;

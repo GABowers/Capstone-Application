@@ -10,18 +10,9 @@ namespace Capstone_Application
     {
         bool fresh = true;
         string dataPath;
-        List<int> dataIncs;
         string imagePath;
-        List<int> imageIncs;
         string pathsPath;
-        List<int> templateIncs;
         string templatePath;
-        List<int> pathsIncs;
-        List<int> resetIterations;
-        List<int> resetCounts;
-        List<int> pauseIterations;
-        List<int> pauseRuns;
-        List<int> pauseCounts;
         bool autoReset;
         bool autoPause;
         bool saveCounts;
@@ -30,35 +21,33 @@ namespace Capstone_Application
         bool savePaths;
         bool saveImage;
         bool metaStore;
-        List<int> histIncs;
-        List<int> histRunIncs;
         string histPath;
 
         public string DataPath { get => dataPath; set => dataPath = value; }
-        public List<int> DataIncs { get => dataIncs; set => dataIncs = value; }
+        public List<int> DataIncs { get; set; }
         public string ImagePath { get => imagePath; set => imagePath = value; }
-        public List<int> ImageIncs { get => imageIncs; set => imageIncs = value; }
+        public List<int> ImageIncs { get; set; }
         public string PathsPath { get => pathsPath; set => pathsPath = value; }
-        public List<int> PathsIncs { get => pathsIncs; set => pathsIncs = value; }
-        public List<int> ResetIterations { get => resetIterations; set => resetIterations = value; }
-        public List<int> ResetCounts { get => resetCounts; set => resetCounts = value; }
-        public List<int> PauseIterations { get => pauseIterations; set => pauseIterations = value; }
-        public List<int> PauseCounts { get => pauseCounts; set => pauseCounts = value; }
+        public List<int> PathsIncs { get; set; }
+        public List<int> ResetIterations { get; set; }
+        public List<int> ResetCounts { get; set; }
+        public List<int> PauseIterations { get; set; }
+        public List<int> PauseCounts { get; set; }
+        public List<int> PauseRuns { get; set; }
         public bool AutoReset { get => autoReset; set => autoReset = value; }
         public bool AutoPause { get => autoPause; set => autoPause = value; }
         public bool SaveCounts { get => saveCounts; set => saveCounts = value; }
         public bool SaveTrans { get => saveTrans; set => saveTrans = value; }
         public bool SaveIndex { get => saveIndex; set => saveIndex = value; }
-        public List<int> TemplateIncs { get => templateIncs; set => templateIncs = value; }
+        public List<int> TemplateIncs { get; set; }
         public string TemplatePath { get => templatePath; set => templatePath = value; }
         public bool Fresh { get => fresh; set => fresh = value; }
-        public List<int> PauseRuns { get => pauseRuns; set => pauseRuns = value; }
         public bool MetaStore { get => metaStore; set => metaStore = value; }
         public bool SavePaths { get => savePaths; set => savePaths = value; }
         public bool SaveImage { get => saveImage; set => saveImage = value; }
-        public List<int> HistIncs { get => histIncs; set => histIncs = value; }
+        public List<int> HistIncs { get; set; }
         public string HistPath { get => histPath; set => histPath = value; }
-        public List<int> HistRunIncs { get => histRunIncs; set => histRunIncs = value; }
+        public List<int> HistRunIncs { get; set; }
 
         public RunSettings(int agents)
         {
@@ -73,11 +62,6 @@ namespace Capstone_Application
             HistIncs = new List<int>();
             HistRunIncs = new List<int>();
             PauseRuns = new List<int>();
-            for (int i = 0; i < agents; i++)
-            {
-                ResetCounts.Add(-1);
-                PauseCounts.Add(-1);
-            }
             Fresh = true;
         }
     }

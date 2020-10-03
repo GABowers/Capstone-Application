@@ -260,11 +260,9 @@ namespace Capstone_Application
 
         void RecursiveCheck(TreeNode parent, bool checkState)
         {
-            //Console.WriteLine("Parent: " + parent);
             parent.Checked = checkState;
             foreach(TreeNode sub in parent.Nodes)
             {
-                //Console.WriteLine("Sub: " + sub);
                 RecursiveCheck(sub, checkState);
             }
         }
