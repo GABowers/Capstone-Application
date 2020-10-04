@@ -515,6 +515,7 @@ namespace Capstone_Application
                             wt.Write(ci[i][j].ToString() + ",");
                         }
                     }
+                    wt.WriteLine();
                 }
                 wt.Close();
             }
