@@ -276,7 +276,7 @@ namespace Capstone_Application
 
         public void Pause()
         {
-            local_form.PauseUnpauseCA();
+            local_form.PauseCA();
         }
 
         public void EditCA()
@@ -613,7 +613,7 @@ namespace Capstone_Application
                         if (runSettings.PauseIterations[i] == iterations)
                         {
                             //CheckFinalDataSave(form, time);
-                            form.PauseUnpauseCA();
+                            form.PauseCA();
                         }
                     }
                     // Cell count based
@@ -622,7 +622,7 @@ namespace Capstone_Application
                         if (myCA.StateCount[i] == runSettings.PauseCounts[i])
                         {
                             //CheckFinalDataSave(form, time);
-                            form.PauseUnpauseCA();
+                            form.PauseCA();
                         }
                     }
                 }
@@ -822,7 +822,7 @@ namespace Capstone_Application
                     if (caRuns > runSettings.PauseRuns[i])
                     {
                         //CheckFinalDataSave(form, time);
-                        form.PauseUnpauseCA();
+                        form.PauseCA();
                     }
                 }
             }

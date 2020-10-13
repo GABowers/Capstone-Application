@@ -143,7 +143,7 @@ namespace Capstone_Application
             PauseUnpauseCA();
         }
 
-        public void PauseUnpauseCA()
+        void PauseUnpauseCA()
         {
             if(controllerScript.CreatedCA)
             {
@@ -160,6 +160,11 @@ namespace Capstone_Application
                     text_timer.Enabled = false;
                 }
             }
+        }
+
+        public void PauseCA()
+        {
+            Running = false;
         }
 
         private void RunCA()
