@@ -476,7 +476,23 @@ namespace Capstone_Application
         {
             int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
             int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-            if((xProper >= 0 && xProper < myCA.gridWidth) && (yProper >= 0 && yProper < myCA.gridHeight))
+            if (xProper == -1)
+            {
+                xProper = 0;
+            }
+            if (xProper == myCA.gridWidth)
+            {
+                xProper = myCA.gridWidth - 1;
+            }
+            if (yProper == -1)
+            {
+                yProper = 0;
+            }
+            if (yProper == myCA.gridHeight)
+            {
+                yProper = myCA.gridHeight - 1;
+            }
+            if ((xProper >= 0 && xProper < myCA.gridWidth) && (yProper >= 0 && yProper < myCA.gridHeight))
             {
                 if (buttonPressed == 0)
                 {
