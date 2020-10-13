@@ -271,7 +271,6 @@ namespace Capstone_Application
             FullCount.Add(new Tuple<int, List<int>>(0, myCA.StateCount.Values.ToList()));
             FullTransitions.Add(new Tuple<int, Dictionary<Tuple<int, int>, int>>(0, new Dictionary<Tuple<int, int>, int>(myCA.Transitions)));
             FullIndex.Add(new Tuple<int, List<double>>(0, myCA.CIndexes));
-
             CreatedCA = true;
         }
 
@@ -300,6 +299,7 @@ namespace Capstone_Application
                 //UpdateBoard(currentForm);
                 AlreadyCA = true;
             }
+            UpdateBoard(currentForm);
         }
 
         public static Color PreMultiplyAlpha(Color pixel)
@@ -324,25 +324,25 @@ namespace Capstone_Application
                 //var depth = Bitmap.GetPixelFormatSize(data.PixelFormat);
                 //var buffer = new byte[data.Width * data.Height * depth];
                 pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
-                if (iterations == 0)
+                //if (iterations == 0)
                 {
                     Color tileColor;
-                    for (int i = 0; i < localGridWidth; ++i)
-                    {
-                        for (int j = 0; j < localGridHeight; ++j)
-                        {
-                            if (myCA.grid[i, j].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[i, j].Agent, null) == false))
-                            {
-                                tileColor = PreMultiplyAlpha(colors[myCA.grid[i, j].Agent.currentState]);
-                                bmp.SetPixel(i, j, tileColor);
-                            }
-                            else
-                            {
-                                tileColor = PreMultiplyAlpha(Color.Black);
-                                bmp.SetPixel(i, j, tileColor);
-                            }
-                        }
-                    }
+                    Parallel.For(0, localGridWidth, (i) =>
+                   {
+                       Parallel.For(0, localGridHeight, (j) =>
+                      {
+                          if (CA.backup[i, j] >= 0)
+                          {
+                              //tileColor = PreMultiplyAlpha(colors[CA.backup[i, j]]);
+                              bmp.SetPixel(i, j, colors[CA.backup[i, j]]);
+                          }
+                          else
+                          {
+                              //tileColor = PreMultiplyAlpha(Color.Black);
+                              bmp.SetPixel(i, j, Color.Black);
+                          }
+                      });
+                   });
                     //while (pixelChanges.Count > 0)
                     //{
                     //    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
@@ -351,57 +351,49 @@ namespace Capstone_Application
                     //    }
                     //}
                 }
-                Parallel.For(0, myCA.ActiveAgents.Count, (i) =>
-                {
-                    Color tileColor;
-                    AgentController curAgent = myCA.ActiveAgents[i];
-                    int oldX;
-                    int oldY;
-                    double frac = 1.0;
-                    Color newColor;
-                    if (curAgent.History.Count > 1)
-                    {
-                        if (curAgent.HistoryChange)
-                        {
-                            oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
-                            oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
-                            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].Agent, null) == false))
-                            {
-                                // check for container that shades color
-                                tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].Agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
-                                frac = 1.0;
-                                //if (myCA.grid[oldX, oldY].Agent.Containers != null) // how to handle multiple thresholds?
-                                //{
-                                //    for (int j = 0; j < myCA.grid[oldX, oldY].Agent.Containers.Count; j++)
-                                //    {
-                                //        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].Agent.Containers[j].Value / myCA.grid[oldX, oldY].Agent.Containers[j].Threshold));
-                                //    }
-                                //}
-                                newColor = Color.FromArgb((int)(frac * tileColor.R), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
-                                bmp.SetPixel(oldX, oldY, newColor);
-                            }
-                            else
-                            {
-                                tileColor = PreMultiplyAlpha(Color.Black);
-                                bmp.SetPixel(oldX, oldY, tileColor);
-                            }
-                        }
-                    }
-                    int newX = curAgent.X;
-                    int newY = curAgent.Y;
-                    tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
-                    frac = 1.0;
-                    newColor = Color.FromArgb((int)(tileColor.R * frac), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
-                    bmp.SetPixel(newX, newY, newColor);
-                });
-                //bmp.Bitmap.UnlockBits(data);
-                //while (pixelChanges.Count > 0)
+                //Parallel.For(0, myCA.ActiveAgents.Count, (i) =>
                 //{
-                //    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
+                //    Color tileColor;
+                //    AgentController curAgent = myCA.ActiveAgents[i];
+                //    int oldX;
+                //    int oldY;
+                //    double frac = 1.0;
+                //    Color newColor;
+                //    if (curAgent.History.Count > 1)
                 //    {
-                //        bmp.SetPixel(result.Item1, result.Item2, result.Item3);
+                //        if (curAgent.HistoryChange)
+                //        {
+                //            oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
+                //            oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
+                //            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].Agent, null) == false))
+                //            {
+                //                // check for container that shades color
+                //                tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].Agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
+                //                frac = 1.0;
+                //                //if (myCA.grid[oldX, oldY].Agent.Containers != null) // how to handle multiple thresholds?
+                //                //{
+                //                //    for (int j = 0; j < myCA.grid[oldX, oldY].Agent.Containers.Count; j++)
+                //                //    {
+                //                //        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].Agent.Containers[j].Value / myCA.grid[oldX, oldY].Agent.Containers[j].Threshold));
+                //                //    }
+                //                //}
+                //                newColor = Color.FromArgb((int)(frac * tileColor.R), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
+                //                bmp.SetPixel(oldX, oldY, newColor);
+                //            }
+                //            else
+                //            {
+                //                tileColor = PreMultiplyAlpha(Color.Black);
+                //                bmp.SetPixel(oldX, oldY, tileColor);
+                //            }
+                //        }
                 //    }
-                //}
+                //    int newX = curAgent.X;
+                //    int newY = curAgent.Y;
+                //    tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
+                //    frac = 1.0;
+                //    newColor = Color.FromArgb((int)(tileColor.R * frac), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
+                //    bmp.SetPixel(newX, newY, newColor);
+                //});
                 UpdateImage(currentForm, bmp.Bitmap);
             }
         }

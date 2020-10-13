@@ -30,7 +30,7 @@ public class CA
     //private GridType gridType;
     public BlankGrid[,] grid;
     List<NType> neighborTypes;
-    static int[,] backup;
+    public static int[,] backup;
     public int gridWidth;
     public int gridHeight;
     private int numStates;
@@ -249,6 +249,7 @@ public class CA
                 }
             }
         }
+        Backup();
     }
 
     public void AddAgent(AgentController agent)
@@ -280,7 +281,6 @@ public class CA
             separateAgents[i].Clear();
         }
         //CICalcs = 0;
-        Backup();
         for (int i = 0; i < numStates; ++i)
         {
             StateCount.AddOrUpdate(i, 0, (k, v) => 0);
@@ -308,6 +308,7 @@ public class CA
         {
             GasRoutine();
         }
+        Backup();
     }
 
     public void UpdateCIndex()
