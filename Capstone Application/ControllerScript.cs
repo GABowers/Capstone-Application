@@ -468,9 +468,17 @@ namespace Capstone_Application
             {
                 Double tempX = Convert.ToDouble(xValue);
                 Double tempY = Convert.ToDouble(yValue);
-                int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
-                int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-                if(buttonPressed == 0)
+                Edit(tempX, tempY, container, buttonPressed, state);
+            }
+        }
+
+        void Edit(double tempX, double tempY, PixelBox container, int buttonPressed, int state)
+        {
+            int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
+            int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
+            if((xProper >= 0 && xProper < myCA.gridWidth) && (yProper >= 0 && yProper < myCA.gridHeight))
+            {
+                if (buttonPressed == 0)
                 {
                     if (myCA.grid[xProper, yProper].ContainsAgent == true)
                     {
@@ -488,7 +496,7 @@ namespace Capstone_Application
                         myCA.grid[xProper, yProper].RemoveAgent();
                         myCA.RemoveAgent(xProper, yProper);
                     }
-                    else if(myCA.grid[xProper, yProper].ContainsAgent == false)
+                    else if (myCA.grid[xProper, yProper].ContainsAgent == false)
                     {
                         myCA.grid[xProper, yProper].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[xProper, yProper]));
                         myCA.AddAgent(myCA.grid[xProper, yProper].Agent);
@@ -510,35 +518,9 @@ namespace Capstone_Application
                     {
                         Double tempX = Convert.ToDouble(rangeX[i]);
                         Double tempY = Convert.ToDouble(rangeY[j]);
-                        int xProper = Convert.ToInt32((tempX / container.Size.Width) * myCA.gridWidth);
-                        int yProper = Convert.ToInt32((tempY / container.Size.Height) * myCA.gridHeight);
-                        if (buttonPressed == 0)
-                        {
-                            if (myCA.grid[xProper, yProper].ContainsAgent == true)
-                            {
-                                myCA.grid[xProper, yProper].Agent.currentState = state;
-                                //if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
-                                //{
-                                //    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
-                                //}
-                            }
-                        }
-                        if (buttonPressed == 1)
-                        {
-                            if (myCA.grid[xProper, yProper].ContainsAgent == true)
-                            {
-                                myCA.RemoveAgent(xProper, yProper);
-                                myCA.grid[xProper, yProper].RemoveAgent();
-                            }
-                            else if (myCA.grid[xProper, yProper].ContainsAgent == false)
-                            {
-                                myCA.grid[xProper, yProper].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[xProper, yProper]));
-                                myCA.AddAgent(myCA.grid[xProper, yProper].Agent);
-                            }
-                        }
+                        Edit(tempX, tempY, container, buttonPressed, state);
                     }
                 }
-                UpdateCounter();
             }
         }
 
