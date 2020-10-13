@@ -495,7 +495,7 @@ namespace Capstone_Application
             }
             if ((xProper >= 0 && xProper < myCA.gridWidth) && (yProper >= 0 && yProper < myCA.gridHeight))
             {
-                if (buttonPressed == 0)
+                if (buttonPressed == 0) // adds or changes to current
                 {
                     if (myCA.grid[xProper, yProper].ContainsAgent == true)
                     {
@@ -505,18 +505,18 @@ namespace Capstone_Application
                         //    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
                         //}
                     }
+                    else
+                    {
+                        myCA.grid[xProper, yProper].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[xProper, yProper]));
+                        myCA.AddAgent(myCA.grid[xProper, yProper].Agent);
+                    }
                 }
-                if (buttonPressed == 1)
+                if (buttonPressed == 1) // removes agents
                 {
                     if (myCA.grid[xProper, yProper].ContainsAgent == true)
                     {
                         myCA.grid[xProper, yProper].RemoveAgent();
                         myCA.RemoveAgent(xProper, yProper);
-                    }
-                    else if (myCA.grid[xProper, yProper].ContainsAgent == false)
-                    {
-                        myCA.grid[xProper, yProper].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[xProper, yProper]));
-                        myCA.AddAgent(myCA.grid[xProper, yProper].Agent);
                     }
                 }
                 UpdateCounter();

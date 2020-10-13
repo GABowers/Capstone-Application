@@ -82,13 +82,16 @@ namespace Capstone_Application
 
         private void Timer_Tick(object sender, System.EventArgs e)
         {
-            Invoke(new Action(() =>
+            if(Running)
             {
-                if(this != null)
+                Invoke(new Action(() =>
                 {
-                    UpdateIterationBox();
-                }
-            }));
+                    if (this != null)
+                    {
+                        UpdateIterationBox();
+                    }
+                }));
+            }
         }
 
         private void newModelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -829,6 +832,7 @@ namespace Capstone_Application
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Running = false;
             Application.Exit();
         }
     }
