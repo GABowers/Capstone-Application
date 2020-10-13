@@ -57,8 +57,8 @@ namespace Capstone_Application
             TemplateIncs = new List<int>();
             ResetIterations = new List<int>();
             PauseIterations = new List<int>();
-            ResetCounts = Enumerable.Repeat(0, agents).ToList();
-            PauseCounts = Enumerable.Repeat(0, agents).ToList();
+            ResetCounts = Enumerable.Repeat(-1, agents).ToList();
+            PauseCounts = Enumerable.Repeat(-1, agents).ToList();
             HistIncs = new List<int>();
             HistRunIncs = new List<int>();
             PauseRuns = new List<int>();

@@ -140,11 +140,11 @@ namespace Capstone_Application
 
     public enum NType
     {
-        None,
-        VonNeumann,
-        Moore,
-        Hybrid,
-        Advanced,
+        None = 0,
+        VonNeumann = 1,
+        Moore = 2,
+        Hybrid = 3,
+        Advanced = 4,
     }
     public enum MoveType
     {

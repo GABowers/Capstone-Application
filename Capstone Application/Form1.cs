@@ -688,6 +688,7 @@ namespace Capstone_Application
 
         private void resetButton_Click(object sender, EventArgs e)
         {
+            PauseCA();
             if(runSettings != null)
             {
                 ResetCA();
@@ -815,6 +816,7 @@ namespace Capstone_Application
 
         private void resetRunsButton_Click(object sender, EventArgs e)
         {
+            PauseCA();
             if (runSettings != null)
             {
                 ResetCA();

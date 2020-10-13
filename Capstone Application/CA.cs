@@ -25,12 +25,12 @@ public class CA
     //private BlankGrid blankGrid;
     //AgentController agent;
     private CellState[] states;
-    private List<Neighborhood> neighborhoods;
+    private List<NType> neighborhoods;
     //private List<GridType> grids;
     //private GridType gridType;
     public BlankGrid[,] grid;
     List<NType> neighborTypes;
-    BlankGrid[,] backup;
+    static int[,] backup;
     public int gridWidth;
     public int gridHeight;
     private int numStates;
@@ -75,8 +75,8 @@ public class CA
         neighborTypes = types;
         infos = info;
         grid = new BlankGrid[width, height];
-        backup = new BlankGrid[width, height];
-        neighborhoods = new List<Neighborhood>();
+        backup = new int[width, height];
+        neighborhoods = types;
         ActiveAgents = new List<AgentController>();
         //neighborhood = new Neighborhood(type);
         states = new CellState[numStates];
@@ -84,7 +84,6 @@ public class CA
         {
             StateCount.AddOrUpdate(i, 0, (k, v) => 0);
             CIndexes.Add(0);
-            neighborhoods.Add(new Neighborhood(types[i]));
             separateAgents.Add(new List<AgentController>());
             states[i] = new CellState(numStates, numStates, info[i]);
             for (int j = 0; j < numStates; j++)
@@ -281,7 +280,7 @@ public class CA
             separateAgents[i].Clear();
         }
         //CICalcs = 0;
-        Array.Copy(grid, backup, gridWidth * gridHeight);
+        Backup();
         for (int i = 0; i < numStates; ++i)
         {
             StateCount.AddOrUpdate(i, 0, (k, v) => 0);
@@ -292,19 +291,14 @@ public class CA
         }
         if (template == Template.None || template == Template.Random_Walk)
         {
-            if((states.Any(x => x.mobile) || (states.Any(x => x.neighborhoodType != NType.None))))
+            if(states.Any(x => x.mobile))
             {
-                HandleAnyAgents();
+                HandleMobileAgents();
             }
             else
             {
-                HandleIsolatedAgents();
-            }
-            
-            for (int i = 0; i < numStates; i++)
-            {
-                GetCIndex(i);
-            }
+                HandleImmobileAgents();
+            }            
         }
         else if(template == Template.DLA)
         {
@@ -316,7 +310,33 @@ public class CA
         }
     }
 
-    void HandleAnyAgents()
+    public void UpdateCIndex()
+    {
+        for (int i = 0; i < numStates; i++)
+        {
+            GetCIndex(i);
+        }
+    }
+
+    void Backup()
+    {
+        Parallel.For(0, gridWidth, (x) =>
+        {
+            Parallel.For(0, gridHeight, (y) =>
+            {
+                if (grid[x, y].ContainsAgent)
+                {
+                    backup[x, y] = grid[x, y].Agent.currentState;
+                }
+                else
+                {
+                    backup[x, y] = -1;
+                }
+            });
+        });
+    }
+
+    void HandleMobileAgents()
     {
         for (int x = 0; x < ActiveAgents.Count; ++x)
         {
@@ -363,7 +383,7 @@ public class CA
         }
     }
 
-    void HandleIsolatedAgents()
+    void HandleImmobileAgents()
     {
         List<int> neighbors = Enumerable.Repeat(0, states.Length).ToList();
         
@@ -376,8 +396,24 @@ public class CA
             else
             {
                 int oldState = ActiveAgents[i].currentState;
-                double[] probChances = StandardGetProbChances(oldState, neighbors);
-                ActiveAgents[i].currentState = GetStateFromProbability(probChances);
+
+                if (neighborTypes[oldState] == NType.None)
+                {
+                    double[] probChances = StandardGetProbChances(oldState, neighbors);
+                    ActiveAgents[i].currentState = GetStateFromProbability(probChances);
+                }
+                else if (neighborTypes[oldState] == NType.Advanced)
+                {
+                    double[] probChances = AdvancedGetProbChances(oldState, ActiveAgents[i].X, ActiveAgents[i].Y);
+                    ActiveAgents[i].currentState = GetStateFromProbability(probChances);
+                }
+                else
+                {
+                    List<int> neighborStateCount = GetNeighborCount(ActiveAgents[i].X, ActiveAgents[i].Y, oldState);
+                    double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
+                    ActiveAgents[i].currentState = GetStateFromProbability(probChances);
+                }
+
                 int newState = ActiveAgents[i].currentState;
                 lock(separateAgents)
                 {
@@ -685,103 +721,229 @@ public class CA
         return cIndex;
     }
 
-    private List<int> GetNeighborCount(int x, int y, int oldState)
+    private List<int> GetNeighborCount(int x, int y, int state)
     {
         List<int> neighborCount = new List<int>();
         for (int i = 0; i < numStates; ++i)
         {
-            neighborCount.Add(new int());
+            neighborCount.Add(0);
         }
-        List<Point> neighbors = neighborhoods[oldState].GetNeighbors(x, y);
-
-        //Get a count of each state in our neighborhood
-        foreach (Point p in neighbors)
+        List<Tuple<int, int>> neighbors = GetNeighbors(x, y, state);
+        bool skip = false;
+        foreach (var p in neighbors)
         {
-            // We can't change the variable in a foreach iteration
-            // So we make a copy
-            Point modifiedP = p;
-
-            // if modifiedP is not on the grid, adjust grid
-            if (!modifiedP.WithinRange(gridWidth, gridHeight))
+            Tuple<int, int> pp = new Tuple<int, int>(p.Item1, p.Item2);
+            skip = false;
+            if(p.Item1 < 0 || p.Item1 >= gridWidth || p.Item2 < 0 || p.Item2 >= gridHeight)
             {
-                switch (states[oldState].gridType)
+                int xx;
+                int yy;
+                switch (states[state].gridType)
                 {
                     case GridType.Box:
-                        modifiedP = null; // make it null to skip it
+                        skip = true;
                         break;
-                    case GridType.CylinderW:
-                        modifiedP = Point.AdjustCylinderW(gridWidth, modifiedP);
+                    case GridType.CylinderW: // adjust a point to wrap around the horizontal axis - Cylinder
+                        if(p.Item2 < 0 || p.Item2 >= gridHeight)
+                        {
+                            skip = true;
+                        }
+                        else
+                        {
+                            xx = p.Item1;
+                            yy = p.Item2;
+                            if(xx < 0)
+                            {
+                                xx += gridWidth;
+                            }
+                            else if (xx >= gridWidth)
+                            {
+                                xx -= gridWidth;
+                            }
+                            pp = new Tuple<int, int>(xx, yy);
+                        }
                         break;
                     case GridType.CylinderH:
-                        modifiedP = Point.AdjustCylinderH(gridHeight, modifiedP);
+                        if (p.Item1 < 0 || p.Item1 >= gridWidth)
+                        {
+                            skip = true;
+                        }
+                        else
+                        {
+                            xx = p.Item1;
+                            yy = p.Item2;
+                            if (yy < 0)
+                            {
+                                yy += gridHeight;
+                            }
+                            else if (yy >= gridHeight)
+                            {
+                                yy -= gridHeight;
+                            }
+                            pp = new Tuple<int, int>(xx, yy);
+                        }
                         break;
                     case GridType.Torus:
-                        modifiedP = Point.AdjustTorus(gridWidth, gridHeight, modifiedP);
+                        xx = p.Item1;
+                        yy = p.Item2;
+                        if (yy < 0)
+                        {
+                            yy += gridHeight;
+                        }
+                        else if (yy >= gridHeight)
+                        {
+                            yy -= gridHeight;
+                        }
+                        if (xx < 0)
+                        {
+                            xx += gridWidth;
+                        }
+                        else if (xx >= gridWidth)
+                        {
+                            xx -= gridWidth;
+                        }
+                        pp = new Tuple<int, int>(xx, yy);
                         break;
                 }
             }
-            // Check that modifiedP exists--that it's not an empty spot
-
-            if (modifiedP == null)
-                continue;
-            if (backup[modifiedP.X, modifiedP.Y].ContainsAgent)
+            if(!skip)
             {
-                neighborCount[backup[modifiedP.X, modifiedP.Y].Agent.currentState]++;
+                if (backup[pp.Item1, pp.Item2]>= 0)
+                {
+                    neighborCount[backup[pp.Item1, pp.Item2]]++;
+                }
             }
         }
         return neighborCount;
     }
 
+    List<Tuple<int, int>> GetNeighbors(int x, int y, int state)
+    {
+        List<Tuple<int, int>> neighbors = new List<Tuple<int, int>>();
+        if ((int)neighborhoods[state] > 0) // at least von neumann
+        {
+            neighbors.Add(new Tuple<int, int>(x - 1, y));
+            neighbors.Add(new Tuple<int, int>(x, y - 1));
+            neighbors.Add(new Tuple<int, int>(x + 1, y));
+            neighbors.Add(new Tuple<int, int>(x, y + 1));
+        }
+        if ((int)neighborhoods[state] > 1) // at least moore
+        {
+            neighbors.Add(new Tuple<int, int>(x - 1, y - 1));
+            neighbors.Add(new Tuple<int, int>(x + 1, y - 1));
+            neighbors.Add(new Tuple<int, int>(x + 1, y + 1));
+            neighbors.Add(new Tuple<int, int>(x - 1, y + 1));
+        }
+        if ((int)neighborhoods[state] > 2) // at least hybrid
+        {
+            neighbors.Add(new Tuple<int, int>(x - 2, y));
+            neighbors.Add(new Tuple<int, int>(x, y - 2));
+            neighbors.Add(new Tuple<int, int>(x + 2, y));
+            neighbors.Add(new Tuple<int, int>(x, y + 2));
+        }
+        return neighbors;
+    }
+
     // Gets neighbor count for the current grid
-    private void GetEdges(int x, int y, int centerState)
+    private void GetEdges(int x, int y, int state)
     {
         bool connections = false;
-        List<Point> neighbors = neighborhoods[centerState].GetNeighbors(x, y);
+        var neighbors = GetNeighbors(x, y, state);
 
         // this ^^^ only returns places that exist. SHould it be that way???
-
-        //Get a count of each state in our neighborhood
-        foreach (Point p in neighbors)
+        bool skip = false;
+        foreach (var p in neighbors)
         {
-            // We can't change the variable in a foreach iteration
-            // So we make a copy
-            Point modifiedP = p;
-
-            // if modifiedP is not on the grid, adjust grid
-            if (!modifiedP.WithinRange(gridWidth, gridHeight))
+            Tuple<int, int> pp = new Tuple<int, int>(p.Item1, p.Item2);
+            skip = false;
+            if (p.Item1 < 0 || p.Item1 >= gridWidth || p.Item2 < 0 || p.Item2 >= gridHeight)
             {
-                switch (states[centerState].gridType)
+                int xx;
+                int yy;
+                switch (states[state].gridType)
                 {
                     case GridType.Box:
-                        modifiedP = null; // make it null to skip it
+                        skip = true;
                         break;
-                    case GridType.CylinderW:
-                        modifiedP = Point.AdjustCylinderW(gridWidth, modifiedP);
+                    case GridType.CylinderW: // adjust a point to wrap around the horizontal axis - Cylinder
+                        if (p.Item2 < 0 || p.Item2 >= gridHeight)
+                        {
+                            skip = true;
+                        }
+                        else
+                        {
+                            xx = p.Item1;
+                            yy = p.Item2;
+                            if (xx < 0)
+                            {
+                                xx += gridWidth;
+                            }
+                            else if (xx >= gridWidth)
+                            {
+                                xx -= gridWidth;
+                            }
+                            pp = new Tuple<int, int>(xx, yy);
+                        }
                         break;
                     case GridType.CylinderH:
-                        modifiedP = Point.AdjustCylinderH(gridHeight, modifiedP);
+                        if (p.Item1 < 0 || p.Item1 >= gridWidth)
+                        {
+                            skip = true;
+                        }
+                        else
+                        {
+                            xx = p.Item1;
+                            yy = p.Item2;
+                            if (yy < 0)
+                            {
+                                yy += gridHeight;
+                            }
+                            else if (yy >= gridHeight)
+                            {
+                                yy -= gridHeight;
+                            }
+                            pp = new Tuple<int, int>(xx, yy);
+                        }
                         break;
                     case GridType.Torus:
-                        modifiedP = Point.AdjustTorus(gridWidth, gridHeight, modifiedP);
+                        xx = p.Item1;
+                        yy = p.Item2;
+                        if (yy < 0)
+                        {
+                            yy += gridHeight;
+                        }
+                        else if (yy >= gridHeight)
+                        {
+                            yy -= gridHeight;
+                        }
+                        if (xx < 0)
+                        {
+                            xx += gridWidth;
+                        }
+                        else if (xx >= gridWidth)
+                        {
+                            xx -= gridWidth;
+                        }
+                        pp = new Tuple<int, int>(xx, yy);
                         break;
                 }
             }
-            // Check that modifiedP exists--that it's not an empty spot
-
-            if (modifiedP == null)
-                continue;
-            if (grid[modifiedP.X, modifiedP.Y].ContainsAgent)
+            if (!skip)
             {
-                if (connections == false)
+                if (backup[pp.Item1, pp.Item2] >= 0)
                 {
-                    ConnectedVertices += 1;
-                    connections = true;
+                    if (connections == false)
+                    {
+                        ConnectedVertices += 1;
+                        connections = true;
+                    }
+                    if (grid[pp.Item1, pp.Item2].Agent.currentState == state)
+                    {
+                        edgeCalcs++;
+                        // this needs to be outside of "contains agent"
+                    }
                 }
-                if (grid[modifiedP.X, modifiedP.Y].Agent.currentState == centerState)
-                {
-                    edgeCalcs++;
-                    // this needs to be outside of "contains agent"
-                }
+                
             }
         }
     }

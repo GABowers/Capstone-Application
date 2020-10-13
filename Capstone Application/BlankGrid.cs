@@ -35,7 +35,13 @@ namespace Capstone_Application
             AddAgent(agent);
         }
 
-        public bool ContainsAgent { get; private set; }
+        public bool ContainsAgent
+        {
+            get
+            {
+                return Agent != null;
+            }
+        }
 
         //public AgentController AgentController
         //{
@@ -47,13 +53,11 @@ namespace Capstone_Application
         {
             Agent = prevAgent;
             Agent.Update(this);
-            ContainsAgent = true;
         }
 
         public void RemoveAgent()
         {
             Agent = null;
-            ContainsAgent = false;
         }
 
         //public PathfindingNode CreateSubNode()

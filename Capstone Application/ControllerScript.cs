@@ -217,10 +217,11 @@ namespace Capstone_Application
                     FullTransitions.Add(new Tuple<int, Dictionary<Tuple<int, int>, int>>(iterations, new Dictionary<Tuple<int, int>, int>(myCA.Transitions)));
                 }
 
-                List<double> currentIndex = new List<double>();
-                currentIndex.AddRange(myCA.CIndexes);
                 if(runSettings.SaveIndex)
                 {
+                    myCA.UpdateCIndex();
+                    List<double> currentIndex = new List<double>();
+                    currentIndex.AddRange(myCA.CIndexes);
                     FullIndex.Add(new Tuple<int, List<double>>(iterations, myCA.CIndexes));
                 }
             }
