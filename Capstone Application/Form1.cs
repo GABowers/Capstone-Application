@@ -835,5 +835,10 @@ namespace Capstone_Application
             Running = false;
             Application.Exit();
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Running = false;
+        }
     }
 }

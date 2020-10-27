@@ -24,13 +24,13 @@ public class CA
     //System.Object[,] objects;
     //private BlankGrid blankGrid;
     //AgentController agent;
-    private CellState[] states;
+    public CellState[] states;
     private List<NType> neighborhoods;
     //private List<GridType> grids;
     //private GridType gridType;
-    public BlankGrid[,] grid;
+    public BlankGrid[] grid;
     List<NType> neighborTypes;
-    public static int[,] backup;
+    public static int[] backup;
     public int gridWidth;
     public int gridHeight;
     private int numStates;
@@ -74,8 +74,8 @@ public class CA
         this.numStates = numStates;
         neighborTypes = types;
         infos = info;
-        grid = new BlankGrid[width, height];
-        backup = new int[width, height];
+        grid = new BlankGrid[width * height];
+        backup = new int[width * height];
         neighborhoods = types;
         ActiveAgents = new List<AgentController>();
         //neighborhood = new Neighborhood(type);
@@ -156,6 +156,7 @@ public class CA
             agentCount.Add(cellAmounts[i]);
             totalCells += cellAmounts[i];
         }
+        totalCells = Math.Min(totalCells, (gridWidth * gridHeight));
 
         // this is a list of which states still needed to be added
 
@@ -186,10 +187,12 @@ public class CA
                         int x = states[i].startingLocations[j].Item1;
                         int y = states[i].startingLocations[j].Item2;
                         int combination = (x * gridWidth) + y;
-                        grid[x, y] = new BlankGrid(x, y, new AgentController(x, y, i, this, grid[x, y]), this);
-                        grid[x, y].Agent.AddContainer(states[i].containerSettings);
-                        AddAgent(grid[x, y].Agent);
-                        separateAgents[i].Add(grid[x, y].Agent);
+                        var pos = (x * gridWidth) + y;
+                        grid[pos] = new BlankGrid(x, y, new AgentController(x, y, i, this, grid[pos]), this);
+                        grid[pos].Agent.AddContainer(states[i].containerSettings);
+                        //AddAgent(grid[pos].Agent);
+                        ActiveAgents.Add(grid[pos].Agent);
+                        separateAgents[i].Add(grid[pos].Agent);
 
                         list.Remove(combination);
                         reducer++;
@@ -219,10 +222,11 @@ public class CA
             int xValue = (increment / gridWidth);
             int yValue = (increment % gridWidth);
             
-            grid[xValue, yValue] = new BlankGrid(xValue, yValue, new AgentController(xValue, yValue, state, this, grid[xValue, yValue]), this);
-            grid[xValue, yValue].Agent.AddContainer(states[state].containerSettings);
-            AddAgent(grid[xValue, yValue].Agent);
-            separateAgents[state].Add(grid[xValue, yValue].Agent);
+            grid[increment] = new BlankGrid(xValue, yValue, new AgentController(xValue, yValue, state, this, grid[increment]), this);
+            grid[increment].Agent.AddContainer(states[state].containerSettings);
+            //AddAgent(grid[increment].Agent);
+            ActiveAgents.Add(grid[increment].Agent);
+            separateAgents[state].Add(grid[increment].Agent);
 
             // Subtract that state from its agentcount
             // And if it goes to zero remove it from both our lists
@@ -238,14 +242,13 @@ public class CA
 
         if(totalCells < gridSize)
         {
-            for (int i = 0; i < gridWidth; ++i)
+            for (int i = 0; i < grid.Length; i++)
             {
-                for (int j = 0; j < gridHeight; ++j)
+                if(System.Object.ReferenceEquals(grid[i], null))
                 {
-                    if (System.Object.ReferenceEquals(grid[i, j], null))
-                    {
-                        grid[i, j] = new BlankGrid(i, j, this);
-                    }
+                    int x = i / gridWidth;
+                    int y = i % gridWidth;
+                    grid[i] = new BlankGrid(x, y, this);
                 }
             }
         }
@@ -256,6 +259,7 @@ public class CA
     {
         agent.walkProbs = states[agent.currentState].walkProbs;
         ActiveAgents.Add(agent);
+        Backup();
     }
 
     public void RemoveAgent(int xLoc, int yLoc)
@@ -267,8 +271,9 @@ public class CA
             {
                 if (agent.Y == yLoc)
                 {
+                    var pos = (xLoc * gridWidth) + yLoc;
                     ActiveAgents.Remove(agent);
-                    grid[xLoc, yLoc].RemoveAgent();
+                    grid[pos].RemoveAgent();
                 }
             }
         }
@@ -321,20 +326,24 @@ public class CA
 
     void Backup()
     {
-        Parallel.For(0, gridWidth, (x) =>
-        {
-            Parallel.For(0, gridHeight, (y) =>
-            {
-                if (grid[x, y].ContainsAgent)
-                {
-                    backup[x, y] = grid[x, y].Agent.currentState;
-                }
-                else
-                {
-                    backup[x, y] = -1;
-                }
-            });
-        });
+        backup = grid
+            .AsParallel()
+            .Select(x =>
+        (x.ContainsAgent)
+        ? x.Agent.currentState
+        : -1)
+        .ToArray();
+        //Parallel.For(0, grid.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, (i) =>
+        // {
+        //     if (grid[i].ContainsAgent)
+        //     {
+        //         backup[i] = grid[i].Agent.currentState;
+        //     }
+        //     else
+        //     {
+        //         backup[i] = -1;
+        //     }
+        // });
     }
 
     void HandleMobileAgents()
@@ -459,8 +468,9 @@ public class CA
             locations.Shuffle();
             int x = locations[0].Item1;
             int y = locations[0].Item2;
-            grid[x, y].AddAgent(new AgentController(x, y, 1, this, grid[x, y]));
-            AddAgent(grid[x, y].Agent);
+            var pos = (x * gridWidth) + y;
+            grid[pos].AddAgent(new AgentController(x, y, 1, this, grid[pos]));
+            AddAgent(grid[pos].Agent);
             StateCount.AddOrUpdate(ActiveAgents.Last().currentState, 0, (k, v) => v + 1);
         }
         else if (cur.currentState == 1)
@@ -809,9 +819,10 @@ public class CA
             }
             if(!skip)
             {
-                if (backup[pp.Item1, pp.Item2]>= 0)
+                var pos = (pp.Item1 * gridWidth) + pp.Item2;
+                if (backup[pos]>= 0)
                 {
-                    neighborCount[backup[pp.Item1, pp.Item2]]++;
+                    neighborCount[backup[pos]]++;
                 }
             }
         }
@@ -931,14 +942,14 @@ public class CA
             }
             if (!skip)
             {
-                if (backup[pp.Item1, pp.Item2] >= 0)
+                if (backup[(pp.Item1 * gridWidth) + pp.Item2] >= 0)
                 {
                     if (connections == false)
                     {
                         ConnectedVertices += 1;
                         connections = true;
                     }
-                    if (grid[pp.Item1, pp.Item2].Agent.currentState == state)
+                    if (grid[(pp.Item1 * gridWidth) + pp.Item2].Agent.currentState == state)
                     {
                         edgeCalcs++;
                         // this needs to be outside of "contains agent"
@@ -984,7 +995,7 @@ public class CA
                             continue;
 
                         // Add check for if new location is within bounds
-                        if(grid[newRow,newCol].Agent.currentState == nP)
+                        if(grid[(newRow * gridWidth) + newCol].Agent.currentState == nP)
                         {
                             tempProb = states[currentState].advProbs[p, nP][temp2Rows, temp2Cols];
                             prob += tempProb;
@@ -1110,11 +1121,13 @@ public class CA
         {
             if (tempTuple.Item2 != oldX || tempTuple.Item3 != oldY)
             {
-                if (grid[tempTuple.Item2, tempTuple.Item3].ContainsAgent == false && System.Object.ReferenceEquals(grid[tempTuple.Item2, tempTuple.Item3].Agent, null) == true)
+                var newPos = (tempTuple.Item2 * gridWidth) + tempTuple.Item3;
+                if (grid[newPos].ContainsAgent == false && System.Object.ReferenceEquals(grid[newPos].Agent, null) == true)
                 {
-                    grid[tempTuple.Item2, tempTuple.Item3].AddAgent(currentAgent);
-                    ActiveAgents[agentLocation] = grid[tempTuple.Item2, tempTuple.Item3].Agent;
-                    grid[oldX, oldY].RemoveAgent();
+                    grid[newPos].AddAgent(currentAgent);
+                    ActiveAgents[agentLocation] = grid[newPos].Agent;
+                    var oldPos = (oldX * gridWidth) + oldY;
+                    grid[oldPos].RemoveAgent();
                 }
             }
         }
@@ -1224,11 +1237,13 @@ public class CA
     {
         int oldX = agent.X;
         int oldY = agent.Y;
-        if (grid[position.Item1, position.Item2].ContainsAgent == false && System.Object.ReferenceEquals(grid[position.Item1, position.Item2].Agent, null) == true)
+        var newPos = (position.Item1 * gridWidth) + position.Item2;
+        if (grid[newPos].ContainsAgent == false && System.Object.ReferenceEquals(grid[newPos].Agent, null) == true)
         {
-            grid[position.Item1, position.Item2].AddAgent(agent);
-            ActiveAgents[agentLocation] = grid[position.Item1, position.Item2].Agent;
-            grid[oldX, oldY].RemoveAgent();
+            grid[newPos].AddAgent(agent);
+            ActiveAgents[agentLocation] = grid[newPos].Agent;
+            var oldPos = (oldX * gridWidth) + oldY;
+            grid[oldPos].RemoveAgent();
             agent.AddHistory();
             return true;
         }

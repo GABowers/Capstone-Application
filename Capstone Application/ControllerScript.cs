@@ -326,74 +326,31 @@ namespace Capstone_Application
                 pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
                 //if (iterations == 0)
                 {
-                    Color tileColor;
-                    Parallel.For(0, localGridWidth, (i) =>
-                   {
-                       Parallel.For(0, localGridHeight, (j) =>
-                      {
-                          if (CA.backup[i, j] >= 0)
-                          {
-                              //tileColor = PreMultiplyAlpha(colors[CA.backup[i, j]]);
-                              bmp.SetPixel(i, j, colors[CA.backup[i, j]]);
-                          }
-                          else
-                          {
-                              //tileColor = PreMultiplyAlpha(Color.Black);
-                              bmp.SetPixel(i, j, Color.Black);
-                          }
-                      });
-                   });
-                    //while (pixelChanges.Count > 0)
+                    Parallel.For(0, CA.backup.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, (i) =>
+                    {
+                        int x = i / myCA.gridWidth;
+                        int y = i % myCA.gridWidth;
+                        if(CA.backup[i] < 0)
+                        {
+                            bmp.SetPixel(x, y, Color.Black);
+                        }
+                        else
+                        {
+                            bmp.SetPixel(x, y, colors[CA.backup[i]]);
+                        }
+                    });
+                    //CA.backup.AsParallel().Select((x, i) =>
                     //{
-                    //    if (pixelChanges.TryTake(out Tuple<int, int, Color> result))
+                    //    if (x < 0)
                     //    {
-                    //        bmp.SetPixel(result.Item1, result.Item2, result.Item3);
+
                     //    }
-                    //}
+                    //    else
+                    //    {
+
+                    //    }
+                    //});
                 }
-                //Parallel.For(0, myCA.ActiveAgents.Count, (i) =>
-                //{
-                //    Color tileColor;
-                //    AgentController curAgent = myCA.ActiveAgents[i];
-                //    int oldX;
-                //    int oldY;
-                //    double frac = 1.0;
-                //    Color newColor;
-                //    if (curAgent.History.Count > 1)
-                //    {
-                //        if (curAgent.HistoryChange)
-                //        {
-                //            oldX = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item1;
-                //            oldY = curAgent.History[myCA.ActiveAgents[i].History.Count - 2].Item2;
-                //            if (myCA.grid[oldX, oldY].ContainsAgent == true && (System.Object.ReferenceEquals(myCA.grid[oldX, oldY].Agent, null) == false))
-                //            {
-                //                // check for container that shades color
-                //                tileColor = PreMultiplyAlpha(colors[myCA.grid[oldX, oldY].Agent.History[myCA.ActiveAgents[i].History.Count - 2].Item3]);
-                //                frac = 1.0;
-                //                //if (myCA.grid[oldX, oldY].Agent.Containers != null) // how to handle multiple thresholds?
-                //                //{
-                //                //    for (int j = 0; j < myCA.grid[oldX, oldY].Agent.Containers.Count; j++)
-                //                //    {
-                //                //        frac = frac * Math.Min(1, (myCA.grid[oldX, oldY].Agent.Containers[j].Value / myCA.grid[oldX, oldY].Agent.Containers[j].Threshold));
-                //                //    }
-                //                //}
-                //                newColor = Color.FromArgb((int)(frac * tileColor.R), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
-                //                bmp.SetPixel(oldX, oldY, newColor);
-                //            }
-                //            else
-                //            {
-                //                tileColor = PreMultiplyAlpha(Color.Black);
-                //                bmp.SetPixel(oldX, oldY, tileColor);
-                //            }
-                //        }
-                //    }
-                //    int newX = curAgent.X;
-                //    int newY = curAgent.Y;
-                //    tileColor = PreMultiplyAlpha(colors[curAgent.currentState]);
-                //    frac = 1.0;
-                //    newColor = Color.FromArgb((int)(tileColor.R * frac), (int)(frac * tileColor.G), (int)(frac * tileColor.B));
-                //    bmp.SetPixel(newX, newY, newColor);
-                //});
                 UpdateImage(currentForm, bmp.Bitmap);
             }
         }
@@ -487,11 +444,12 @@ namespace Capstone_Application
             }
             if ((xProper >= 0 && xProper < myCA.gridWidth) && (yProper >= 0 && yProper < myCA.gridHeight))
             {
+                var pos = (xProper * myCA.gridWidth) + yProper;
                 if (buttonPressed == 0) // adds or changes to current
                 {
-                    if (myCA.grid[xProper, yProper].ContainsAgent == true)
+                    if (myCA.grid[pos].ContainsAgent == true)
                     {
-                        myCA.grid[xProper, yProper].Agent.currentState = state;
+                        myCA.grid[pos].Agent.currentState = state;
                         //if (myCA.grid[xProper, yProper].agent.currentState > (mainPageInfo.numStates - 1))
                         //{
                         //    myCA.grid[xProper, yProper].agent.currentState = (myCA.grid[xProper, yProper].agent.currentState - mainPageInfo.numStates);
@@ -499,19 +457,23 @@ namespace Capstone_Application
                     }
                     else
                     {
-                        myCA.grid[xProper, yProper].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[xProper, yProper]));
-                        myCA.AddAgent(myCA.grid[xProper, yProper].Agent);
+                        myCA.grid[pos].AddAgent(new AgentController(xProper, yProper, state, myCA, myCA.grid[pos]));
+                        myCA.AddAgent(myCA.grid[pos].Agent);
                     }
                 }
                 if (buttonPressed == 1) // removes agents
                 {
-                    if (myCA.grid[xProper, yProper].ContainsAgent == true)
+                    if (myCA.grid[pos].ContainsAgent == true)
                     {
-                        myCA.grid[xProper, yProper].RemoveAgent();
+                        myCA.grid[pos].RemoveAgent();
                         myCA.RemoveAgent(xProper, yProper);
                     }
                 }
                 UpdateCounter();
+                if(local_form != null)
+                {
+                    UpdateBoard(local_form);
+                }
             }
         }
 

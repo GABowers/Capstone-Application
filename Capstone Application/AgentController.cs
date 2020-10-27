@@ -37,6 +37,7 @@ namespace Capstone_Application
             this.Parent = parent;
             this.Cell = cell;
             this.currentState = state;
+            this.walkProbs = parent.states[this.currentState].walkProbs;
             History.Add(Tuple.Create(agentX, agentY, state));
             Containers = new List<ContainerController>();
             foreach(var con in parent.GetStateInfo(state).containerSettings)
