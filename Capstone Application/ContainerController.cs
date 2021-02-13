@@ -31,40 +31,41 @@ namespace Capstone_Application
 
         void ParseOperation(string input)
         {
-            // wrong. needs to be LIst of list of list, to allow for multiple container objects, multiple options for each, and multiple operations for each option
-            string all = new string(input.ToCharArray().Where(c => !Char.IsWhiteSpace(c)).ToArray());
-            string[] pieces = all.Split(',');
-            for (int i = 0; i < pieces.Length; i++)
+            if(input.Length > 0)
             {
-                Operation o = Operation.None;
-                List<Tuple<Operation, double>> cur = new List<Tuple<Operation, double>>();
-                if(pieces[i].Length > 0)
+                string all = new string(input.ToCharArray().Where(c => !Char.IsWhiteSpace(c)).ToArray());
+                string[] pieces = all.Split(',');
+                for (int i = 0; i < pieces.Length; i++)
                 {
-                    switch (pieces[i][0])
+                    Operation o = Operation.None;
+                    List<Tuple<Operation, double>> cur = new List<Tuple<Operation, double>>();
+                    if (pieces[i].Length > 0)
                     {
-                        case '+':
-                            o = Operation.Add;
-                            break;
-                        case '-':
-                            o = Operation.Sub;
-                            break;
-                        case '*':
-                            o = Operation.Mul;
-                            break;
-                        case '/':
-                            o = Operation.Div;
-                            break;
-                        case '^':
-                            o = Operation.Pow;
-                            break;
-                    }
-                    if(double.TryParse(pieces[i].Remove(0,1), out double result))
-                    {
-                        IterativeBehaviors.Add(new Tuple<Operation, double>(o, result));
+                        switch (pieces[i][0])
+                        {
+                            case '+':
+                                o = Operation.Add;
+                                break;
+                            case '-':
+                                o = Operation.Sub;
+                                break;
+                            case '*':
+                                o = Operation.Mul;
+                                break;
+                            case '/':
+                                o = Operation.Div;
+                                break;
+                            case '^':
+                                o = Operation.Pow;
+                                break;
+                        }
+                        if (double.TryParse(pieces[i].Remove(0, 1), out double result))
+                        {
+                            IterativeBehaviors.Add(new Tuple<Operation, double>(o, result));
+                        }
                     }
                 }
             }
         }
-
     }
 }
