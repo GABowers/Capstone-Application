@@ -323,14 +323,14 @@ namespace Capstone_Application
                 //var data = bmp.Bitmap.LockBits(rect, ImageLockMode.ReadWrite, bmp.Bitmap.PixelFormat);
                 //var depth = Bitmap.GetPixelFormatSize(data.PixelFormat);
                 //var buffer = new byte[data.Width * data.Height * depth];
-                pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
+                //pixelChanges = new System.Collections.Concurrent.ConcurrentBag<Tuple<int, int, Color>>();
                 //if (iterations == 0)
                 {
                     Parallel.For(0, CA.backup.Length, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }, (i) =>
                     {
                         int x = i / myCA.gridWidth;
                         int y = i % myCA.gridWidth;
-                        if(CA.backup[i] < 0)
+                        if (CA.backup[i] < 0)
                         {
                             bmp.SetPixel(x, y, Color.Black);
                         }
@@ -339,15 +339,17 @@ namespace Capstone_Application
                             bmp.SetPixel(x, y, colors[CA.backup[i]]);
                         }
                     });
-                    //CA.backup.AsParallel().Select((x, i) =>
+                    //CA.backup.AsParallel().ForAll((color, index) =>
                     //{
-                    //    if (x < 0)
+                    //    int x = i / myCA.gridWidth;
+                    //    int y = i % myCA.gridWidth;
+                    //    if (CA.backup[i] < 0)
                     //    {
-
+                    //        bmp.SetPixel(x, y, Color.Black);
                     //    }
                     //    else
                     //    {
-
+                    //        bmp.SetPixel(x, y, colors[CA.backup[i]]);
                     //    }
                     //});
                 }

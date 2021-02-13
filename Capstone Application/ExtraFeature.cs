@@ -24,19 +24,28 @@ namespace Capstone_Application
 
         public AgentContainerSetting Retrieve()
         {
-            AgentContainerSetting a = new AgentContainerSetting();
-            a.Name = nameInput.Text;
-            var thresholdType = (ThresholdType)thresholdTypeInput.SelectedIndex;
-            var thresholdValue = double.TryParse(thresholdInput.Text, out double result)? result : 0.0;
-            a.IterationBehavior = iterationBehaviorInput.Text;
-            var behavior = (AgentContainerThresholdBehavior)thresholdBehaviorInput.SelectedIndex;
-            var threshold = new AgentContainerThreshold(new Tuple<ThresholdType, double>(thresholdType, thresholdValue), behavior);
-            a.Thresholds.Add(threshold);
-            a.ThresholdStochastic = stochasticThresholdInput.Checked;
-            a.Type = (AgentContainerType)typeInput.SelectedIndex;
-            a.InitialValue = double.TryParse(initialInput.Text, out double result2) ? result2 : 0.0; ;
-            a.Shade = shadeInput.Checked;
-            return a;
+            try
+            {
+                AgentContainerSetting a = new AgentContainerSetting();
+                a.Name = nameInput.Text;
+                var thresholdType = (ThresholdType)thresholdTypeInput.SelectedIndex;
+                var thresholdValue = double.TryParse(thresholdInput.Text, out double result) ? result : 0.0;
+                a.IterationBehavior = iterationBehaviorInput.Text;
+                var behavior = (AgentContainerThresholdBehavior)thresholdBehaviorInput.SelectedIndex;
+                var threshold = new AgentContainerThreshold(new Tuple<ThresholdType, double>(thresholdType, thresholdValue), behavior);
+                a.Thresholds.Add(threshold);
+                a.ThresholdStochastic = stochasticThresholdInput.Checked;
+                a.Type = (AgentContainerType)typeInput.SelectedIndex;
+                a.InitialValue = double.TryParse(initialInput.Text, out double result2) ? result2 : 0.0; ;
+                a.Shade = shadeInput.Checked;
+                return a;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
+            }
+            return null;
         }
     }
 

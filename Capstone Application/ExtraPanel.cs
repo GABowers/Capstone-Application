@@ -62,7 +62,11 @@ namespace Capstone_Application
             List<AgentContainerSetting> output = new List<AgentContainerSetting>();
             for (int i = 0; i < extras.Count; i++)
             {
-                output.Add(extras[i].Retrieve());
+                var extra = extras[i].Retrieve();
+                if(extra != null)
+                {
+                    output.Add(extra);
+                }
             }
             return output;
         }
