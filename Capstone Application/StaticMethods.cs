@@ -152,7 +152,7 @@ namespace Capstone_Application
                 }
                 neighbors[i] = new Tuple<int, int>(x, y);
             }
-            List<BlankGrid> neigh = neighbors.Select(x => position.Parent.grid[(x.Item1 * dimensions.Item1) + x.Item2]).ToList();
+            List<BlankGrid> neigh = neighbors.Select(x => position.Parent.grid[(x.Item1 * dimensions.Item1) + x.Item2]).Where(xx => xx != null).ToList();
             return neigh;
         }
 
