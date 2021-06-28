@@ -114,14 +114,96 @@ namespace Capstone_Application
         {
             // Clear out old state pages
             statePageInfo.Clear();
+            var colors = mainPageInfo.numStates > 0 ? GetColorRange(mainPageInfo.numStates) : null;
             //int neighbors;
-            for (int i = 0; i < mainPageInfo.numStates; ++i)
+            for (int i = 0; i < mainPageInfo.numStates; i++)
             {
                 // Needs to be different based on which type of neighborhood we're using.
-                StatePageInfo current = new StatePageInfo(i + 1);
+                StatePageInfo current = mainPageInfo.numStates > 0 ? new StatePageInfo(i + 1, colors[i]) : new StatePageInfo(i + 1);
                 //StatePageInfo current = new StatePageInfo(mainPageInfo.numStates);
                 statePageInfo.Add(current);
             }
+        }
+
+        Color[] GetColorRange(int total)
+        {
+            List<Color> colors = new List<Color>();
+            for (int i = 0; i < total; i++)
+            {
+                float progress = (float)i / total;
+                colors.Add(Rainbow(progress));
+            }
+            return colors.ToArray();
+        }
+
+        public static Color Rainbow(float progress)
+        {
+            float div = (Math.Abs(progress % 1) * 6);
+            int ascending = (int)((div % 1) * 255);
+            int descending = 255 - ascending;
+
+            switch ((int)div)
+            {
+                case 0:
+                    return Color.FromArgb(255, 255, ascending, 0);
+                case 1:
+                    return Color.FromArgb(255, descending, 255, 0);
+                case 2:
+                    return Color.FromArgb(255, 0, 255, ascending);
+                case 3:
+                    return Color.FromArgb(255, 0, descending, 255);
+                case 4:
+                    return Color.FromArgb(255, ascending, 0, 255);
+                default: // case 5:
+                    return Color.FromArgb(255, 255, 0, descending);
+            }
+        }
+
+        Color ToRGB(double h, double s, double l)
+        {
+            byte r, g, b;
+            if(s == 0)
+            {
+                r = (byte)Math.Round(l * 255d);
+                g = (byte)Math.Round(l * 255d);
+                b = (byte)Math.Round(l * 255d);
+            }
+            else
+            {
+                double t1, t2;
+                double th = h / 6.0d;
+                if(l < 0.5d)
+                {
+                    t2 = l * (1d + s);
+                }
+                else
+                {
+                    t2 = (l + s) - (l * s);
+                }
+                t1 = 2d * l - t2;
+
+                double tr, tg, tb;
+                tr = th + (1.0d / 3.0d);
+                tg = th;
+                tb = th - (1.0d / 3.0d);
+                tr = ColorCalc(tr, t1, t2);
+                tg = ColorCalc(tg, t1, t2);
+                tb = ColorCalc(tb, t1, t2);
+                r = (byte)Math.Round(tr * 255d);
+                g = (byte)Math.Round(tg * 255d);
+                b = (byte)Math.Round(tb * 255d);
+            }
+            return Color.FromArgb(r, g, b);
+        }
+
+        private static double ColorCalc(double c, double t1, double t2)
+        {
+            if (c < 0) c += 1d;
+            if (c > 1) c -= 1d;
+            if (6.0d * c < 1.0d) return t1 + (t2 - t1) * 6.0d * c;
+            if (2.0d * c < 1.0d) return t2;
+            if (3.0d * c < 2.0d) return t1 + (t2 - t1) * (2.0d / 3.0d - c) * 6.0d;
+            return t1;
         }
 
         public void StateInfoDirectEdit(int infoState, NType nType, GridType gridType, Color color,

@@ -447,6 +447,7 @@
             // 
             // speedInput
             // 
+            this.speedInput.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.speedInput.MaxLength = 3;
             this.speedInput.Name = "speedInput";
             this.speedInput.Size = new System.Drawing.Size(25, 25);

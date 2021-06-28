@@ -42,5 +42,12 @@ namespace Capstone_Application
             color = Color.White;
             startingAmount = 0;
         }
+
+        public StatePageInfo(int currentState, Color c)
+        {
+            stateNum = currentState;
+            color = c;
+            startingAmount = 0;
+        }
     }
 }
