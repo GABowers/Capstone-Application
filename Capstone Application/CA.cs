@@ -163,15 +163,18 @@ public class CA
         int gridSize = (gridWidth * gridHeight);
         //ActiveAgentsArray = new AgentController[gridSize];
         // if total cells < gridSize, check/decide connectivity method - every other point, or what?
-        int state = 0;
         int reducer = 0;
         
-        var list = new List<int>(Enumerable.Range(1, gridSize));
+        var list = new List<int>(Enumerable.Range(0, totalCells));
         list.Shuffle();
+        Random rng = new Random();
 
         // Checks for custom-placed locations. If there are any, places them, removes from the appropriate agentCount list,
         // then adds to an increment which will lower the totalCells increment below.
-
+        if(agentCount.Sum() > gridSize)
+        {
+            throw new Exception("Error - too many starting cells.");
+        }
         for (int i = 0; i < numStates; i++)
         {
             if (states[i].startingLocations == null)
@@ -204,41 +207,70 @@ public class CA
 
                         if (agentCount[i] == 0)
                         {
-                            agentCount.RemoveAt(i);
-                            if (i == 0)
-                            {
-                                state += 1;
-                            }
+                            break;
+                            //agentCount.RemoveAt(i);
+                            //if (i == 0)
+                            //{
+                            //    state += 1;
+                            //}
                         }
                     }
                 }
             }
         }
 
-        // This uses totalCells, not list size, because the "second order" CA will almost always have less cells than the full grid size.
-        for (int i = 0; i < (totalCells - reducer); i++)
+        List<int> assign = new List<int>();
+
+        for (int i = 0; i < agentCount.Count; i++)
         {
-            int increment = list[i] - 1;
-            int xValue = (increment / gridWidth);
-            int yValue = (increment % gridWidth);
-            
-            grid[increment] = new BlankGrid(xValue, yValue, new AgentController(xValue, yValue, state, this, grid[increment]), this);
-            grid[increment].Agent.AddContainer(states[state].containerSettings);
-            //AddAgent(grid[increment].Agent);
-            ActiveAgents.Add(grid[increment].Agent);
-            separateAgents[state].Add(grid[increment].Agent);
-
-            // Subtract that state from its agentcount
-            // And if it goes to zero remove it from both our lists
-
-            agentCount[0]--;
-
-            if (agentCount[0] == 0)
+            for (int j = 0; j < agentCount[i]; j++)
             {
-                agentCount.RemoveAt(0);
-                state += 1;
-            }
+                assign.Add(i);
+                reducer++;
+            };
         }
+
+        for (int i = 0; i < list.Count - reducer; i++)
+        {
+            assign.Add((int)(rng.NextDouble() * cellAmounts.Count));
+        }
+
+        for (int i = 0; i < assign.Count; i++)
+        {
+            var curState = assign[i];
+            var pos = list[i];
+            var x = pos / gridWidth;
+            var y = pos % gridWidth;
+            grid[pos] = new BlankGrid(x, y, new AgentController(x, y, curState, this, grid[pos]), this);
+            grid[pos].Agent.AddContainer(states[curState].containerSettings);
+            ActiveAgents.Add(grid[pos].Agent);
+            separateAgents[curState].Add(grid[pos].Agent);
+        }
+
+        // This uses totalCells, not list size, because the "second order" CA will almost always have less cells than the full grid size.
+        //for (int i = 0; i < (totalCells - reducer); i++)
+        //{
+        //    int increment = list[i] - 1;
+        //    int xValue = (increment / gridWidth);
+        //    int yValue = (increment % gridWidth);
+            
+        //    grid[increment] = new BlankGrid(xValue, yValue, new AgentController(xValue, yValue, state, this, grid[increment]), this);
+        //    grid[increment].Agent.AddContainer(states[state].containerSettings);
+        //    //AddAgent(grid[increment].Agent);
+        //    ActiveAgents.Add(grid[increment].Agent);
+        //    separateAgents[state].Add(grid[increment].Agent);
+
+        //    // Subtract that state from its agentcount
+        //    // And if it goes to zero remove it from both our lists
+
+        //    agentCount[0]--;
+
+        //    if (agentCount[0] == 0)
+        //    {
+        //        agentCount.RemoveAt(0);
+        //        state += 1;
+        //    }
+        //}
 
         if(totalCells < gridSize)
         {
@@ -423,7 +455,6 @@ public class CA
                     double[] probChances = StandardGetProbChances(oldState, neighborStateCount);
                     ActiveAgents[i].currentState = GetStateFromProbability(probChances);
                 }
-
                 int newState = ActiveAgents[i].currentState;
                 lock(separateAgents)
                 {
@@ -1056,14 +1087,12 @@ public class CA
 
     private int GetIndexFromRange(double[] agentAmountPerState)
     {
-        double range = agentAmountPerState[agentAmountPerState.Length - 1];
         var bytes = new Byte[8];
         rng.GetBytes(bytes);
         var ul = BitConverter.ToUInt64(bytes, 0) / (1 << 11);
         Double randomDouble = ul / (Double)(1UL << 53);
-
-        double pick = randomDouble * range;
-        return Array.IndexOf(agentAmountPerState, agentAmountPerState.Where(x => x >= pick).First());
+        var pick = Array.IndexOf(agentAmountPerState, agentAmountPerState.Where(x => x >= randomDouble).First());
+        return pick;
     }
 
     private double[] GetAgentAmountPerState(List<double> ratios)
