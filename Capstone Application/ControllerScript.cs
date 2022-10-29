@@ -402,6 +402,7 @@ namespace Capstone_Application
         {
             if(alreadyCA)
             {
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
                 //var data = bmp.Bitmap.LockBits(rect, ImageLockMode.ReadWrite, bmp.Bitmap.PixelFormat);
                 //var depth = Bitmap.GetPixelFormatSize(data.PixelFormat);
                 //var buffer = new byte[data.Width * data.Height * depth];
@@ -553,6 +554,7 @@ namespace Capstone_Application
                         myCA.RemoveAgent(xProper, yProper);
                     }
                 }
+                myCA.Backup();
                 UpdateCounter();
                 if(local_form != null)
                 {

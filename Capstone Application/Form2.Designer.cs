@@ -56,9 +56,10 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(591, 527);
+            this.tabControl1.Size = new System.Drawing.Size(788, 649);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -75,10 +76,11 @@
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.stateNumberBox);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Location = new System.Drawing.Point(4, 25);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(583, 501);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
+            this.tabPage1.Size = new System.Drawing.Size(780, 620);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Setup";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -86,26 +88,29 @@
             // templatePanel
             // 
             this.templatePanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.templatePanel.Location = new System.Drawing.Point(3, 161);
+            this.templatePanel.Location = new System.Drawing.Point(4, 201);
+            this.templatePanel.Margin = new System.Windows.Forms.Padding(4);
             this.templatePanel.Name = "templatePanel";
-            this.templatePanel.Size = new System.Drawing.Size(577, 337);
+            this.templatePanel.Size = new System.Drawing.Size(772, 415);
             this.templatePanel.TabIndex = 14;
             // 
             // template_reset_checkbox
             // 
             this.template_reset_checkbox.AutoSize = true;
-            this.template_reset_checkbox.Location = new System.Drawing.Point(253, 34);
+            this.template_reset_checkbox.Location = new System.Drawing.Point(337, 42);
+            this.template_reset_checkbox.Margin = new System.Windows.Forms.Padding(4);
             this.template_reset_checkbox.Name = "template_reset_checkbox";
-            this.template_reset_checkbox.Size = new System.Drawing.Size(15, 14);
+            this.template_reset_checkbox.Size = new System.Drawing.Size(18, 17);
             this.template_reset_checkbox.TabIndex = 2;
             this.template_reset_checkbox.UseVisualStyleBackColor = true;
             this.template_reset_checkbox.CheckedChanged += new System.EventHandler(this.template_reset_checkbox_CheckedChanged);
             // 
             // template_reset_explanation
             // 
-            this.template_reset_explanation.Location = new System.Drawing.Point(286, 29);
+            this.template_reset_explanation.Location = new System.Drawing.Point(381, 36);
+            this.template_reset_explanation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.template_reset_explanation.Name = "template_reset_explanation";
-            this.template_reset_explanation.Size = new System.Drawing.Size(291, 40);
+            this.template_reset_explanation.Size = new System.Drawing.Size(388, 49);
             this.template_reset_explanation.TabIndex = 12;
             this.template_reset_explanation.Text = "Some template simulations stop after a certain event occurs. To reset the grid at" +
     " this point, check this box. Make sure to save your data!";
@@ -113,9 +118,10 @@
             // 
             // template_reset_label
             // 
-            this.template_reset_label.Location = new System.Drawing.Point(9, 29);
+            this.template_reset_label.Location = new System.Drawing.Point(12, 36);
+            this.template_reset_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.template_reset_label.Name = "template_reset_label";
-            this.template_reset_label.Size = new System.Drawing.Size(125, 20);
+            this.template_reset_label.Size = new System.Drawing.Size(167, 25);
             this.template_reset_label.TabIndex = 11;
             this.template_reset_label.Text = "Template reset";
             this.template_reset_label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -130,50 +136,59 @@
             "DLA",
             "Isle Royale",
             "Ant Sim",
-            "Gas"});
-            this.templateBox.Location = new System.Drawing.Point(147, 9);
+            "Gas",
+            "Game of Life"});
+            this.templateBox.Location = new System.Drawing.Point(196, 11);
+            this.templateBox.Margin = new System.Windows.Forms.Padding(4);
             this.templateBox.Name = "templateBox";
-            this.templateBox.Size = new System.Drawing.Size(121, 21);
+            this.templateBox.Size = new System.Drawing.Size(160, 24);
             this.templateBox.TabIndex = 1;
             this.templateBox.SelectedIndexChanged += new System.EventHandler(this.templateBox_SelectedIndexChanged);
             // 
             // templateBoxLabel
             // 
-            this.templateBoxLabel.Location = new System.Drawing.Point(9, 9);
+            this.templateBoxLabel.Location = new System.Drawing.Point(12, 11);
+            this.templateBoxLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.templateBoxLabel.Name = "templateBoxLabel";
-            this.templateBoxLabel.Size = new System.Drawing.Size(125, 20);
+            this.templateBoxLabel.Size = new System.Drawing.Size(167, 25);
             this.templateBoxLabel.TabIndex = 8;
             this.templateBoxLabel.Text = "Template";
             this.templateBoxLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // gridSizeHori
             // 
-            this.gridSizeHori.Location = new System.Drawing.Point(147, 115);
+            this.gridSizeHori.Location = new System.Drawing.Point(196, 142);
+            this.gridSizeHori.Margin = new System.Windows.Forms.Padding(4);
             this.gridSizeHori.Name = "gridSizeHori";
-            this.gridSizeHori.Size = new System.Drawing.Size(121, 20);
+            this.gridSizeHori.Size = new System.Drawing.Size(160, 22);
             this.gridSizeHori.TabIndex = 4;
+            this.gridSizeHori.TextChanged += new System.EventHandler(this.gridSizeHori_TextChanged);
             // 
             // gridSizeVert
             // 
-            this.gridSizeVert.Location = new System.Drawing.Point(147, 135);
+            this.gridSizeVert.Location = new System.Drawing.Point(196, 166);
+            this.gridSizeVert.Margin = new System.Windows.Forms.Padding(4);
             this.gridSizeVert.Name = "gridSizeVert";
-            this.gridSizeVert.Size = new System.Drawing.Size(121, 20);
+            this.gridSizeVert.Size = new System.Drawing.Size(160, 22);
             this.gridSizeVert.TabIndex = 5;
+            this.gridSizeVert.TextChanged += new System.EventHandler(this.gridSizeVert_TextChanged);
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(9, 135);
+            this.label5.Location = new System.Drawing.Point(12, 166);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(125, 20);
+            this.label5.Size = new System.Drawing.Size(167, 25);
             this.label5.TabIndex = 7;
             this.label5.Text = "Grid Size (Vertical)";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(9, 115);
+            this.label4.Location = new System.Drawing.Point(12, 142);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(125, 20);
+            this.label4.Size = new System.Drawing.Size(167, 25);
             this.label4.TabIndex = 6;
             this.label4.Text = "Grid Size (Horizontal)";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -181,18 +196,20 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(9, 95);
+            this.label3.Location = new System.Drawing.Point(12, 117);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(125, 20);
+            this.label3.Size = new System.Drawing.Size(167, 25);
             this.label3.TabIndex = 5;
             this.label3.Text = "Number of states";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // stateNumberBox
             // 
-            this.stateNumberBox.Location = new System.Drawing.Point(147, 95);
+            this.stateNumberBox.Location = new System.Drawing.Point(196, 117);
+            this.stateNumberBox.Margin = new System.Windows.Forms.Padding(4);
             this.stateNumberBox.Name = "stateNumberBox";
-            this.stateNumberBox.Size = new System.Drawing.Size(121, 20);
+            this.stateNumberBox.Size = new System.Drawing.Size(160, 22);
             this.stateNumberBox.TabIndex = 3;
             // 
             // colorDialog1
@@ -202,9 +219,10 @@
             // 
             // cancelTab
             // 
-            this.cancelTab.Location = new System.Drawing.Point(465, 532);
+            this.cancelTab.Location = new System.Drawing.Point(620, 655);
+            this.cancelTab.Margin = new System.Windows.Forms.Padding(4);
             this.cancelTab.Name = "cancelTab";
-            this.cancelTab.Size = new System.Drawing.Size(60, 28);
+            this.cancelTab.Size = new System.Drawing.Size(80, 34);
             this.cancelTab.TabIndex = 98;
             this.cancelTab.Text = "Cancel";
             this.cancelTab.UseVisualStyleBackColor = true;
@@ -212,9 +230,10 @@
             // 
             // confirmTab
             // 
-            this.confirmTab.Location = new System.Drawing.Point(531, 532);
+            this.confirmTab.Location = new System.Drawing.Point(708, 655);
+            this.confirmTab.Margin = new System.Windows.Forms.Padding(4);
             this.confirmTab.Name = "confirmTab";
-            this.confirmTab.Size = new System.Drawing.Size(60, 28);
+            this.confirmTab.Size = new System.Drawing.Size(80, 34);
             this.confirmTab.TabIndex = 99;
             this.confirmTab.Text = "Confirm";
             this.confirmTab.UseVisualStyleBackColor = true;
@@ -222,17 +241,19 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(0, 533);
+            this.label6.Location = new System.Drawing.Point(0, 656);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(287, 27);
+            this.label6.Size = new System.Drawing.Size(383, 33);
             this.label6.TabIndex = 5;
             this.label6.Text = "Tooltip and event notification";
             // 
             // previousTab
             // 
-            this.previousTab.Location = new System.Drawing.Point(293, 532);
+            this.previousTab.Location = new System.Drawing.Point(391, 655);
+            this.previousTab.Margin = new System.Windows.Forms.Padding(4);
             this.previousTab.Name = "previousTab";
-            this.previousTab.Size = new System.Drawing.Size(80, 28);
+            this.previousTab.Size = new System.Drawing.Size(107, 34);
             this.previousTab.TabIndex = 96;
             this.previousTab.Text = "Previous Tab";
             this.previousTab.UseVisualStyleBackColor = true;
@@ -240,9 +261,10 @@
             // 
             // nextTab
             // 
-            this.nextTab.Location = new System.Drawing.Point(379, 532);
+            this.nextTab.Location = new System.Drawing.Point(505, 655);
+            this.nextTab.Margin = new System.Windows.Forms.Padding(4);
             this.nextTab.Name = "nextTab";
-            this.nextTab.Size = new System.Drawing.Size(80, 28);
+            this.nextTab.Size = new System.Drawing.Size(107, 34);
             this.nextTab.TabIndex = 97;
             this.nextTab.Text = "Next Tab";
             this.nextTab.UseVisualStyleBackColor = true;
@@ -251,15 +273,16 @@
             // Form2
             // 
             this.AccessibleName = "New Model Dialog";
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(593, 566);
+            this.ClientSize = new System.Drawing.Size(791, 697);
             this.Controls.Add(this.nextTab);
             this.Controls.Add(this.previousTab);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.confirmTab);
             this.Controls.Add(this.cancelTab);
             this.Controls.Add(this.tabControl1);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings Dialog";

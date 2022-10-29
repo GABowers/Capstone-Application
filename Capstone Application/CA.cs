@@ -124,8 +124,11 @@ public class CA
                         double rad = (use * Math.PI) / 180.0;
                         double x = a_floor * Math.Cos(rad);
                         double y = b_floor * Math.Sin(rad);
+                        int xx = (int)(Math.Floor(x) + a_floor);
+                        int yy = (int)(Math.Floor(y) + b_floor);
+                        var both = Validate(xx, yy);
 
-                        Tuple<int, int> loc = new Tuple<int, int>((int)(Math.Floor(x) + a_floor), (int)(Math.Floor(y) + b_floor));
+                        Tuple<int, int> loc = new Tuple<int, int>(both.Item1, both.Item2);
                         locations.Add(loc);
                     }
                     var result = locations.Distinct().ToList();
@@ -139,6 +142,27 @@ public class CA
                 break;
         }
         
+    }
+
+    (int,int) Validate(int x, int y)
+    {
+        if (x < 0)
+        {
+            x = 0;
+        }
+        else if (x >= gridWidth)
+        {
+            x = gridWidth - 1;
+        }
+        if (y < 0)
+        {
+            y = 0;
+        }
+        else if (y >= gridHeight)
+        {
+            y = gridHeight - 1;
+        }
+        return (x, y);
     }
 
     public void InitializeGrid(List<int> cellAmounts)
@@ -326,24 +350,24 @@ public class CA
                 Transitions.AddOrUpdate(new Tuple<int, int>(i,j), 0, (k, v) => 0);
             }
         }
-        if (template == Template.None || template == Template.Random_Walk)
-        {
-            if(states.Any(x => x.mobile))
-            {
-                HandleMobileAgents();
-            }
-            else
-            {
-                HandleImmobileAgents();
-            }            
-        }
-        else if(template == Template.DLA)
+        if(template == Template.DLA)
         {
             DLARoutine();
         }
         else if (template == Template.Gas)
         {
             GasRoutine();
+        }
+        else
+        {
+            if (states.Any(x => x.mobile))
+            {
+                HandleMobileAgents();
+            }
+            else
+            {
+                HandleImmobileAgents();
+            }
         }
         Backup();
     }
@@ -356,7 +380,7 @@ public class CA
         }
     }
 
-    void Backup()
+    public void Backup()
     {
         backup = grid
             .AsParallel()
@@ -438,6 +462,11 @@ public class CA
             else
             {
                 int oldState = ActiveAgents[i].currentState;
+
+                if (oldState == 1)
+                {
+                    ;
+                }
 
                 if (neighborTypes[oldState] == NType.None)
                 {

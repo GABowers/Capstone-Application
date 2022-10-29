@@ -21,6 +21,8 @@ namespace Capstone_Application
         bool editForm;
         bool template_reset = false;
         bool finalized = false;
+        int gridWidth;
+        int gridHeight;
 
         public Form2(string name, Form1 main, bool edit)
         {
@@ -197,11 +199,14 @@ namespace Capstone_Application
                         templateUC = ranUC;
                     }
                     break;
+                default:
+                    break;
             }
         }
 
-        private void FinalizeTemplates()
+        private bool FinalizeTemplates()
         {
+            List<List<List<double>>> immobile_probs;
             switch (template)
             {
                 case Template.Random_Walk:
@@ -227,14 +232,14 @@ namespace Capstone_Application
                         controllerScript.MainPageNext(statenum, hori, vert, Template.Random_Walk);
                         int halfHori = (int)(hori / 2.0);
                         int halfVert = (int)(vert / 2.0);
-                        List<List<List<double>>> immobile_probs = new List<List<List<double>>>();
+                        immobile_probs = new List<List<List<double>>>();
                         List<List<List<double>>> tempProbs = new List<List<List<double>>>();
                         controllerScript.StateInfoDirectEdit(0, NType.None, GridType.Box, Color.White,
                             new List<Tuple<int, int>>() { new Tuple<int, int>(halfHori, halfVert)}, 0, 1, 
                             tempProbs, true, 0, new List<double>() { up, right, down, left },
                             true, new List<double>() { 0 }, false, false, false, new List<Tuple<string, double>>());
                     }
-                    break;
+                    return true;
 
                 case Template.Gas:
                     {
@@ -276,7 +281,7 @@ namespace Capstone_Application
                             controllerScript.GetStatePage(0).template_objects.Add(template_storage[i]);
                         }
                     }
-                    break;
+                    return true;
                 case Template.DLA:
                     {
                         controllerScript.UpdateMainTemplateInfo(template_reset);
@@ -292,7 +297,7 @@ namespace Capstone_Application
                         }
                         controllerScript.MainPageNext(2, hori, vert, Template.DLA);
                         int halfHori = (int)((double)hori / 2);
-                        List<List<List<double>>> immobile_probs = new List<List<List<double>>>();
+                        immobile_probs = new List<List<List<double>>>();
                         for (int i = 0; i < 2; i++)
                         {
                             immobile_probs.Add(new List<List<double>>());
@@ -335,16 +340,61 @@ namespace Capstone_Application
                             new List<Tuple<int, int>>(), 4, 0, tempProbs, true, 0, new List<double>() { 0.25, 0.25, 0.25, 0.25 },
                             true, new List<double>() { 0, 0 }, false, false, false, new List<Tuple<string, double>>());
                     }
-                    break;
+                    return true;
+                case Template.GameOfLife:
+                    if (gridHeight <= 0 || gridWidth <= 0)
+                    {
+                        MessageBox.Show("Error: grid dimensions need to be set!");
+                        return false;
+                    }
+                    controllerScript.MainPageNext(2, gridWidth, gridHeight, Template.GameOfLife);
+                    var a = new List<List<List<double>>> // this is 0
+                    {
+                        new List<List<double>> // change to 0
+                        {
+                            new List<double>{ 0,0,0,0,0,0,0,0,0},
+                            new List<double>{ 0,0,0,0,0,0,0,0,0},
+                        },
+                        new List<List<double>> // change to 1
+                        {
+                            new List<double>{ 0,0,0,0,0,0,0,0,0},
+                            new List<double>{ 0,0,0,1,0,0,0,0,0}, // the -1 ensures that's only active for the three neighbors
+                        }
+                    };
+                    controllerScript.StateInfoDirectEdit(0, NType.Moore, GridType.Box, Color.Black, null, 8, gridWidth * gridHeight, a, false, MoveType.None, new List<double>(), false, new List<double>(), false, false, false, new List<Tuple<string, double>>());
+
+                    var b = new List<List<List<double>>> // this is 1
+                    {
+                        new List<List<double>> // change to 0
+                        {
+                            new List<double>{ 1,1,1,1,1,0,0,1,1},
+                            new List<double>{ 0,0,0,0,0,0,0,0,0},
+                        },
+                        new List<List<double>> // change to 1
+                        {
+                            new List<double>{ 0,0,0,0,0,0,0,0,0},
+                            new List<double>{ 0,0,0,0,0,0,0,0,0}, // the -1 ensures that's only active for the three neighbors
+                        }
+                    };
+                    controllerScript.StateInfoDirectEdit(1, NType.Moore, GridType.Box, Color.White, null, 8, 0, b, false, MoveType.None, new List<double>(), false, new List<double>(), false, false, false, new List<Tuple<string, double>>());
+                    return true;
+                default:
+                    MessageBox.Show("This Template is not yet supported!");
+                    return false;
             }
         }
 
         private void confirmTab_Click(object sender, EventArgs e)
         {
             int amountOfStates = int.Parse(stateNumberBox.Text);
+            bool valid;
             if(!finalized)
             {
-                FinalizeTemplates();
+                valid = FinalizeTemplates();
+            }
+            else
+            {
+                valid = true;
             }
             UpdateAllValues();
 
@@ -369,7 +419,13 @@ namespace Capstone_Application
                 }
                 else
                 {
-                    this.Close();
+                    if(valid)
+                    {
+                        Form1.runSettings = new RunSettings(amountOfStates);
+                        controllerScript.runSettings = Form1.runSettings;
+                        controllerScript.AlreadyCA = false;
+                        this.Close();
+                    }
                 }
                 //controllerScript.ResetTemplate();
             }
@@ -449,6 +505,13 @@ namespace Capstone_Application
                     template = Template.Gas;
                     RunTemplates();
                     break;
+                case 6:
+                    controllerScript.SetupStateInfo();
+                    stateNumberBox.Enabled = false;
+                    stateNumberBox.Text = 2.ToString();
+                    template = Template.GameOfLife;
+                    RunTemplates();
+                    break;
                 default:
                     template = Template.None;
                     break;
@@ -480,6 +543,22 @@ namespace Capstone_Application
                 template_reset = false;
             }
         }
+
+        private void gridSizeVert_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(gridSizeVert.Text, out int result1))
+            {
+                gridHeight = result1;
+            }
+        }
+
+        private void gridSizeHori_TextChanged(object sender, EventArgs e)
+        {
+            if (int.TryParse(gridSizeHori.Text, out int result1))
+            {
+                gridWidth = result1;
+            }
+        }
     }
 }
 
@@ -498,5 +577,6 @@ public enum Template
     DLA,
     Isle_Royale,
     Ant_Sim,
-    Gas
+    Gas,
+    GameOfLife
 }
